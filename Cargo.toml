@@ -1,0 +1,7 @@
+[package]
+name = "jvm-rust"
+version = "0.1.0"
+authors = ["dxx <dx1898@foxmail.com>"]
+edition = "2021"
+
+[dependencies]
