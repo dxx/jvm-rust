@@ -1,12 +1,8 @@
 [package]
-name = "jvm-rust"
+name = "ch01_cmd"
 version = "0.1.0"
 authors = ["dxx <dx1898@foxmail.com>"]
 edition = "2021"
 
-[workspace]
-members = [
-    "ch01_cmd",
-]
-
 [dependencies]
+getopts = "0.2"
