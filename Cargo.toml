@@ -8,6 +8,7 @@ edition = "2021"
 members = [
     "ch01_cmd",
     "ch02_classpath",
+    "ch03_classfile",
 ]
 
 [dependencies]
