@@ -9,6 +9,7 @@ members = [
     "ch01_cmd",
     "ch02_classpath",
     "ch03_classfile",
+    "ch04_rtda",
 ]
 
 [dependencies]
