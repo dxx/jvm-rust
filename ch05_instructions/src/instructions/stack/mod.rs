@@ -1,3 +1,7 @@
-pub mod pop;
-pub mod dup;
-pub mod swap;
+mod pop;
+mod dup;
+mod swap;
+
+pub use self::pop::*;
+pub use self::dup::*;
+pub use self::swap::*;

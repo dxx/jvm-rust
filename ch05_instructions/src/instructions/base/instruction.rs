@@ -13,21 +13,6 @@ pub trait Instruction: Debug {
 }
 
 #[derive(Default, Debug)]
-pub struct BranchInstruction {
-    pub offset: i32,
-}
-
-impl Instruction for BranchInstruction {
-    fn fetch_operands(&mut self, reader: &mut BytecodeReader) {
-        self.offset = reader.read_i16() as i32;
-    }
-
-    fn execute(&self, frame: &mut Frame) {
-        // Nothing to do
-    }
-}
-
-#[derive(Default, Debug)]
 pub struct Index8Instruction {
     pub index: u32,
 }

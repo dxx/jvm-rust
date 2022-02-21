@@ -12,15 +12,6 @@ mod stores;
 mod factory;
 
 pub use self::base::*;
-pub use self::comparisons::*;
-pub use self::constants::*;
-pub use self::control::*;
-pub use self::conversions::*;
-pub use self::extended::*;
-pub use self::loads::*;
-pub use self::math::*;
-pub use self::stack::*;
-pub use self::stores::*;
 
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -33,7 +24,11 @@ pub fn interpret(method_info: &MemberInfo) {
     match method_info.code_attribute() {
         Some(info) => {
             let thread = Rc::new(RefCell::new(Thread::new()));
-            let frame = thread.borrow_mut().new_frame(Rc::clone(&thread), info.max_locals() as usize, info.max_stack() as usize);
+            let frame = thread.borrow_mut().new_frame(
+                Rc::clone(&thread),
+                info.max_locals() as usize,
+                info.max_stack() as usize
+            );
             thread.borrow_mut().push_frame(frame);
 
             _loop(thread, info.code());
@@ -54,13 +49,20 @@ fn _loop(thread: Rc<RefCell<Thread>>, bytecode: Vec<u8>) {
         // Decode
         reader.reset(bytecode.clone(), pc as usize);
         let opcode = reader.read_u8();
-        let mut inst = new_instruction(opcode);
+        match new_instruction(opcode) {
+            Ok(mut inst) => {
+                inst.fetch_operands(&mut reader);
+                f.set_next_pc(reader.pc() as i64);
 
-        inst.fetch_operands(&mut reader);
-        f.set_next_pc(reader.pc() as i32);
-
-        // Execute
-        println!("pc: {}, inst:{:?}", pc, inst);
-        inst.execute(&mut f);
+                // Execute
+                println!("pc: {}, inst:{:?}", pc, inst);
+                inst.execute(&mut f);
+            },
+            Err(err) => {
+                // println!("LocalVars: {:?}", f.get_local_vars());
+                // println!("OperandStack: {:?}", f.get_operand_stack());
+                panic!("{}", err);
+            }
+        }
     }
 }

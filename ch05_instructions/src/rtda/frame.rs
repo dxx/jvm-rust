@@ -8,7 +8,7 @@ pub struct Frame {
     pub lower: Option<Box<Frame>>, // Stack is implemented as linked list
     local_vars: LocalVars,
     operand_stack: OperandStack,
-    next_pc: i32, // The next instruction after the call
+    next_pc: i64, // The next instruction after the call
     thread: Rc<RefCell<Thread>>,
 }
 
@@ -35,11 +35,11 @@ impl Frame {
         &mut self.operand_stack
     }
 
-    pub fn set_next_pc(&mut self, next_pc: i32) {
+    pub fn set_next_pc(&mut self, next_pc: i64) {
         self.next_pc = next_pc;
     }
 
-    pub fn get_next_pc(&self) -> i32 {
+    pub fn get_next_pc(&self) -> i64 {
         self.next_pc
     }
 

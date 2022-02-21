@@ -4,7 +4,7 @@ use super::jvm_stack::Stack;
 use super::frame::Frame;
 
 pub struct Thread {
-    pc: i32,
+    pc: i64,
     stack: Stack,
 }
 
@@ -13,11 +13,11 @@ impl Thread {
         Thread { pc: 0, stack: Stack::new(1024) }
     }
 
-    pub fn pc(&self) -> i32 {
+    pub fn pc(&self) -> i64 {
         self.pc
     }
 
-    pub fn set_pc(&mut self, pc: i32) {
+    pub fn set_pc(&mut self, pc: i64) {
         self.pc = pc;
     }
 
