@@ -1,4 +1,7 @@
+use std::rc::Rc;
+use std::cell::RefCell;
 use super::{local_vars::LocalVars, operand_stack::OperandStack};
+use super::super::rtda::Thread;
 
 /// Stack Frame
 pub struct Frame {
@@ -6,15 +9,17 @@ pub struct Frame {
     local_vars: LocalVars,
     operand_stack: OperandStack,
     next_pc: i32, // The next instruction after the call
+    thread: Rc<RefCell<Thread>>,
 }
 
 impl Frame {
-    pub fn new(max_locals: usize, max_size: usize) -> Self {
+    pub fn new(thread: Rc<RefCell<Thread>>, max_locals: usize, max_size: usize) -> Self {
         Frame {
             lower: None,
             local_vars: LocalVars::new(max_locals),
             operand_stack: OperandStack::new(max_size),
             next_pc: 0,
+            thread,
         }
     }
 
@@ -36,5 +41,9 @@ impl Frame {
 
     pub fn get_next_pc(&self) -> i32 {
         self.next_pc
+    }
+
+    pub fn get_thread(&self) -> &Rc<RefCell<Thread>> {
+        &self.thread
     }
 }

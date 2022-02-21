@@ -1,3 +1,4 @@
+use std::rc::Rc;
 use super::local_vars::Slot;
 use super::object::Object;
 
@@ -61,12 +62,12 @@ impl OperandStack {
         f64::from_be_bytes(bytes)
     }
 
-    pub fn push_ref(&mut self, val: Option<Box<Object>>) {
+    pub fn push_ref(&mut self, val: Option<Rc<Object>>) {
         self.slots[self.size]._ref = val;
         self.size += 1;
     }
 
-    pub fn pop_ref(&mut self) -> Option<Box<Object>> {
+    pub fn pop_ref(&mut self) -> Option<Rc<Object>> {
         self.size -= 1;
         self.slots.remove(self.size)._ref
     }

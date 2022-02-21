@@ -22,6 +22,8 @@ pub use self::math::*;
 pub use self::stack::*;
 pub use self::stores::*;
 
+use std::rc::Rc;
+use std::cell::RefCell;
 use crate::classfile::MemberInfo;
 use crate::rtda::Thread;
 use self::bytecode_reader::BytecodeReader;
@@ -30,9 +32,9 @@ use self::factory::new_instruction;
 pub fn interpret(method_info: &MemberInfo) {
     match method_info.code_attribute() {
         Some(info) => {
-            let mut thread = Thread::new();
-            let frame = thread.new_frame(info.max_locals() as usize, info.max_stack() as usize);
-            thread.push_frame(frame);
+            let thread = Rc::new(RefCell::new(Thread::new()));
+            let frame = thread.borrow_mut().new_frame(Rc::clone(&thread), info.max_locals() as usize, info.max_stack() as usize);
+            thread.borrow_mut().push_frame(frame);
 
             _loop(thread, info.code());
         }
@@ -40,14 +42,14 @@ pub fn interpret(method_info: &MemberInfo) {
     }
 }
 
-fn _loop(mut thread: Thread, bytecode: Vec<u8>) {
-    let mut frame = thread.pop_frame();
+fn _loop(thread: Rc<RefCell<Thread>>, bytecode: Vec<u8>) {
+    let mut frame = thread.borrow_mut().pop_frame();
     let mut reader = BytecodeReader::default();
 
     loop {
         let mut f = frame.as_mut().unwrap();
         let pc = f.get_next_pc();
-        thread.set_pc(pc);
+        thread.borrow_mut().set_pc(pc);
 
         // Decode
         reader.reset(bytecode.clone(), pc as usize);
