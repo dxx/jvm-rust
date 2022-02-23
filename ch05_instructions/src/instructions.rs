@@ -59,8 +59,8 @@ fn _loop(thread: Rc<RefCell<Thread>>, bytecode: Vec<u8>) {
                 inst.execute(&mut f);
             },
             Err(err) => {
-                // println!("LocalVars: {:?}", f.get_local_vars());
-                // println!("OperandStack: {:?}", f.get_operand_stack());
+                println!("LocalVars: {:?}", f.get_local_vars());
+                println!("OperandStack: {:?}", f.get_operand_stack());
                 panic!("{}", err);
             }
         }

@@ -1,12 +1,13 @@
 use std::rc::Rc;
 use super::object::Object;
 
-#[derive(Default, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct Slot {
     pub num: i32,
     pub _ref: Option<Rc<Object>>,
 }
 
+#[derive(Debug)]
 pub struct LocalVars {
     slots: Vec<Slot>,
 }
