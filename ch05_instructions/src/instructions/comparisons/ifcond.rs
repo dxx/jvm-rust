@@ -16,7 +16,7 @@ impl Instruction for IFEQ {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let val = frame.get_operand_stack().pop_int();
         if val == 0 {
             branch(frame, self.offset);
@@ -34,7 +34,7 @@ impl Instruction for IFNE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let val = frame.get_operand_stack().pop_int();
         if val != 0 {
             branch(frame, self.offset);
@@ -52,7 +52,7 @@ impl Instruction for IFLT {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let val = frame.get_operand_stack().pop_int();
         if val < 0 {
             branch(frame, self.offset);
@@ -70,7 +70,7 @@ impl Instruction for IFLE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let val = frame.get_operand_stack().pop_int();
         if val <= 0 {
             branch(frame, self.offset);
@@ -88,7 +88,7 @@ impl Instruction for IFGT {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let val = frame.get_operand_stack().pop_int();
         if val > 0 {
             branch(frame, self.offset);
@@ -106,7 +106,7 @@ impl Instruction for IFGE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let val = frame.get_operand_stack().pop_int();
         if val >= 0 {
             branch(frame, self.offset);

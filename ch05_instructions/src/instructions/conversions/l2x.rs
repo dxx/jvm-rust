@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct L2D;
 
 impl Instruction for L2D {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let l = stack.pop_long();
         let d = l as f64;
@@ -21,7 +21,7 @@ impl Instruction for L2D {
 pub struct L2F;
 
 impl Instruction for L2F {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let l = stack.pop_long();
         let f = l as f32;
@@ -34,7 +34,7 @@ impl Instruction for L2F {
 pub struct L2I;
 
 impl Instruction for L2I {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let l = stack.pop_long();
         let i = l as i32;

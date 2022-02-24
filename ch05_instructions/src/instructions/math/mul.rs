@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct DMUL;
 
 impl Instruction for DMUL {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_double();
         let v1 = stack.pop_double();
@@ -22,7 +22,7 @@ impl Instruction for DMUL {
 pub struct FMUL;
 
 impl Instruction for FMUL {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_float();
         let v1 = stack.pop_float();
@@ -36,7 +36,7 @@ impl Instruction for FMUL {
 pub struct IMUL;
 
 impl Instruction for IMUL {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
@@ -50,7 +50,7 @@ impl Instruction for IMUL {
 pub struct LMUL;
 
 impl Instruction for LMUL {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_long();
         let v1 = stack.pop_long();

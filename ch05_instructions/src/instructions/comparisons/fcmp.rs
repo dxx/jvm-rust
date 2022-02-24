@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct FCMPG;
 
 impl Instruction for FCMPG {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fcmp(frame, true);
     }
 }
@@ -17,7 +17,7 @@ impl Instruction for FCMPG {
 pub struct FCMPL;
 
 impl Instruction for FCMPL {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fcmp(frame, false);
     }
 }

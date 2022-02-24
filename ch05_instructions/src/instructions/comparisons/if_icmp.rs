@@ -16,7 +16,7 @@ impl Instruction for IF_ICMPEQ {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let (val1, val2)= _icmp_pop(frame);
         if val1 == val2 {
             branch(frame, self.offset);
@@ -34,7 +34,7 @@ impl Instruction for IF_ICMPNE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let (val1, val2)= _icmp_pop(frame);
         if val1 != val2 {
             branch(frame, self.offset);
@@ -52,7 +52,7 @@ impl Instruction for IF_ICMPLT {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let (val1, val2)= _icmp_pop(frame);
         if val1 < val2 {
             branch(frame, self.offset);
@@ -70,7 +70,7 @@ impl Instruction for IF_ICMPLE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let (val1, val2)= _icmp_pop(frame);
         if val1 <= val2 {
             branch(frame, self.offset);
@@ -88,7 +88,7 @@ impl Instruction for IF_ICMPGT {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let (val1, val2)= _icmp_pop(frame);
         if val1 > val2 {
             branch(frame, self.offset);
@@ -106,7 +106,7 @@ impl Instruction for IF_ICMPGE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let (val1, val2)= _icmp_pop(frame);
         if val1 >= val2 {
             branch(frame, self.offset);

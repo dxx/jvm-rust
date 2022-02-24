@@ -13,7 +13,7 @@ impl Instruction for POP {
     ///             |
     ///             V
     /// [...][c][b]
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         frame.get_operand_stack().pop_slot();
     }
 }
@@ -28,7 +28,7 @@ impl Instruction for POP2 {
     ///          |  |
     ///          V  V
     /// [...][c]
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         stack.pop_slot();
         stack.pop_slot();

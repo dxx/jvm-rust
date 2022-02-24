@@ -7,7 +7,7 @@ use super::super::bytecode_reader::BytecodeReader;
 /// Store long into local variable
 #[derive(Default, Debug)]
 pub struct LSTORE {
-    index: usize,
+    pub index: usize,
 }
 
 impl Instruction for LSTORE {
@@ -15,7 +15,7 @@ impl Instruction for LSTORE {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _lstore(frame, self.index);
     }
 }
@@ -24,7 +24,7 @@ impl Instruction for LSTORE {
 pub struct LSTORE_0;
 
 impl Instruction for LSTORE_0 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _lstore(frame, 0);
     }
 }
@@ -33,7 +33,7 @@ impl Instruction for LSTORE_0 {
 pub struct LSTORE_1;
 
 impl Instruction for LSTORE_1 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _lstore(frame, 1);
     }
 }
@@ -42,7 +42,7 @@ impl Instruction for LSTORE_1 {
 pub struct LSTORE_2;
 
 impl Instruction for LSTORE_2 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _lstore(frame, 2);
     }
 }
@@ -51,7 +51,7 @@ impl Instruction for LSTORE_2 {
 pub struct LSTORE_3;
 
 impl Instruction for LSTORE_3 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _lstore(frame, 3);
     }
 }

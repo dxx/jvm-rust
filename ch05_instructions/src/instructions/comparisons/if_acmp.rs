@@ -16,7 +16,7 @@ impl Instruction for IF_ACMPEQ {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         if _acmp(frame) {
             branch(frame, self.offset);
         }
@@ -33,7 +33,7 @@ impl Instruction for IF_ACMPNE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         if !_acmp(frame) {
             branch(frame, self.offset);
         }

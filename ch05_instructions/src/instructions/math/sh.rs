@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct ISHL;
 
 impl Instruction for ISHL {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
@@ -23,7 +23,7 @@ impl Instruction for ISHL {
 pub struct ISHR;
 
 impl Instruction for ISHR {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
@@ -38,7 +38,7 @@ impl Instruction for ISHR {
 pub struct IUSHR;
 
 impl Instruction for IUSHR {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
@@ -53,7 +53,7 @@ impl Instruction for IUSHR {
 pub struct LSHL;
 
 impl Instruction for LSHL {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_long();
@@ -68,7 +68,7 @@ impl Instruction for LSHL {
 pub struct LSHR;
 
 impl Instruction for LSHR {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_long();
@@ -83,7 +83,7 @@ impl Instruction for LSHR {
 pub struct LUSHR;
 
 impl Instruction for LUSHR {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_long();

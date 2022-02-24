@@ -16,7 +16,7 @@ impl Instruction for GOTO_W {
         self.offset = reader.read_i32() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         branch(frame, self.offset);
     }
 }

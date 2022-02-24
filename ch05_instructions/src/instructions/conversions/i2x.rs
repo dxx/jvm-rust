@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct I2B;
 
 impl Instruction for I2B {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let i = stack.pop_int();
         let b = i as i8 as i32;
@@ -21,7 +21,7 @@ impl Instruction for I2B {
 pub struct I2C;
 
 impl Instruction for I2C {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let i = stack.pop_int();
         let c = i as u16 as i32;
@@ -34,7 +34,7 @@ impl Instruction for I2C {
 pub struct I2S;
 
 impl Instruction for I2S {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let i = stack.pop_int();
         let s = i as i16 as i32;
@@ -47,7 +47,7 @@ impl Instruction for I2S {
 pub struct I2L;
 
 impl Instruction for I2L {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let i = stack.pop_int();
         let l = i as i64;
@@ -60,7 +60,7 @@ impl Instruction for I2L {
 pub struct I2F;
 
 impl Instruction for I2F {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let i = stack.pop_int();
         let f = i as f32;
@@ -73,7 +73,7 @@ impl Instruction for I2F {
 pub struct I2D;
 
 impl Instruction for I2D {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let i = stack.pop_int();
         let d = i as f64;

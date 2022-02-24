@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct IXOR;
 
 impl Instruction for IXOR {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v1 = stack.pop_int();
         let v2 = stack.pop_int();
@@ -22,7 +22,7 @@ impl Instruction for IXOR {
 pub struct LXOR;
 
 impl Instruction for LXOR {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v1 = stack.pop_long();
         let v2 = stack.pop_long();

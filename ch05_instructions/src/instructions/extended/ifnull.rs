@@ -16,7 +16,7 @@ impl Instruction for IFNULL {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         if frame.get_operand_stack().pop_ref() == None {
             branch(frame, self.offset);
         }
@@ -34,7 +34,7 @@ impl Instruction for IFNONNULL {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         if frame.get_operand_stack().pop_ref() != None {
             branch(frame, self.offset);
         }

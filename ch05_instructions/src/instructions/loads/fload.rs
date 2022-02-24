@@ -7,7 +7,7 @@ use super::super::bytecode_reader::BytecodeReader;
 /// Load float from local variable
 #[derive(Default, Debug)]
 pub struct FLOAD {
-    index: usize,
+    pub index: usize,
 }
 
 impl Instruction for FLOAD {
@@ -15,7 +15,7 @@ impl Instruction for FLOAD {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fload(frame, self.index);
     }
 }
@@ -24,7 +24,7 @@ impl Instruction for FLOAD {
 pub struct FLOAD_0;
 
 impl Instruction for FLOAD_0 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fload(frame, 0);
     }
 }
@@ -33,7 +33,7 @@ impl Instruction for FLOAD_0 {
 pub struct FLOAD_1;
 
 impl Instruction for FLOAD_1 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fload(frame, 1);
     }
 }
@@ -42,7 +42,7 @@ impl Instruction for FLOAD_1 {
 pub struct FLOAD_2;
 
 impl Instruction for FLOAD_2 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fload(frame, 2);
     }
 }
@@ -51,7 +51,7 @@ impl Instruction for FLOAD_2 {
 pub struct FLOAD_3;
 
 impl Instruction for FLOAD_3 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fload(frame, 3);
     }
 }

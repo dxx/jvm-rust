@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct DREM;
 
 impl Instruction for DREM {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_double();
         let v1 = stack.pop_double();
@@ -22,7 +22,7 @@ impl Instruction for DREM {
 pub struct FREM;
 
 impl Instruction for FREM {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_float();
         let v1 = stack.pop_float();
@@ -36,7 +36,7 @@ impl Instruction for FREM {
 pub struct IREM;
 
 impl Instruction for IREM {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
@@ -53,7 +53,7 @@ impl Instruction for IREM {
 pub struct LREM;
 
 impl Instruction for LREM {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_long();
         let v1 = stack.pop_long();

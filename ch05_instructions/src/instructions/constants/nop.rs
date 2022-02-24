@@ -5,7 +5,7 @@ use super::super::super::rtda::Frame;
 pub struct NOP;
 
 impl Instruction for NOP {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         // Really do nothing
     }
 }

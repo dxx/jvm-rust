@@ -9,35 +9,5 @@ pub trait Instruction: Debug {
         // Nothing to do
     }
     
-    fn execute(&self, frame: &mut Frame);
-}
-
-#[derive(Default, Debug)]
-pub struct Index8Instruction {
-    pub index: u32,
-}
-
-impl Instruction for Index8Instruction {
-    fn fetch_operands(&mut self, reader: &mut BytecodeReader) {
-        self.index = reader.read_u8() as u32;
-    }
-
-    fn execute(&self, frame: &mut Frame) {
-        // Nothing to do
-    }
-}
-
-#[derive(Default, Debug)]
-pub struct Index16Instruction {
-    pub index: u32,
-}
-
-impl Instruction for Index16Instruction {
-    fn fetch_operands(&mut self, reader: &mut BytecodeReader) {
-        self.index = reader.read_u16() as u32;
-    }
-
-    fn execute(&self, frame: &mut Frame) {
-        // Nothing to do
-    }
+    fn execute(&mut self, frame: &mut Frame);
 }

@@ -16,7 +16,7 @@ impl Instruction for GOTO {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         branch(frame, self.offset);
     }
 }

@@ -9,7 +9,7 @@ use super::super::instruction::Instruction;
 pub struct DDIV;
 
 impl Instruction for DDIV {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_double();
         let v1 = stack.pop_double();
@@ -23,7 +23,7 @@ impl Instruction for DDIV {
 pub struct FDIV;
 
 impl Instruction for FDIV {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_float();
         let v1 = stack.pop_float();
@@ -37,7 +37,7 @@ impl Instruction for FDIV {
 pub struct IDIV;
 
 impl Instruction for IDIV {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
@@ -54,7 +54,7 @@ impl Instruction for IDIV {
 pub struct LDIV;
 
 impl Instruction for LDIV {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_long();
         let v1 = stack.pop_long();

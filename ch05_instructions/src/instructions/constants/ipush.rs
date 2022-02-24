@@ -15,7 +15,7 @@ impl Instruction for BIPUSH {
         self.val = reader.read_i8();
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         frame.get_operand_stack().push_int(self.val as i32);
     }
 }
@@ -31,7 +31,7 @@ impl Instruction for SIPUSH {
         self.val = reader.read_i16();
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         frame.get_operand_stack().push_int(self.val as i32);
     }
 }

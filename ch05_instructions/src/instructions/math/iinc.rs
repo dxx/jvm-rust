@@ -17,7 +17,7 @@ impl Instruction for IINC {
         self._const = reader.read_i8() as i32;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let local_vars = frame.get_local_vars();
         let val = local_vars.get_int(self.index);
         let val = val + self._const;

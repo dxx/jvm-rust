@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct D2F;
 
 impl Instruction for D2F {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let d = stack.pop_double();
         let f = d as f32;
@@ -21,7 +21,7 @@ impl Instruction for D2F {
 pub struct D2I;
 
 impl Instruction for D2I {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let d = stack.pop_double();
         let i = d as i32;
@@ -34,7 +34,7 @@ impl Instruction for D2I {
 pub struct D2L;
 
 impl Instruction for D2L {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let d = stack.pop_double();
         let l = d as i64;

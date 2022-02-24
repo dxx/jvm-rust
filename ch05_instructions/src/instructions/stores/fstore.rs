@@ -7,7 +7,7 @@ use super::super::bytecode_reader::BytecodeReader;
 /// Store float into local variable
 #[derive(Default, Debug)]
 pub struct FSTORE {
-    index: usize,
+    pub index: usize,
 }
 
 impl Instruction for FSTORE {
@@ -15,7 +15,7 @@ impl Instruction for FSTORE {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fstore(frame, self.index);
     }
 }
@@ -24,7 +24,7 @@ impl Instruction for FSTORE {
 pub struct FSTORE_0;
 
 impl Instruction for FSTORE_0 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fstore(frame, 0);
     }
 }
@@ -33,7 +33,7 @@ impl Instruction for FSTORE_0 {
 pub struct FSTORE_1;
 
 impl Instruction for FSTORE_1 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fstore(frame, 1);
     }
 }
@@ -42,7 +42,7 @@ impl Instruction for FSTORE_1 {
 pub struct FSTORE_2;
 
 impl Instruction for FSTORE_2 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fstore(frame, 2);
     }
 }
@@ -51,7 +51,7 @@ impl Instruction for FSTORE_2 {
 pub struct FSTORE_3;
 
 impl Instruction for FSTORE_3 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _fstore(frame, 3);
     }
 }

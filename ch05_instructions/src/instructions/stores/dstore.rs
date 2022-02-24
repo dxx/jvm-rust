@@ -7,7 +7,7 @@ use super::super::bytecode_reader::BytecodeReader;
 /// Store double into local variable
 #[derive(Default, Debug)]
 pub struct DSTORE {
-    index: usize,
+    pub index: usize,
 }
 
 impl Instruction for DSTORE {
@@ -15,7 +15,7 @@ impl Instruction for DSTORE {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _dstore(frame, self.index);
     }
 }
@@ -24,7 +24,7 @@ impl Instruction for DSTORE {
 pub struct DSTORE_0;
 
 impl Instruction for DSTORE_0 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _dstore(frame, 0);
     }
 }
@@ -33,7 +33,7 @@ impl Instruction for DSTORE_0 {
 pub struct DSTORE_1;
 
 impl Instruction for DSTORE_1 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _dstore(frame, 1);
     }
 }
@@ -42,7 +42,7 @@ impl Instruction for DSTORE_1 {
 pub struct DSTORE_2;
 
 impl Instruction for DSTORE_2 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _dstore(frame, 2);
     }
 }
@@ -51,7 +51,7 @@ impl Instruction for DSTORE_2 {
 pub struct DSTORE_3;
 
 impl Instruction for DSTORE_3 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _dstore(frame, 3);
     }
 }

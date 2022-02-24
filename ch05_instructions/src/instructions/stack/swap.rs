@@ -14,7 +14,7 @@ impl Instruction for SWAP {
     ///           /\
     ///          V  V
     /// [...][c][a][b]
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let slot1 = stack.pop_slot();
         let slot2 = stack .pop_slot();

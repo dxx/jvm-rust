@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct DCMPG;
 
 impl Instruction for DCMPG {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _dcmp(frame, true);
     }
 }
@@ -17,7 +17,7 @@ impl Instruction for DCMPG {
 pub struct DCMPL;
 
 impl Instruction for DCMPL {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _dcmp(frame, false);
     }
 }

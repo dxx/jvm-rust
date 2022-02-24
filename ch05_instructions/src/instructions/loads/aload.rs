@@ -7,7 +7,7 @@ use super::super::bytecode_reader::BytecodeReader;
 /// Load reference from local variable
 #[derive(Default, Debug)]
 pub struct ALOAD {
-    index: usize,
+    pub index: usize,
 }
 
 impl Instruction for ALOAD {
@@ -15,7 +15,7 @@ impl Instruction for ALOAD {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _aload(frame, self.index);
     }
 }
@@ -24,7 +24,7 @@ impl Instruction for ALOAD {
 pub struct ALOAD_0;
 
 impl Instruction for ALOAD_0 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _aload(frame, 0);
     }
 }
@@ -33,7 +33,7 @@ impl Instruction for ALOAD_0 {
 pub struct ALOAD_1;
 
 impl Instruction for ALOAD_1 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _aload(frame, 1);
     }
 }
@@ -42,7 +42,7 @@ impl Instruction for ALOAD_1 {
 pub struct ALOAD_2;
 
 impl Instruction for ALOAD_2 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _aload(frame, 2);
     }
 }
@@ -51,7 +51,7 @@ impl Instruction for ALOAD_2 {
 pub struct ALOAD_3;
 
 impl Instruction for ALOAD_3 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _aload(frame, 3);
     }
 }

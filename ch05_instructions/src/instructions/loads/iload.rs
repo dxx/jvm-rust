@@ -7,7 +7,7 @@ use super::super::bytecode_reader::BytecodeReader;
 /// Load int from local variable
 #[derive(Default, Debug)]
 pub struct ILOAD {
-    index: usize,
+    pub index: usize,
 }
 
 impl Instruction for ILOAD {
@@ -15,7 +15,7 @@ impl Instruction for ILOAD {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _iload(frame, self.index);
     }
 }
@@ -24,7 +24,7 @@ impl Instruction for ILOAD {
 pub struct ILOAD_0;
 
 impl Instruction for ILOAD_0 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _iload(frame, 0);
     }
 }
@@ -33,7 +33,7 @@ impl Instruction for ILOAD_0 {
 pub struct ILOAD_1;
 
 impl Instruction for ILOAD_1 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _iload(frame, 1);
     }
 }
@@ -42,7 +42,7 @@ impl Instruction for ILOAD_1 {
 pub struct ILOAD_2;
 
 impl Instruction for ILOAD_2 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _iload(frame, 2);
     }
 }
@@ -51,7 +51,7 @@ impl Instruction for ILOAD_2 {
 pub struct ILOAD_3;
 
 impl Instruction for ILOAD_3 {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         _iload(frame, 3);
     }
 }

@@ -8,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct DNEG;
 
 impl Instruction for DNEG {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let val = stack.pop_double();
         stack.push_double(-val);
@@ -20,7 +20,7 @@ impl Instruction for DNEG {
 pub struct FNEG;
 
 impl Instruction for FNEG {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let val = stack.pop_float();
         stack.push_float(-val);
@@ -32,7 +32,7 @@ impl Instruction for FNEG {
 pub struct INEG;
 
 impl Instruction for INEG {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let val = stack.pop_int();
         stack.push_int(-val);
@@ -44,7 +44,7 @@ impl Instruction for INEG {
 pub struct LNEG;
 
 impl Instruction for LNEG {
-    fn execute(&self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.get_operand_stack();
         let val = stack.pop_long();
         stack.push_long(-val);
