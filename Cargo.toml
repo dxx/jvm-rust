@@ -11,6 +11,7 @@ members = [
     "ch03_classfile",
     "ch04_rtda",
     "ch05_instructions",
+    "ch06_rtda_heap",
 ]
 
 [dependencies]

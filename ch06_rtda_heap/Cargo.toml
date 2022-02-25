@@ -1,0 +1,9 @@
+[package]
+name = "ch06_rtda_heap"
+version = "0.1.0"
+authors = ["dxx <dx1898@foxmail.com>"]
+edition = "2021"
+
+[dependencies]
+getopts = "0.2"
+zip = { version = "0.5", default-features = false, features = ["deflate"] }
