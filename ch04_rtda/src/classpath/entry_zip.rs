@@ -1,8 +1,8 @@
+use crate::classpath::entry::{Entry, absolute};
 use std::path::{Path, MAIN_SEPARATOR};
 use std::fs::File;
 use std::io::Read;
 use std::fmt;
-use super::{Entry, absolute};
 
 /// ZIP 或 JAR 文件形式的类路径
 pub struct ZipEntry {
