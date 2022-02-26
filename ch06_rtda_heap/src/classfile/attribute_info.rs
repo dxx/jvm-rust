@@ -1,21 +1,3 @@
-/// attribute_info {
-///     u2 attribute_name_index;
-///     u4 attribute_length;
-///     u1 info[attribute_length];
-/// }
-
-use super::{ClassReader, ConstantPool};
-use std::rc::Rc;
-use std::cell::RefCell;
-use super::attribute_info::attr_unparsed::UnparsedAttribute;
-use super::attribute_info::attr_code::CodeAttribute;
-use super::attribute_info::attr_constant_value::ConstantValueAttribute;
-use super::attribute_info::attr_markers::{DeprecatedAttribute, SyntheticAttribute};
-use super::attribute_info::attr_exceptions::ExceptionsAttribute;
-use super::attribute_info::attr_line_number_table::LineNumberTableAttribute;
-use super::attribute_info::attr_local_variable_table::LocalVariableTableAttribute;
-use super::attribute_info::attr_source_file::SourceFileAttribute;
-
 mod attr_bootstrap_methods;
 pub mod attr_code;
 mod attr_constant_value;
@@ -29,6 +11,24 @@ mod attr_markers;
 mod attr_signature;
 mod attr_source_file;
 mod attr_unparsed;
+
+/// attribute_info {
+///     u2 attribute_name_index;
+///     u4 attribute_length;
+///     u1 info[attribute_length];
+/// }
+
+use crate::classfile::{ClassReader, ConstantPool};
+use crate::classfile::attribute_info::attr_unparsed::UnparsedAttribute;
+use crate::classfile::attribute_info::attr_code::CodeAttribute;
+use crate::classfile::attribute_info::attr_constant_value::ConstantValueAttribute;
+use crate::classfile::attribute_info::attr_markers::{DeprecatedAttribute, SyntheticAttribute};
+use crate::classfile::attribute_info::attr_exceptions::ExceptionsAttribute;
+use crate::classfile::attribute_info::attr_line_number_table::LineNumberTableAttribute;
+use crate::classfile::attribute_info::attr_local_variable_table::LocalVariableTableAttribute;
+use crate::classfile::attribute_info::attr_source_file::SourceFileAttribute;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 pub trait AttributeInfo {
     fn read_info(&mut self, reader: &mut ClassReader);

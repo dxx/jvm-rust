@@ -7,11 +7,10 @@ mod classfile;
 mod rtda;
 mod instructions;
 
-use classfile::MemberInfo;
-
 use crate::cmd::{parse_cmd, Cmd};
-use crate::classpath::{Classpath, Entry};
+use crate::classpath::{Classpath, entry::Entry};
 use crate::classfile::ClassFile;
+use crate::classfile::member_info::MemberInfo;
 use crate::instructions::interpret;
 
 fn main() {
