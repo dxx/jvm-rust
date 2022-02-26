@@ -1,6 +1,12 @@
-use std::rc::Rc;
-use std::cell::RefCell;
-use super::ClassReader;
+mod cp_class;
+mod cp_utf8;
+mod cp_string;
+mod cp_numeric;
+mod cp_name_and_type;
+mod cp_invoke_dynamic;
+mod cp_member_ref;
+
+use crate::classfile::ClassReader;
 use self::cp_utf8::ConstantUtf8Info;
 use self::cp_string::ConstantStringInfo;
 use self::cp_class::ConstantClassInfo;
@@ -9,14 +15,8 @@ use self::cp_numeric::{ConstantIntegerInfo, ConstantFloatInfo, ConstantLongInfo,
 use self::cp_name_and_type::ConstantNameAndTypeInfo;
 use self::cp_invoke_dynamic::{ConstantMethodHandleInfo, ConstantMethodTypeInfo, ConstantInvokeDynamicInfo};
 use std::collections::HashMap;
-
-mod cp_class;
-mod cp_utf8;
-mod cp_string;
-mod cp_numeric;
-mod cp_name_and_type;
-mod cp_invoke_dynamic;
-mod cp_member_ref;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 // pub type ConstantPool = Vec<Option<Box<dyn ConstantInfo>>>;
 

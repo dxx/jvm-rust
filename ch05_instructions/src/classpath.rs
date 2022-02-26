@@ -1,15 +1,11 @@
-mod entry;
-mod entry_composite;
-mod entry_dir;
-mod entry_wildcard;
-mod entry_zip;
+pub mod entry;
+pub mod entry_composite;
+pub mod entry_dir;
+pub mod entry_wildcard;
+pub mod entry_zip;
 
-pub use self::entry::*;
-pub use self::entry_composite::*;
-pub use self::entry_dir::*;
-pub use self::entry_wildcard::*;
-pub use self::entry_zip::*;
-
+use crate::classpath::entry::{Entry, new_entry};
+use crate::classpath::entry_wildcard::WildcardEntry;
 use std::fmt;
 use std::path::{Path, MAIN_SEPARATOR};
 use std::env;

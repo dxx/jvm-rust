@@ -1,5 +1,7 @@
+use crate::classpath::entry::{
+    Entry, new_entry, PATH_SEPARATOR
+};
 use std::fmt;
-use super::{Entry, new_entry, PATH_SEPARATOR};
 
 /// 由多个 Entry 组成
 pub struct CompositeEntry {

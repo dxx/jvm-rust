@@ -13,7 +13,11 @@
 ///     attribute_info attributes[attributes_count];
 /// }
 
-use super::{ConstantPool, ClassReader, AttributeInfo, read_attributes};
+use crate::classfile::{
+    ConstantPool,
+    ClassReader,
+    AttributeInfo, read_attributes
+};
 use super::attribute_info::attr_code::CodeAttribute;
 use std::rc::Rc;
 use std::cell::RefCell;

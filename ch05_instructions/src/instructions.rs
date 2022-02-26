@@ -15,7 +15,7 @@ pub use self::base::*;
 
 use std::rc::Rc;
 use std::cell::RefCell;
-use crate::classfile::MemberInfo;
+use crate::classfile::member_info::MemberInfo;
 use crate::rtda::Thread;
 use self::bytecode_reader::BytecodeReader;
 use self::factory::new_instruction;
