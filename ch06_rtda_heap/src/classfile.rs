@@ -32,14 +32,14 @@ use std::rc::Rc;
 use std::cell::RefCell;
 
 pub struct ClassFile {
-    /// magic: u32,
-    minor_version: u16, /// 次版本号
-    major_version: u16, /// 主版本号
-    constant_pool: Rc<RefCell<ConstantPool>>, /// 常量池
-    access_flags: u16, /// 访问标志
-    this_class: u16, /// 类索引
-    super_class: u16, /// 超类索引
-    interfaces: Vec<u16>, /// 接口索引表
+    // magic: u32,
+    minor_version: u16, // 次版本号
+    major_version: u16, // 主版本号
+    constant_pool: Rc<RefCell<ConstantPool>>, // 常量池
+    access_flags: u16, // 访问标志
+    this_class: u16, // 类索引
+    super_class: u16, // 超类索引
+    interfaces: Vec<u16>, // 接口索引表
     fields: Vec<MemberInfo>,
     methods: Vec<MemberInfo>,
     attributes: Vec<Box<dyn AttributeInfo>>,

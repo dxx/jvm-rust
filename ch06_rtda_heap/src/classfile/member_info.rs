@@ -16,16 +16,18 @@
 use crate::classfile::{
     ConstantPool,
     ClassReader,
-    AttributeInfo, read_attributes
+    AttributeInfo,
+    read_attributes
 };
 use super::attribute_info::attr_code::CodeAttribute;
+use super::attribute_info::attr_constant_value::ConstantValueAttribute;
 use std::rc::Rc;
 use std::cell::RefCell;
 
 pub struct MemberInfo {
-    constant_pool: Rc<RefCell<ConstantPool>>, /// 保存常量池
-    access_flags: u16, /// 成员访问标志
-    name_index: u16, /// 成员名称索引
+    constant_pool: Rc<RefCell<ConstantPool>>, // 保存常量池
+    access_flags: u16, // 成员访问标志
+    name_index: u16, // 成员名称索引
     descriptor_index: u16,
     attributes: Vec<Box<dyn AttributeInfo>>,
 }
@@ -65,6 +67,15 @@ impl MemberInfo {
         for attr in &self.attributes {
             if attr.name() == "Code" {
                 return attr.as_any().downcast_ref::<CodeAttribute>();
+            }
+        }
+        None
+    }
+
+    pub fn constant_value_attribute(&self) -> Option<&ConstantValueAttribute> {
+        for attr in &self.attributes {
+            if attr.name() == "Code" {
+                return attr.as_any().downcast_ref::<ConstantValueAttribute>();
             }
         }
         None

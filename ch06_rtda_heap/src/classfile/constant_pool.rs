@@ -18,7 +18,7 @@ use std::collections::HashMap;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-// pub type ConstantPool = Vec<Option<Box<dyn ConstantInfo>>>;
+/// pub type ConstantPool = Vec<Option<Box<dyn ConstantInfo>>>;
 
 #[derive(Default)]
 pub struct ConstantPool {

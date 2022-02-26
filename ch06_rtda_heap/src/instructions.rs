@@ -25,7 +25,7 @@ pub fn interpret(method_info: &MemberInfo) {
         Some(info) => {
             let thread = Rc::new(RefCell::new(Thread::new()));
             let frame = thread.borrow_mut().new_frame(
-                Rc::clone(&thread),
+                thread.clone(),
                 info.max_locals() as usize,
                 info.max_stack() as usize
             );

@@ -1,6 +1,6 @@
 mod attr_bootstrap_methods;
 pub mod attr_code;
-mod attr_constant_value;
+pub mod attr_constant_value;
 mod attr_enclosing_method;
 mod attr_exceptions;
 mod attr_inner_classes;

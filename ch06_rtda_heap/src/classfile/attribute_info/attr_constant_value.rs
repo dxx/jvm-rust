@@ -16,7 +16,17 @@ impl AttributeInfo for ConstantValueAttribute {
         self.constant_value_index = reader.read_u16();
     }
     
+    fn name(&self) -> &str {
+        return "ConstantValue";
+    }
+
     fn as_any(&self) -> &dyn std::any::Any {
         self
+    }
+}
+
+impl ConstantValueAttribute {
+    pub fn constant_value_index(&self) -> u16 {
+        self.constant_value_index
     }
 }
