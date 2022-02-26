@@ -1,7 +1,7 @@
+use super::{local_vars::LocalVars, operand_stack::OperandStack};
+use super::thread::Thread;
 use std::rc::Rc;
 use std::cell::RefCell;
-use super::{local_vars::LocalVars, operand_stack::OperandStack};
-use super::super::rtda::Thread;
 
 /// Stack Frame
 pub struct Frame {

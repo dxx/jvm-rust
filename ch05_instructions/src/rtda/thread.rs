@@ -1,7 +1,7 @@
-use std::rc::Rc;
-use std::cell::RefCell;
 use super::jvm_stack::Stack;
 use super::frame::Frame;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 pub struct Thread {
     pc: i64,
