@@ -1,5 +1,5 @@
-use std::rc::Rc;
 use super::object::Object;
+use std::rc::Rc;
 
 #[derive(Default, Debug, Clone)]
 pub struct Slot {
