@@ -6,7 +6,7 @@ mod classpath;
 mod classfile;
 
 use crate::cmd::{parse_cmd, Cmd};
-use crate::classpath::{Classpath, Entry};
+use crate::classpath::{Classpath, entry::Entry};
 use crate::classfile::ClassFile;
 
 fn main() {

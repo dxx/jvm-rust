@@ -1,6 +1,11 @@
+use crate::classpath::{
+    entry_dir::DirEntry,
+    entry_composite::CompositeEntry,
+    entry_zip::ZipEntry,
+    entry_wildcard::WildcardEntry
+};
 use std::path::Path;
 use std::fmt;
-use super::{DirEntry, CompositeEntry, ZipEntry, WildcardEntry};
 
 #[cfg(windows)]
 pub const PATH_SEPARATOR: char = ';';

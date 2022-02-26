@@ -1,8 +1,8 @@
+use crate::classpath::{entry::Entry, entry::absolute};
 use std::path::Path;
 use std::fs::File;
 use std::io::Read;
 use std::fmt;
-use super::{Entry, absolute};
 
 /// 目录形式的类路径
 pub struct DirEntry {
