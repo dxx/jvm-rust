@@ -2,7 +2,7 @@ mod cmd;
 mod classpath;
 
 use crate::cmd::{parse_cmd, Cmd};
-use crate::classpath::{Classpath, Entry};
+use crate::classpath::{Classpath, entry::Entry};
 
 fn main() {
     let cmd = parse_cmd();
