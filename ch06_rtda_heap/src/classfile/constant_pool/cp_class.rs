@@ -21,6 +21,10 @@ impl ConstantInfo for ConstantClassInfo {
     fn tag(&self) -> u8 {
         super::CONSTANT_CLASS
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl ConstantClassInfo {

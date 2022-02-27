@@ -18,8 +18,13 @@ impl ConstantInfo for ConstantUtf8Info {
         let bytes = reader.read_bytes(len);
         self.str = self.decode_m_utf8(bytes);
     }
+    
     fn tag(&self) -> u8 {
         super::CONSTANT_UTF8
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 
 }

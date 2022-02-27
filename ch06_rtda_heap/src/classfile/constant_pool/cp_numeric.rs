@@ -18,6 +18,10 @@ impl ConstantInfo for ConstantIntegerInfo {
     fn tag(&self) -> u8 {
         super::CONSTANT_INTEGER
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl ConstantIntegerInfo {
@@ -43,6 +47,10 @@ impl ConstantInfo for ConstantFloatInfo {
 
     fn tag(&self) -> u8 {
         super::CONSTANT_FLOAT
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -71,6 +79,10 @@ impl ConstantInfo for ConstantLongInfo {
     fn tag(&self) -> u8 {
         super::CONSTANT_LONG
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl ConstantLongInfo {
@@ -97,6 +109,10 @@ impl ConstantInfo for ConstantDoubleInfo {
 
     fn tag(&self) -> u8 {
         super::CONSTANT_DOUBLE
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 

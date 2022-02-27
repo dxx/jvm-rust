@@ -30,6 +30,10 @@ impl ConstantInfo for ConstantFieldRefInfo {
     fn tag(&self) -> u8 {
         super::CONSTANT_FIELD_REF
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl ConstantFieldRefInfo {
@@ -37,6 +41,16 @@ impl ConstantFieldRefInfo {
         ConstantFieldRefInfo {
             member_info: ConstantMemberRefInfo::new(cp),
         }
+    }
+
+    pub fn class_name(&self) -> String {
+        self.member_info.constant_pool.borrow().
+        get_class_name(self.member_info.class_index)
+    }
+
+    pub fn name_and_descriptor(&self) -> (String, String) {
+        self.member_info.constant_pool.borrow().
+        get_name_and_type(self.member_info.name_and_type_index as usize)
     }
 }
 
@@ -52,6 +66,10 @@ impl ConstantInfo for ConstantMethodRefInfo {
     fn tag(&self) -> u8 {
         super::CONSTANT_METHOD_REF
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl ConstantMethodRefInfo {
@@ -59,6 +77,16 @@ impl ConstantMethodRefInfo {
         ConstantMethodRefInfo {
             member_info: ConstantMemberRefInfo::new(cp),
         }
+    }
+
+    pub fn class_name(&self) -> String {
+        self.member_info.constant_pool.borrow().
+        get_class_name(self.member_info.class_index)
+    }
+
+    pub fn name_and_descriptor(&self) -> (String, String) {
+        self.member_info.constant_pool.borrow().
+        get_name_and_type(self.member_info.name_and_type_index as usize)
     }
 }
 
@@ -74,6 +102,10 @@ impl ConstantInfo for ConstantInterfaceMethodRefInfo {
     fn tag(&self) -> u8 {
         super::CONSTANT_INTERFACE_METHOD_REF
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl ConstantInterfaceMethodRefInfo {
@@ -81,6 +113,16 @@ impl ConstantInterfaceMethodRefInfo {
         ConstantInterfaceMethodRefInfo {
             member_info: ConstantMemberRefInfo::new(cp),
         }
+    }
+
+    pub fn class_name(&self) -> String {
+        self.member_info.constant_pool.borrow().
+        get_class_name(self.member_info.class_index)
+    }
+
+    pub fn name_and_descriptor(&self) -> (String, String) {
+        self.member_info.constant_pool.borrow().
+        get_name_and_type(self.member_info.name_and_type_index as usize)
     }
 }
 

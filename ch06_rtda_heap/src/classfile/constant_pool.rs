@@ -1,17 +1,17 @@
-mod cp_class;
+pub mod cp_class;
 mod cp_utf8;
-mod cp_string;
-mod cp_numeric;
 mod cp_name_and_type;
 mod cp_invoke_dynamic;
-mod cp_member_ref;
+pub mod cp_member_ref;
+pub mod cp_numeric;
+pub mod cp_string;
 
 use crate::classfile::ClassReader;
-use self::cp_utf8::ConstantUtf8Info;
-use self::cp_string::ConstantStringInfo;
 use self::cp_class::ConstantClassInfo;
+use self::cp_utf8::ConstantUtf8Info;
 use self::cp_member_ref::{ConstantFieldRefInfo, ConstantMethodRefInfo, ConstantInterfaceMethodRefInfo};
 use self::cp_numeric::{ConstantIntegerInfo, ConstantFloatInfo, ConstantLongInfo, ConstantDoubleInfo};
+use self::cp_string::ConstantStringInfo;
 use self::cp_name_and_type::ConstantNameAndTypeInfo;
 use self::cp_invoke_dynamic::{ConstantMethodHandleInfo, ConstantMethodTypeInfo, ConstantInvokeDynamicInfo};
 use std::collections::HashMap;
@@ -22,7 +22,7 @@ use std::cell::RefCell;
 
 #[derive(Default)]
 pub struct ConstantPool {
-    pub infos: Vec<Option<Box<dyn ConstantInfo>>>,
+    infos: Vec<Option<Box<dyn ConstantInfo>>>,
 
     /// 存储 CONSTANT_Class_info 常量映射
     class_info_map: HashMap<u16, ConstantClassInfo>,
@@ -31,6 +31,25 @@ pub struct ConstantPool {
 }
 
 impl ConstantPool {
+    pub fn put_constant_info(&mut self, info: Option<Box<dyn ConstantInfo>>) {
+        self.infos.push(info);
+    }
+
+    pub fn get_constant_info(&self, index: usize) -> &Option<Box<dyn ConstantInfo>>{
+        match self.infos.get(index) {
+            Some(info) => {
+                info
+            },
+            None => {
+                panic!("Invalid constant pool index: {}!", index)
+            }
+        }
+    }
+
+    pub fn constant_len(&self) -> usize {
+        self.infos.len()
+    }
+
     pub fn get_class_name(&self, index: u16) -> String {
         match self.class_info_map.get(&index) {
             Some(info) => info.name(),
@@ -43,6 +62,12 @@ impl ConstantPool {
             Some(info) => info.str(),
             None => "".to_string()
         }
+    }
+    
+    pub fn get_name_and_type(&self, index: usize) -> (String, String) {
+        let info = self.get_constant_info(index).as_ref().unwrap();
+        let name_type_info = info.as_any().downcast_ref::<ConstantNameAndTypeInfo>().unwrap();
+        (self.get_utf8(name_type_info.name_index()), self.get_utf8(name_type_info.descriptor_index()))
     }
 }
 
@@ -82,25 +107,28 @@ pub fn read_constant_pool(reader: &mut ClassReader) -> Rc<RefCell<ConstantPool>>
 }
 
 /// Constant pool tags
-const CONSTANT_UTF8: u8                    = 1;
-const CONSTANT_INTEGER: u8                 = 3;
-const CONSTANT_FLOAT: u8                   = 4;
-const CONSTANT_LONG: u8                    = 5;
-const CONSTANT_DOUBLE: u8                  = 6;
-const CONSTANT_CLASS: u8                   = 7;
-const CONSTANT_STRING: u8                  = 8;
-const CONSTANT_FIELD_REF: u8               = 9;
-const CONSTANT_METHOD_REF: u8              = 10;
-const CONSTANT_INTERFACE_METHOD_REF: u8    = 11;
-const CONSTANT_NAME_AND_TYPE: u8           = 12;
-const CONSTANT_METHOD_HANDLE: u8           = 15;
-const CONSTANT_METHOD_TYPE: u8             = 16;
-const CONSTANT_INVOKE_DYNAMIC: u8          = 18;
+pub const CONSTANT_UTF8: u8                    = 1;
+pub const CONSTANT_INTEGER: u8                 = 3;
+pub const CONSTANT_FLOAT: u8                   = 4;
+pub const CONSTANT_LONG: u8                    = 5;
+pub const CONSTANT_DOUBLE: u8                  = 6;
+pub const CONSTANT_CLASS: u8                   = 7;
+pub const CONSTANT_STRING: u8                  = 8;
+pub const CONSTANT_FIELD_REF: u8               = 9;
+pub const CONSTANT_METHOD_REF: u8              = 10;
+pub const CONSTANT_INTERFACE_METHOD_REF: u8    = 11;
+pub const CONSTANT_NAME_AND_TYPE: u8           = 12;
+pub const CONSTANT_METHOD_HANDLE: u8           = 15;
+pub const CONSTANT_METHOD_TYPE: u8             = 16;
+pub const CONSTANT_INVOKE_DYNAMIC: u8          = 18;
 
 pub trait ConstantInfo {
     fn read_info(&mut self, reader: &mut ClassReader);
+
     /// 获取标志
     fn tag(&self) -> u8;
+
+    fn as_any(&self) -> &dyn std::any::Any;
 }
 
 fn read_constant_info(reader: &mut ClassReader, i: u16, cp: Rc<RefCell<ConstantPool>>) -> Box<dyn ConstantInfo> {

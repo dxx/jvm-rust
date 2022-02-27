@@ -25,9 +25,9 @@ pub struct Class {
     constant_pool: Option<Rc<RefCell<ConstantPool>>>,
     fields: Option<Vec<Rc<Field>>>,
     methods: Option<Vec<Rc<Method>>>,
-    loader: Option<Rc<ClassLoader>>,
-    super_class: Option<Rc<Class>>,
-    interfaces: Option<Vec<Rc<Class>>>,
+    loader: Option<Rc<RefCell<ClassLoader>>>,
+    super_class: Option<Rc<RefCell<Class>>>,
+    interfaces: Option<Vec<Rc<RefCell<Class>>>>,
     instance_slot_count: u64,
     static_slot_count: u64,
     static_vars: Option<Vec<Slot>>,
@@ -51,11 +51,46 @@ impl Class {
             static_vars: None,
         };
         let rc_class = Rc::new(RefCell::new(class));
-        rc_class.borrow_mut().constant_pool = Some(
-            Rc::new(RefCell::new(ConstantPool::new(rc_class.clone()))));
+        rc_class.borrow_mut().constant_pool = Some(ConstantPool::new(rc_class.clone(), cf.constant_pool()));
         rc_class.borrow_mut().fields = Some(new_fields(rc_class.clone(), cf.fields()));
         rc_class.borrow_mut().methods = Some(new_methods(rc_class.clone(), cf.methods()));
         rc_class
+    }
+
+    pub fn name(&self) -> String {
+        self.name.clone()
+    }
+
+    pub fn super_classname(&self) -> String {
+        self.super_classname.clone()
+    }
+
+    pub fn interface_names(&self) -> Vec<String> {
+        self.interface_names.clone()
+    }
+
+    pub fn set_loader(&mut self, loader: Option<Rc<RefCell<ClassLoader>>>) {
+        self.loader = loader;
+    }
+
+    pub fn loader(&self) -> Option<&Rc<RefCell<ClassLoader>>> {
+        self.loader.as_ref()
+    }
+
+    pub fn set_super_class(&mut self, super_class: Option<Rc<RefCell<Class>>>) {
+        self.super_class = super_class;
+    }
+
+    pub fn super_class(&self) -> Option<&Rc<RefCell<Class>>> {
+        self.super_class.as_ref()
+    }
+
+    pub fn set_interfaces(&mut self, interfaces: Option<Vec<Rc<RefCell<Class>>>>) {
+        self.interfaces = interfaces;
+    }
+
+    pub fn interfaces(&self) -> Option<&Vec<Rc<RefCell<Class>>>> {
+        self.interfaces.as_ref()
     }
 
     pub fn is_public(&self) -> bool {

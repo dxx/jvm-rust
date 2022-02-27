@@ -21,4 +21,18 @@ impl ConstantInfo for ConstantNameAndTypeInfo {
     fn tag(&self) -> u8 {
         super::CONSTANT_NAME_AND_TYPE
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+}
+
+impl ConstantNameAndTypeInfo {
+    pub fn name_index(&self) -> u16 {
+        self.name_index
+    }
+
+    pub fn descriptor_index(&self) -> u16 {
+        self.descriptor_index
+    }
 }

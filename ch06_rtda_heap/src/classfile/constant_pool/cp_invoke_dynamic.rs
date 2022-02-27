@@ -21,6 +21,10 @@ impl ConstantInfo for ConstantMethodHandleInfo {
     fn tag(&self) -> u8 {
         super::CONSTANT_METHOD_HANDLE
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 /// CONSTANT_MethodType_info {
@@ -40,6 +44,10 @@ impl ConstantInfo for ConstantMethodTypeInfo {
 
     fn tag(&self) -> u8 {
         super::CONSTANT_METHOD_TYPE
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -63,5 +71,9 @@ impl ConstantInfo for ConstantInvokeDynamicInfo {
 
     fn tag(&self) -> u8 {
         super::CONSTANT_INVOKE_DYNAMIC
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }

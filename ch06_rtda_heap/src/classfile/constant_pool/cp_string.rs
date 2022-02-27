@@ -21,6 +21,10 @@ impl ConstantInfo for ConstantStringInfo {
         super::CONSTANT_STRING
     }
 
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
 }
 
 impl ConstantStringInfo {
@@ -29,5 +33,9 @@ impl ConstantStringInfo {
             constant_pool: cp,
             string_index: 0,
         }
+    }
+
+    pub fn to_string(&self) -> String {
+        self.constant_pool.borrow().get_utf8(self.string_index)
     }
 }
