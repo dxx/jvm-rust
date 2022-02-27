@@ -165,6 +165,15 @@ impl Class {
         self.get_static_method("main".into(), "([Ljava/lang/String;)V".into())
     }
 
+    pub fn get_package_name(&self) -> String {
+        match self.name.rfind("/") {
+            Some(i) => {
+                self.name.as_str()[..i].into()
+            },
+            None => "".into()
+        }
+    }
+
     fn get_static_method(&self, name: String, descriptor: String) -> Option<&Rc<Method>> {
         for method in self.methods.as_ref().unwrap() {
             if method.is_static() && method.name() == name && method.descriptor() == descriptor {
@@ -174,16 +183,34 @@ impl Class {
         None
     }
 
-    fn get_package_name(&self) -> String {
-        match self.name.rfind("/") {
-            Some(i) => {
-                self.name.as_str()[..i].into()
-            },
-            None => "".into()
-        }
+    /// jvms 5.4.4
+    pub fn is_accessible_to(&self, other: &Rc<RefCell<Class>>) -> bool {
+        self.is_public() || self.get_package_name() == other.borrow().get_package_name()
     }
 
-    fn is_accessible_to(&self, other: Rc<RefCell<Class>>) -> bool {
-        self.is_public() || self.get_package_name() == other.borrow().get_package_name()
+    pub fn is_sub_class_of(&self, other: &Rc<RefCell<Class>>) -> bool {
+        let mut c = self.super_class.clone();
+        while let Some(class) = c {
+            if class.eq(other) {
+                return true;
+            }
+            let b_class = class.borrow();
+            c = Some(b_class.super_class().unwrap().clone());
+        }
+        false
+    }
+}
+
+impl PartialEq for Class {
+    fn eq(&self, other: &Self) -> bool {
+        let _self = self as *const Self;
+        let _other = other as *const Self;
+        _self == _other
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        let _self = self as *const Self;
+        let _other = other as *const Self;
+        _self != _other
     }
 }

@@ -146,6 +146,10 @@ impl ConstantPool {
         rt_cp
     }
 
+    pub fn class(&self) -> &Rc<RefCell<Class>> {
+        &self.class
+    }
+
     pub fn get_constant(&self, index: usize) -> &Box<dyn Constant> {
         match self.consts.get(index) {
             Some(_const) => {
