@@ -1,4 +1,4 @@
-use super::object::Object;
+use crate::rtda::object::Object;
 use std::rc::Rc;
 
 #[derive(Default, Clone)]
@@ -7,14 +7,14 @@ pub struct Slot {
     pub _ref: Option<Rc<Object>>,
 }
 
-pub struct LocalVars {
+pub struct Slots {
     slots: Vec<Slot>,
 }
 
-impl LocalVars {
-    pub fn new(max_locals: usize) -> Self {
-        LocalVars {
-            slots: vec![Slot::default(); max_locals],
+impl Slots {
+    pub fn new(slot_size: usize) -> Self {
+        Slots {
+            slots: vec![Slot::default(); slot_size],
         }
     }
 

@@ -4,13 +4,13 @@ use super::class::Class;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub fn new_fields(class: Rc<RefCell<Class>>, cf_fields: &Vec<MemberInfo>) -> Vec<Rc<Field>> {
+pub fn new_fields(class: Rc<RefCell<Class>>, cf_fields: &Vec<MemberInfo>) -> Vec<Rc<RefCell<Field>>> {
     let mut fields = Vec::new();
     for f in cf_fields {
         let mut field = Field::default();
         field.class = Some(class.clone());
         field.copy_attributes(f);
-        fields.push(Rc::new(field));
+        fields.push(Rc::new(RefCell::new(field)));
     }
     fields
 }
@@ -75,6 +75,10 @@ impl Field {
         self.access_flags & ACC_ENUM != 0
     }
 
+    pub fn is_long_or_double(&self) -> bool {
+        self.descriptor == "J" || self.descriptor == "D"
+    }
+
     pub fn name(&self) -> String {
         self.name.clone()
     }
@@ -89,6 +93,10 @@ impl Field {
 
     pub fn const_value_index(&self) -> u64 {
         self.const_value_index
+    }
+
+    pub fn set_slot_id(&mut self, slot_id: u64) {
+        self.slot_id = slot_id;
     }
 
     pub fn slot_id(&self) -> u64 {

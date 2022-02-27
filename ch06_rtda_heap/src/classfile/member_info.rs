@@ -74,7 +74,7 @@ impl MemberInfo {
 
     pub fn constant_value_attribute(&self) -> Option<&ConstantValueAttribute> {
         for attr in &self.attributes {
-            if attr.name() == "Code" {
+            if attr.name() == "ConstantValue" {
                 return attr.as_any().downcast_ref::<ConstantValueAttribute>();
             }
         }

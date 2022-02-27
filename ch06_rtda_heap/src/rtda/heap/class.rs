@@ -1,5 +1,5 @@
 use crate::classfile::ClassFile;
-use crate::rtda::local_vars::Slot;
+use crate::rtda::heap::slots::Slots;
 use super::access_flags::ACC_ABSTRACT;
 use super::access_flags::ACC_ANNOTATION;
 use super::access_flags::ACC_ENUM;
@@ -23,14 +23,14 @@ pub struct Class {
     super_classname: String,
     interface_names: Vec<String>,
     constant_pool: Option<Rc<RefCell<ConstantPool>>>,
-    fields: Option<Vec<Rc<Field>>>,
+    fields: Option<Vec<Rc<RefCell<Field>>>>,
     methods: Option<Vec<Rc<Method>>>,
     loader: Option<Rc<RefCell<ClassLoader>>>,
     super_class: Option<Rc<RefCell<Class>>>,
     interfaces: Option<Vec<Rc<RefCell<Class>>>>,
     instance_slot_count: u64,
     static_slot_count: u64,
-    static_vars: Option<Vec<Slot>>,
+    static_vars: Option<Slots>,
 }
 
 impl Class {
@@ -59,6 +59,14 @@ impl Class {
 
     pub fn name(&self) -> String {
         self.name.clone()
+    }
+
+    pub fn fields(&self) -> &Vec<Rc<RefCell<Field>>> {
+        self.fields.as_ref().unwrap()
+    }
+
+    pub fn methods(&self) -> &Vec<Rc<Method>> {
+        self.methods.as_ref().unwrap()
     }
 
     pub fn super_classname(&self) -> String {
@@ -93,6 +101,30 @@ impl Class {
         self.interfaces.as_ref()
     }
 
+    pub fn set_instance_slot_count(&mut self, count: u64) {
+        self.instance_slot_count = count;
+    }
+
+    pub fn instance_slot_count(&self) -> u64 {
+        self.instance_slot_count
+    }
+
+    pub fn set_static_slot_count(&mut self, count: u64) {
+        self.static_slot_count = count;
+    }
+
+    pub fn static_slot_count(&self) -> u64 {
+        self.static_slot_count
+    }
+
+    pub fn set_static_vars(&mut self, static_vars: Option<Slots>) {
+        self.static_vars = static_vars;
+    }
+
+    pub fn static_vars_mut(&mut self) -> Option<&mut Slots> {
+        self.static_vars.as_mut()
+    }
+
     pub fn is_public(&self) -> bool {
         self.access_flags & ACC_PUBLIC != 0
     }
@@ -125,12 +157,8 @@ impl Class {
         self.access_flags & ACC_ENUM != 0
     }
     
-    pub fn get_constant_pool(&self) -> Option<&Rc<RefCell<ConstantPool>>> {
+    pub fn constant_pool(&self) -> Option<&Rc<RefCell<ConstantPool>>> {
         self.constant_pool.as_ref()
-    }
-
-    pub fn get_static_vars(&self) -> Option<&Vec<Slot>> {
-        self.static_vars.as_ref()
     }
 
     pub fn get_main_method(&self) -> Option<&Rc<Method>> {

@@ -90,59 +90,70 @@ impl ConstantPool {
             let cp_info = b_cf_cp.get_constant_info(i).as_ref().unwrap();
             match cp_info.tag() {
                 constant_pool::CONSTANT_INTEGER => {
-                    let int_info = cp_info.as_any().
-                    downcast_ref::<cp_numeric::ConstantIntegerInfo>().unwrap();
+                    let int_info = cp_info.as_any()
+                    .downcast_ref::<cp_numeric::ConstantIntegerInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(int_info.value())));
                 },
                 constant_pool::CONSTANT_FLOAT => {
-                    let float_info = cp_info.as_any().
-                    downcast_ref::<cp_numeric::ConstantFloatInfo>().unwrap();
+                    let float_info = cp_info.as_any()
+                    .downcast_ref::<cp_numeric::ConstantFloatInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(float_info.value())));
                 },
                 constant_pool::CONSTANT_LONG => {
-                    let long_info = cp_info.as_any().
-                    downcast_ref::<cp_numeric::ConstantLongInfo>().unwrap();
+                    let long_info = cp_info.as_any()
+                    .downcast_ref::<cp_numeric::ConstantLongInfo>().unwrap();
                     // 占两个位置
                     rt_cp.borrow_mut().consts.push(Some(Box::new(long_info.value())));
                     rt_cp.borrow_mut().consts.push(None);
                     i += 1;
                 },
                 constant_pool::CONSTANT_DOUBLE => {
-                    let double_info = cp_info.as_any().
-                    downcast_ref::<cp_numeric::ConstantDoubleInfo>().unwrap();
+                    let double_info = cp_info.as_any()
+                    .downcast_ref::<cp_numeric::ConstantDoubleInfo>().unwrap();
                     // 占两个位置
                     rt_cp.borrow_mut().consts.push(Some(Box::new(double_info.value())));
                     rt_cp.borrow_mut().consts.push(None);
                     i += 1;
                 },
                 constant_pool::CONSTANT_STRING  => {
-                    let string_info = cp_info.as_any().
-                    downcast_ref::<cp_string::ConstantStringInfo>().unwrap();
+                    let string_info = cp_info.as_any()
+                    .downcast_ref::<cp_string::ConstantStringInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(string_info.to_string())));
                 },
                 constant_pool::CONSTANT_CLASS  => {
-                    let class_info = cp_info.as_any().
-                    downcast_ref::<cp_class::ConstantClassInfo>().unwrap();
+                    let class_info = cp_info.as_any()
+                    .downcast_ref::<cp_class::ConstantClassInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(ClassRef::new(rt_cp.clone(), class_info))));
                 },
                 constant_pool::CONSTANT_FIELD_REF  => {
-                    let field_ref_info = cp_info.as_any().
-                    downcast_ref::<cp_member_ref::ConstantFieldRefInfo>().unwrap();
+                    let field_ref_info = cp_info.as_any()
+                    .downcast_ref::<cp_member_ref::ConstantFieldRefInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(FieldRef::new(rt_cp.clone(), field_ref_info))));
                 },
                 constant_pool::CONSTANT_METHOD_REF  => {
-                    let method_ref_info = cp_info.as_any().
-                    downcast_ref::<cp_member_ref::ConstantMethodRefInfo>().unwrap();
+                    let method_ref_info = cp_info.as_any()
+                    .downcast_ref::<cp_member_ref::ConstantMethodRefInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(MethodRef::new(rt_cp.clone(), method_ref_info))));
                 },
                 constant_pool::CONSTANT_INTERFACE_METHOD_REF  => {
-                    let interface_method_ref_info = cp_info.as_any().
-                    downcast_ref::<cp_member_ref::ConstantInterfaceMethodRefInfo>().unwrap();
+                    let interface_method_ref_info = cp_info.as_any()
+                    .downcast_ref::<cp_member_ref::ConstantInterfaceMethodRefInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(InterfaceMethodRef::new(rt_cp.clone(), interface_method_ref_info))));
                 },
                 _ => {}
             }
         }
         rt_cp
+    }
+
+    pub fn get_constant(&self, index: usize) -> &Box<dyn Constant> {
+        match self.consts.get(index) {
+            Some(_const) => {
+                _const.as_ref().unwrap()
+            },
+            None => {
+                panic!("No constants at index {}", index);
+            }
+        }
     }
 }

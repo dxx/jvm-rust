@@ -2,7 +2,6 @@ use super::local_vars::Slot;
 use super::object::Object;
 use std::rc::Rc;
 
-#[derive(Debug)]
 pub struct OperandStack {
     size: usize,
     slots: Vec<Slot>,
