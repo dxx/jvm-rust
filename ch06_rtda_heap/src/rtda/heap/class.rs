@@ -24,7 +24,7 @@ pub struct Class {
     interface_names: Vec<String>,
     constant_pool: Option<Rc<RefCell<ConstantPool>>>,
     fields: Option<Vec<Rc<RefCell<Field>>>>,
-    methods: Option<Vec<Rc<Method>>>,
+    methods: Option<Vec<Rc<RefCell<Method>>>>,
     loader: Option<Rc<RefCell<ClassLoader>>>,
     super_class: Option<Rc<RefCell<Class>>>,
     interfaces: Option<Vec<Rc<RefCell<Class>>>>,
@@ -65,7 +65,7 @@ impl Class {
         self.fields.as_ref().unwrap()
     }
 
-    pub fn methods(&self) -> &Vec<Rc<Method>> {
+    pub fn methods(&self) -> &Vec<Rc<RefCell<Method>>> {
         self.methods.as_ref().unwrap()
     }
 
@@ -161,7 +161,7 @@ impl Class {
         self.constant_pool.as_ref()
     }
 
-    pub fn get_main_method(&self) -> Option<&Rc<Method>> {
+    pub fn get_main_method(&self) -> Option<&Rc<RefCell<Method>>> {
         self.get_static_method("main".into(), "([Ljava/lang/String;)V".into())
     }
 
@@ -174,9 +174,10 @@ impl Class {
         }
     }
 
-    fn get_static_method(&self, name: String, descriptor: String) -> Option<&Rc<Method>> {
+    fn get_static_method(&self, name: String, descriptor: String) -> Option<&Rc<RefCell<Method>>> {
         for method in self.methods.as_ref().unwrap() {
-            if method.is_static() && method.name() == name && method.descriptor() == descriptor {
+            let b_method = method.borrow();
+            if b_method.is_static() && b_method.name() == name && b_method.descriptor() == descriptor {
                 return Some(method)
             }
         }

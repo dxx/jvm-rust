@@ -4,13 +4,13 @@ use super::class::Class;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub fn new_methods(class: Rc<RefCell<Class>>, cf_methods: &Vec<MemberInfo>) -> Vec<Rc<Method>> {
+pub fn new_methods(class: Rc<RefCell<Class>>, cf_methods: &Vec<MemberInfo>) -> Vec<Rc<RefCell<Method>>> {
     let mut methods = Vec::new();
     for m in cf_methods {
         let mut method = Method::default();
         method.class = Some(class.clone());
         method.copy_attributes(m);
-        methods.push(Rc::new(method));
+        methods.push(Rc::new(RefCell::new(method)));
     }
     methods
 }

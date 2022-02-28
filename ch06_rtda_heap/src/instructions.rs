@@ -8,33 +8,29 @@ mod loads;
 mod math;
 mod stack;
 mod stores;
+mod references;
 
 mod factory;
 
 pub use self::base::*;
 
-use crate::classfile::member_info::MemberInfo;
 use crate::rtda::Thread;
+use crate::rtda::method::Method;
 use std::rc::Rc;
 use std::cell::RefCell;
 use self::bytecode_reader::BytecodeReader;
 use self::factory::new_instruction;
 
-pub fn interpret(method_info: &MemberInfo) {
-    match method_info.code_attribute() {
-        Some(info) => {
-            let thread = Rc::new(RefCell::new(Thread::new()));
-            let frame = thread.borrow_mut().new_frame(
-                thread.clone(),
-                info.max_locals() as usize,
-                info.max_stack() as usize
-            );
-            thread.borrow_mut().push_frame(frame);
+pub fn interpret(method: &Rc<RefCell<Method>>) {
+    let thread = Rc::new(RefCell::new(Thread::new()));
+    let frame = thread.borrow_mut().new_frame(
+        thread.clone(),
+        method.clone(),
+    );
+    println!("{}", 1111);
+    thread.borrow_mut().push_frame(frame);
 
-            _loop(thread, info.code());
-        }
-        None => {}
-    }
+    _loop(thread, method.borrow().code());
 }
 
 fn _loop(thread: Rc<RefCell<Thread>>, bytecode: Vec<u8>) {

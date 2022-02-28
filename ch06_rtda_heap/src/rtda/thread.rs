@@ -1,5 +1,6 @@
 use super::jvm_stack::Stack;
 use super::frame::Frame;
+use super::heap::method::Method;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -33,7 +34,7 @@ impl Thread {
         self.stack.top()
     }
 
-    pub fn new_frame(&self, _self: Rc<RefCell<Self>>, max_locals: usize, max_stack: usize) -> Frame {
-        return Frame::new(_self, max_locals, max_stack);
+    pub fn new_frame(&self, _self: Rc<RefCell<Self>>, method: Rc<RefCell<Method>>) -> Frame {
+        return Frame::new(_self, method);
     }
 }

@@ -14,13 +14,13 @@ use std::collections::HashMap;
 ///     - non-array classes: java/lang/Object ...
 ///     - array classes: [Ljava/lang/Object; ...
 pub struct ClassLoader {
-    classpath: Rc<Classpath>,
+    classpath: Classpath,
     // 保存加载的类，key 为类的完全限定名
     class_map: HashMap<String, Rc<RefCell<Class>>>,
 }
 
 impl ClassLoader {
-    pub fn new(classpath: Rc<Classpath>) -> Self {
+    pub fn new(classpath: Classpath) -> Self {
         ClassLoader {
             classpath,
             class_map: HashMap::new(),
