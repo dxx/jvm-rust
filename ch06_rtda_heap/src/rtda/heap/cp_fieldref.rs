@@ -69,7 +69,7 @@ impl FieldRef {
         }
         
         if class.borrow().super_class().is_some() {
-            return self.lookup_field(class.borrow().super_class().unwrap(), name, descriptor);
+            return self.lookup_field(&class.borrow().super_class().unwrap(), name, descriptor);
         }
 
         None

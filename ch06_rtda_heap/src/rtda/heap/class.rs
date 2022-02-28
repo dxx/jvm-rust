@@ -89,8 +89,8 @@ impl Class {
         self.super_class = super_class;
     }
 
-    pub fn super_class(&self) -> Option<&Rc<RefCell<Class>>> {
-        self.super_class.as_ref()
+    pub fn super_class(&self) -> Option<Rc<RefCell<Class>>> {
+        self.super_class.clone()
     }
 
     pub fn set_interfaces(&mut self, interfaces: Option<Vec<Rc<RefCell<Class>>>>) {
@@ -189,13 +189,12 @@ impl Class {
     }
 
     pub fn is_sub_class_of(&self, other: &Rc<RefCell<Class>>) -> bool {
-        let mut c = self.super_class.clone();
+        let mut c = self.super_class();
         while let Some(class) = c {
             if class.eq(other) {
                 return true;
             }
-            let b_class = class.borrow();
-            c = Some(b_class.super_class().unwrap().clone());
+            c = class.borrow().super_class();
         }
         false
     }

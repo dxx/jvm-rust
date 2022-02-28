@@ -8,6 +8,11 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
+/// class names:
+///     - primitive types: boolean, byte, int ...
+///     - primitive arrays: [Z, [B, [I ...
+///     - non-array classes: java/lang/Object ...
+///     - array classes: [Ljava/lang/Object; ...
 pub struct ClassLoader {
     classpath: Rc<Classpath>,
     // 保存加载的类，key 为类的完全限定名
@@ -52,6 +57,7 @@ impl ClassLoader {
         }
     }
 
+    /// jvms 5.3.5
     fn define_class(&mut self, _self: &Rc<RefCell<Self>>, data: Vec<u8>) -> Rc<RefCell<Class>> {
         let class = ClassLoader::parse_class(data);
         class.borrow_mut().set_loader(Some(_self.clone()));
@@ -73,6 +79,7 @@ impl ClassLoader {
         }
     }
 
+    /// jvms 5.4.3.1
     fn resolve_super_class(class: &Rc<RefCell<Class>>) {
         let b_class = class.borrow();
         if b_class.name() != "java/lang/Object" {
@@ -107,6 +114,7 @@ fn verify(class: &mut Rc<RefCell<Class>>) {
     // TODO
 }
 
+/// jvms 5.4.2
 fn prepare(class: &mut Rc<RefCell<Class>>) {
     calc_instance_field_slot_ids(class);
     calc_static_field_slot_ids(class);
