@@ -13,8 +13,10 @@ use std::cell::RefCell;
 
 pub trait Constant {
     fn tag(&self) -> u8;
-    
+
     fn as_any(&self) -> &dyn std::any::Any;
+    
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any;
 }
 
 impl Constant for i32 {
@@ -23,6 +25,10 @@ impl Constant for i32 {
     }
 
     fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
         self
     }
 }
@@ -35,6 +41,10 @@ impl Constant for f32 {
     fn as_any(&self) -> &dyn std::any::Any {
         self
     }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
+        self
+    }
 }
 
 impl Constant for i64 {
@@ -43,6 +53,10 @@ impl Constant for i64 {
     }
 
     fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
         self
     }
 }
@@ -55,6 +69,10 @@ impl Constant for f64 {
     fn as_any(&self) -> &dyn std::any::Any {
         self
     }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
+        self
+    }
 }
 
 impl Constant for String {
@@ -63,6 +81,10 @@ impl Constant for String {
     }
 
     fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
         self
     }
 }
@@ -92,17 +114,17 @@ impl ConstantPool {
             match cp_info.tag() {
                 constant_pool::CONSTANT_INTEGER => {
                     let int_info = cp_info.as_any()
-                    .downcast_ref::<cp_numeric::ConstantIntegerInfo>().unwrap();
+                        .downcast_ref::<cp_numeric::ConstantIntegerInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(int_info.value())));
                 },
                 constant_pool::CONSTANT_FLOAT => {
                     let float_info = cp_info.as_any()
-                    .downcast_ref::<cp_numeric::ConstantFloatInfo>().unwrap();
+                        .downcast_ref::<cp_numeric::ConstantFloatInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(float_info.value())));
                 },
                 constant_pool::CONSTANT_LONG => {
                     let long_info = cp_info.as_any()
-                    .downcast_ref::<cp_numeric::ConstantLongInfo>().unwrap();
+                        .downcast_ref::<cp_numeric::ConstantLongInfo>().unwrap();
                     // 占两个位置
                     rt_cp.borrow_mut().consts.push(Some(Box::new(long_info.value())));
                     rt_cp.borrow_mut().consts.push(None);
@@ -110,7 +132,7 @@ impl ConstantPool {
                 },
                 constant_pool::CONSTANT_DOUBLE => {
                     let double_info = cp_info.as_any()
-                    .downcast_ref::<cp_numeric::ConstantDoubleInfo>().unwrap();
+                        .downcast_ref::<cp_numeric::ConstantDoubleInfo>().unwrap();
                     // 占两个位置
                     rt_cp.borrow_mut().consts.push(Some(Box::new(double_info.value())));
                     rt_cp.borrow_mut().consts.push(None);
@@ -118,27 +140,27 @@ impl ConstantPool {
                 },
                 constant_pool::CONSTANT_STRING  => {
                     let string_info = cp_info.as_any()
-                    .downcast_ref::<cp_string::ConstantStringInfo>().unwrap();
+                        .downcast_ref::<cp_string::ConstantStringInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(string_info.to_string())));
                 },
                 constant_pool::CONSTANT_CLASS  => {
                     let class_info = cp_info.as_any()
-                    .downcast_ref::<cp_class::ConstantClassInfo>().unwrap();
+                        .downcast_ref::<cp_class::ConstantClassInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(ClassRef::new(rt_cp.clone(), class_info))));
                 },
                 constant_pool::CONSTANT_FIELD_REF  => {
                     let field_ref_info = cp_info.as_any()
-                    .downcast_ref::<cp_member_ref::ConstantFieldRefInfo>().unwrap();
+                        .downcast_ref::<cp_member_ref::ConstantFieldRefInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(FieldRef::new(rt_cp.clone(), field_ref_info))));
                 },
                 constant_pool::CONSTANT_METHOD_REF  => {
                     let method_ref_info = cp_info.as_any()
-                    .downcast_ref::<cp_member_ref::ConstantMethodRefInfo>().unwrap();
+                        .downcast_ref::<cp_member_ref::ConstantMethodRefInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(MethodRef::new(rt_cp.clone(), method_ref_info))));
                 },
                 constant_pool::CONSTANT_INTERFACE_METHOD_REF  => {
                     let interface_method_ref_info = cp_info.as_any()
-                    .downcast_ref::<cp_member_ref::ConstantInterfaceMethodRefInfo>().unwrap();
+                        .downcast_ref::<cp_member_ref::ConstantInterfaceMethodRefInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(InterfaceMethodRef::new(rt_cp.clone(), interface_method_ref_info))));
                 },
                 _ => {
@@ -150,14 +172,25 @@ impl ConstantPool {
         rt_cp
     }
 
-    pub fn class(&self) -> &Rc<RefCell<Class>> {
-        &self.class
+    pub fn class(&self) -> Rc<RefCell<Class>> {
+        self.class.clone()
     }
 
     pub fn get_constant(&self, index: usize) -> &Box<dyn Constant> {
         match self.consts.get(index) {
             Some(_const) => {
                 _const.as_ref().unwrap()
+            },
+            None => {
+                panic!("No constants at index {}", index);
+            }
+        }
+    }
+
+    pub fn get_constant_mut(&mut self, index: usize) -> &mut Box<dyn Constant> {
+        match self.consts.get_mut(index) {
+            Some(_const) => {
+                _const.as_mut().unwrap()
             },
             None => {
                 panic!("No constants at index {}", index);

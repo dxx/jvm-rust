@@ -32,10 +32,10 @@ fn start_jvm(cmd: Cmd) {
     let main_class = class_loader.borrow_mut().load_class(cmd.class.clone());
     class_loader.borrow_mut().finish_load_class(class_loader.clone());
 
-    let main_class = main_class.borrow();
-    match main_class.get_main_method() {
+    let main_method = main_class.borrow_mut().get_main_method();
+    match main_method {
         Some(member) => {
-            interpret(member);
+            interpret(member.clone());
         },
         None => {
             println!("Main method not found in class {}", &cmd.class);

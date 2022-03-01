@@ -9,6 +9,7 @@ use super::loads::*;
 use super::math::*;
 use super::stack::*;
 use super::stores::*;
+use super::references::*;
 
 pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
     let inst: Box<dyn Instruction> = match opcode {
@@ -573,9 +574,9 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         // 0xba => {
         //     Box::new(INVOKE_DYNAMIC::default())
         // },
-        // 0xbb => {
-        //     Box::new(NEW::default())
-        // },
+        0xbb => {
+            Box::new(NEW::default())
+        },
         // 0xbc => {
         //     Box::new(NEW_ARRAY::default())
         // },

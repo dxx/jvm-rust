@@ -85,7 +85,7 @@ impl Class {
         self.loader.clone()
     }
 
-    pub fn constant_pool(&mut self) -> Rc<RefCell<ConstantPool>> {
+    pub fn constant_pool(&self) -> Rc<RefCell<ConstantPool>> {
         self.constant_pool.clone().unwrap()
     }
 
@@ -162,7 +162,7 @@ impl Class {
     }
 
 
-    pub fn get_main_method(&self) -> Option<&Rc<RefCell<Method>>> {
+    pub fn get_main_method(&self) -> Option<Rc<RefCell<Method>>> {
         self.get_static_method("main".into(), "([Ljava/lang/String;)V".into())
     }
 
@@ -175,11 +175,11 @@ impl Class {
         }
     }
 
-    fn get_static_method(&self, name: String, descriptor: String) -> Option<&Rc<RefCell<Method>>> {
+    fn get_static_method(&self, name: String, descriptor: String) -> Option<Rc<RefCell<Method>>> {
         for method in self.methods.as_ref().unwrap() {
             let b_method = method.borrow();
             if b_method.is_static() && b_method.name() == name && b_method.descriptor() == descriptor {
-                return Some(method)
+                return Some(method.clone())
             }
         }
         None

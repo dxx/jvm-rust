@@ -6,6 +6,7 @@ mod local_vars;
 mod operand_stack;
 mod heap;
 
+pub use self::object::*;
 pub use self::thread::*;
 pub use self::frame::*;
 pub use self::local_vars::*;

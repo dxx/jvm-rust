@@ -48,7 +48,11 @@ impl Frame {
         self.next_pc
     }
 
-    pub fn get_thread(&self) -> &Rc<RefCell<Thread>> {
-        &self.thread
+    pub fn get_thread(&self) -> Rc<RefCell<Thread>> {
+        self.thread.clone()
+    }
+
+    pub fn get_method(&mut self) -> Rc<RefCell<Method>> {
+        self.method.clone()
     }
 }

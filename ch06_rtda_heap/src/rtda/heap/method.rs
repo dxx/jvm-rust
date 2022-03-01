@@ -98,8 +98,8 @@ impl Method {
         self.descriptor.clone()
     }
 
-    pub fn get_class(&self) -> Option<Rc<RefCell<Class>>> {
-        self.class.clone()
+    pub fn get_class(&self) -> Rc<RefCell<Class>> {
+        self.class.clone().unwrap()
     }
 
     pub fn max_stack(&self) -> u16 {

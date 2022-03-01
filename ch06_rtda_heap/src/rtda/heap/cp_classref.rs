@@ -29,14 +29,15 @@ impl ClassRef {
 
     /// jvms8 5.4.3.1
     fn resolve_class_ref(&mut self) {
-        let cp = self.cp.borrow();
-        let class = cp.class().borrow();
-        let loader = class.loader().unwrap();
+        let class = self.cp.borrow_mut().class();
+        let loader = class.borrow_mut().loader().unwrap();
         let c = loader.borrow_mut().load_class(self.class_name.clone());
         loader.borrow_mut().finish_load_class(loader.clone());
-        if !c.borrow().is_accessible_to(cp.class()) {
+
+        if !c.borrow().is_accessible_to(&class) {
             panic!("java.lang.IllegalAccessError");
         }
+
         self.class = Some(c);
     }
 }
@@ -47,6 +48,10 @@ impl Constant for ClassRef {
     }
 
     fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
         self
     }
 }

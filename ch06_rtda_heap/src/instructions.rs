@@ -21,7 +21,7 @@ use std::cell::RefCell;
 use self::bytecode_reader::BytecodeReader;
 use self::factory::new_instruction;
 
-pub fn interpret(method: &Rc<RefCell<Method>>) {
+pub fn interpret(method: Rc<RefCell<Method>>) {
     let thread = Rc::new(RefCell::new(Thread::new()));
     let frame = thread.borrow_mut().new_frame(
         thread.clone(),
