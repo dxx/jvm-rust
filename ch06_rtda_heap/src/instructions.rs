@@ -27,7 +27,6 @@ pub fn interpret(method: &Rc<RefCell<Method>>) {
         thread.clone(),
         method.clone(),
     );
-    println!("{}", 1111);
     thread.borrow_mut().push_frame(frame);
 
     _loop(thread, method.borrow().code());

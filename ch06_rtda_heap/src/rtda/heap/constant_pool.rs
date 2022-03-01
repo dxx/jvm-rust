@@ -142,6 +142,7 @@ impl ConstantPool {
                 },
                 _ => {}
             }
+            i += 1;
         }
         rt_cp
     }

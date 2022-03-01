@@ -23,7 +23,7 @@ impl Frame {
             next_pc: 0,
             thread,
             method,
-            local_vars: LocalVars::new(max_stack),
+            local_vars: LocalVars::new(max_locals),
             operand_stack: OperandStack::new(max_stack),
         }
     }

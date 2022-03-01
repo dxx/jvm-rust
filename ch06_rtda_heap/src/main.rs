@@ -30,7 +30,7 @@ fn start_jvm(cmd: Cmd) {
     let cp = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
     // let class_file = load_class(cmd.class.clone(), cp);
     let class_loader = Rc::new(RefCell::new(ClassLoader::new(cp)));
-    let main_class = class_loader.borrow_mut().load_class(&class_loader, cmd.class.clone());
+    let main_class = class_loader.borrow_mut().load_class(class_loader.clone(), cmd.class.clone());
     let main_class = main_class.borrow();
     match main_class.get_main_method() {
         Some(member) => {

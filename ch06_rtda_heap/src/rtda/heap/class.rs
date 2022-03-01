@@ -81,8 +81,8 @@ impl Class {
         self.loader = loader;
     }
 
-    pub fn loader(&self) -> Option<&Rc<RefCell<ClassLoader>>> {
-        self.loader.as_ref()
+    pub fn loader(&self) -> Option<Rc<RefCell<ClassLoader>>> {
+        self.loader.clone()
     }
 
     pub fn set_super_class(&mut self, super_class: Option<Rc<RefCell<Class>>>) {
