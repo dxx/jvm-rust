@@ -43,6 +43,9 @@ pub fn parse_cmd() -> Cmd {
     opts.optopt("", "cp", "Specify the classpath", "classpath");
     opts.optopt("", "Xjre", "Path to jre", "jre");
 
+    cmd.cp_option = "/Users/dxx/Desktop".into();
+    cmd.class = "jvmrust.ch06.Circle".into();
+
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => { m }
         Err(f) => {

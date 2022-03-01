@@ -28,9 +28,10 @@ fn main() {
 
 fn start_jvm(cmd: Cmd) {
     let cp = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
-    // let class_file = load_class(cmd.class.clone(), cp);
     let class_loader = Rc::new(RefCell::new(ClassLoader::new(cp)));
-    let main_class = class_loader.borrow_mut().load_class(class_loader.clone(), cmd.class.clone());
+    let main_class = class_loader.borrow_mut().load_class(cmd.class.clone());
+    class_loader.borrow_mut().finish_load_class(class_loader.clone());
+
     let main_class = main_class.borrow();
     match main_class.get_main_method() {
         Some(member) => {
@@ -41,26 +42,3 @@ fn start_jvm(cmd: Cmd) {
         }
     }
 }
-
-// fn load_class(class_name: String, class_path: Classpath) -> ClassFile {
-//     let class_data = match class_path.read_class(&class_name) {
-//         Ok(class_data) => class_data,
-//         Err(err) => panic!("{}", err),
-//     };
-
-//     let class_file = match ClassFile::parse(class_data) {
-//         Ok(class_file) => class_file,
-//         Err(err) => panic!("{}", err),
-//     };
-
-//     class_file
-// }
-
-// fn get_main_method(cf: &ClassFile) -> Option<&MemberInfo> {
-//     for m in cf.methods() {
-//         if m.name() == "main" && m.descriptor() == "([Ljava/lang/String;)V" {
-//             return Some(m)
-//         }
-//     }
-//     None
-// }

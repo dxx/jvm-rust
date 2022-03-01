@@ -32,7 +32,8 @@ impl ClassRef {
         let cp = self.cp.borrow();
         let class = cp.class().borrow();
         let loader = class.loader().unwrap();
-        let c = loader.borrow_mut().load_class(loader.clone(), self.class_name.clone());
+        let c = loader.borrow_mut().load_class(self.class_name.clone());
+        loader.borrow_mut().finish_load_class(loader.clone());
         if !c.borrow().is_accessible_to(cp.class()) {
             panic!("java.lang.IllegalAccessError");
         }

@@ -61,12 +61,12 @@ impl Class {
         self.name.clone()
     }
 
-    pub fn fields(&self) -> &Vec<Rc<RefCell<Field>>> {
-        self.fields.as_ref().unwrap()
+    pub fn fields(&self) -> Vec<Rc<RefCell<Field>>> {
+        self.fields.clone().unwrap()
     }
 
-    pub fn methods(&self) -> &Vec<Rc<RefCell<Method>>> {
-        self.methods.as_ref().unwrap()
+    pub fn methods(&self) -> Vec<Rc<RefCell<Method>>> {
+        self.methods.clone().unwrap()
     }
 
     pub fn super_classname(&self) -> String {
@@ -85,6 +85,10 @@ impl Class {
         self.loader.clone()
     }
 
+    pub fn constant_pool(&mut self) -> Rc<RefCell<ConstantPool>> {
+        self.constant_pool.clone().unwrap()
+    }
+
     pub fn set_super_class(&mut self, super_class: Option<Rc<RefCell<Class>>>) {
         self.super_class = super_class;
     }
@@ -97,8 +101,8 @@ impl Class {
         self.interfaces = interfaces;
     }
 
-    pub fn interfaces(&self) -> Option<&Vec<Rc<RefCell<Class>>>> {
-        self.interfaces.as_ref()
+    pub fn interfaces(&self) -> Option<Vec<Rc<RefCell<Class>>>> {
+        self.interfaces.clone()
     }
 
     pub fn set_instance_slot_count(&mut self, count: u64) {
@@ -156,10 +160,7 @@ impl Class {
     pub fn is_enum(&self) -> bool {
         self.access_flags & ACC_ENUM != 0
     }
-    
-    pub fn constant_pool(&self) -> Option<&Rc<RefCell<ConstantPool>>> {
-        self.constant_pool.as_ref()
-    }
+
 
     pub fn get_main_method(&self) -> Option<&Rc<RefCell<Method>>> {
         self.get_static_method("main".into(), "([Ljava/lang/String;)V".into())

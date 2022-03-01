@@ -61,7 +61,7 @@ impl FieldRef {
 
         if class.borrow_mut().interfaces().is_some() {
             for iface in class.borrow_mut().interfaces().unwrap() {
-                let field = self.lookup_field(iface, name.clone(), descriptor.clone());
+                let field = self.lookup_field(&iface, name.clone(), descriptor.clone());
                 if field.is_some() {
                     return field;
                 }
@@ -87,7 +87,8 @@ impl FieldRef {
         let cp = self.cp.borrow();
         let class = cp.class().borrow();
         let loader = class.loader().unwrap();
-        let c = loader.borrow_mut().load_class(loader.clone(), self.class_name.clone());
+        let c = loader.borrow_mut().load_class(self.class_name.clone());
+        loader.borrow_mut().finish_load_class(loader.clone());
         if !c.borrow().is_accessible_to(cp.class()) {
             panic!("java.lang.IllegalAccessError");
         }

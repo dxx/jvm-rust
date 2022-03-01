@@ -81,6 +81,7 @@ impl ConstantPool {
             class,
             consts
         }));
+        rt_cp.borrow_mut().consts.push(None);
 
         let mut i = 1;
         loop {
@@ -140,9 +141,11 @@ impl ConstantPool {
                     .downcast_ref::<cp_member_ref::ConstantInterfaceMethodRefInfo>().unwrap();
                     rt_cp.borrow_mut().consts.push(Some(Box::new(InterfaceMethodRef::new(rt_cp.clone(), interface_method_ref_info))));
                 },
-                _ => {}
+                _ => {
+                    rt_cp.borrow_mut().consts.push(None);
+                }
             }
-            i += 1;
+            i += 1
         }
         rt_cp
     }

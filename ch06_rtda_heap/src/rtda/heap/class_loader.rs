@@ -4,6 +4,7 @@ use crate::classpath::entry::Entry;
 use crate::rtda::heap::slots::Slots;
 use super::class::Class;
 use super::field::Field;
+use super::constant_pool::ConstantPool;
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -27,20 +28,32 @@ impl ClassLoader {
         }
     }
 
-    pub fn load_class(&mut self, _self: Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {
+    pub fn load_class(&mut self, name: String) -> Rc<RefCell<Class>> {
         match self.class_map.get(&name) {
-            Some(class) => { // already loaded
+            Some(class) => { // Already loaded
                 class.clone()
             },
             None => {
-                self.load_non_array_class(_self, name)
+                self.load_non_array_class(name)
             }
         }
     }
 
-    fn load_non_array_class(&mut self, _self: Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {
+    pub fn finish_load_class(&mut self, _self: Rc<RefCell<Self>>) {
+        for (name, class) in self.class_map.iter_mut() {
+            let mut mut_class = class.borrow_mut();
+            match mut_class.loader() {
+                Some(c) => {},
+                None => {
+                    mut_class.set_loader(Some(_self.clone()));
+                }
+            }
+        }
+    }
+
+    fn load_non_array_class(&mut self, name: String) -> Rc<RefCell<Class>> {
         let data = self.read_class(name.clone());
-        let class = self.define_class(_self, data);
+        let class = self.define_class(data);
         link(&class);
         println!("[Loaded {}", name);
         class
@@ -58,11 +71,15 @@ impl ClassLoader {
     }
 
     /// jvms 5.3.5
-    fn define_class(&mut self, _self: Rc<RefCell<Self>>, data: Vec<u8>) -> Rc<RefCell<Class>> {
+    fn define_class(&mut self, data: Vec<u8>) -> Rc<RefCell<Class>> {
         let class = ClassLoader::parse_class(data);
-        class.borrow_mut().set_loader(Some(_self));
-        ClassLoader::resolve_super_class(&class);
-        ClassLoader::resolve_interfaces(&class);
+
+        // 类加载完成后再 Set class loader
+        // class.borrow_mut().set_loader(Some(_self));
+
+        self.resolve_super_class(&class);
+        self.resolve_interfaces(&class);
+        
         self.class_map.insert(class.borrow().name(), class.clone());
         class
     }
@@ -80,26 +97,23 @@ impl ClassLoader {
     }
 
     /// jvms 5.4.3.1
-    fn resolve_super_class(class: &Rc<RefCell<Class>>) {
-        let b_class = class.borrow_mut();
+    fn resolve_super_class(&mut self, class: &Rc<RefCell<Class>>) {
+        let mut b_class = class.borrow_mut();
         if b_class.name() != "java/lang/Object" {
-            let loader = b_class.loader().unwrap();
-            let super_class = Some(loader.borrow_mut().load_class(
-                loader.clone(), b_class.super_classname()));
-            class.borrow_mut().set_super_class(super_class);
+            let super_class = Some(self.load_class(b_class.super_classname()));
+            b_class.set_super_class(super_class);
         }
     }
 
-    fn resolve_interfaces(class: &Rc<RefCell<Class>>) {
+    fn resolve_interfaces(&mut self, class: &Rc<RefCell<Class>>) {
         let b_class = class.borrow();
         let interface_names = b_class.interface_names();
         if interface_names.len() <= 0 {
             return;
         }
-        let loader = b_class.loader().unwrap();
         let mut interfaces: Vec<Rc<RefCell<Class>>> = Vec::new();
         for name in interface_names {
-            interfaces.push(loader.borrow_mut().load_class(loader.clone(), name));
+            interfaces.push(self.load_class(name));
         }
         class.borrow_mut().set_interfaces(Some(interfaces));
     }
@@ -159,20 +173,27 @@ fn calc_static_field_slot_ids(class: &Rc<RefCell<Class>>) -> usize {
 
 fn alloc_and_init_static_vars(class: &Rc<RefCell<Class>>, static_slot_count: usize) {
     let mut b_mut_class = class.borrow_mut();
-    b_mut_class.set_static_vars(Some(Slots::new(static_slot_count)));
-    for field in b_mut_class.fields() {
-        let field = field.borrow_mut();
+    let mut vars = Some(Slots::new(static_slot_count));
+    
+    //let b_class = class.borrow();
+    let cp = b_mut_class.constant_pool();
+    //let vars = b_mut_class.static_vars_mut().unwrap();
+    let fields = b_mut_class.fields();
+    for field in fields {
+        let field = field.borrow();
         if field.is_static() && field.is_final() {
-            init_static_final_var(&mut class.clone(), &field);
+            init_static_final_var(&cp, vars.as_mut().unwrap(), &field);
         }
     }
+    b_mut_class.set_static_vars(vars);
 }
 
-fn init_static_final_var(class: &mut Rc<RefCell<Class>>, field: &Field) {
-    let mut b_mut_class = class.borrow_mut();
-    let vars = b_mut_class.static_vars_mut().unwrap();
-    let b_class = class.borrow();
-    let b_cp = b_class.constant_pool().unwrap().borrow();
+fn init_static_final_var(cp: &Rc<RefCell<ConstantPool>>, vars: &mut Slots, field: &Field) {
+    //let mut b_mut_class = class.borrow_mut();
+    //let vars = b_mut_class.static_vars_mut().unwrap();
+    //let b_class = class.borrow();
+    //let b_cp = b_class.constant_pool().unwrap().borrow();
+    let b_cp = cp.borrow();
     let cp_index = field.const_value_index();
     let slot_id = field.slot_id();
     if cp_index > 0 {
