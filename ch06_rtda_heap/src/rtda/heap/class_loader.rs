@@ -4,7 +4,6 @@ use crate::classpath::entry::Entry;
 use crate::rtda::heap::slots::Slots;
 use super::class::Class;
 use super::field::Field;
-use super::constant_pool::ConstantPool;
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -41,13 +40,16 @@ impl ClassLoader {
 
     pub fn finish_load_class(&mut self, _self: Rc<RefCell<Self>>) {
         for (name, class) in self.class_map.iter_mut() {
-            let mut mut_class = class.borrow_mut();
-            match mut_class.loader() {
-                Some(c) => {},
-                None => {
-                    mut_class.set_loader(Some(_self.clone()));
-                }
+            //let mut mut_class = class.borrow_mut();
+            if class.borrow_mut().loader().is_none() {
+                class.borrow_mut().set_loader(Some(_self.clone()));
             }
+            // match mut_class.loader() {
+            //     Some(c) => {},
+            //     None => {
+            //         mut_class.set_loader(Some(_self.clone()));
+            //     }
+            // }
         }
     }
 
@@ -172,49 +174,50 @@ fn calc_static_field_slot_ids(class: &Rc<RefCell<Class>>) -> usize {
 }
 
 fn alloc_and_init_static_vars(class: &Rc<RefCell<Class>>, static_slot_count: usize) {
-    let mut b_mut_class = class.borrow_mut();
+    //let mut b_mut_class = class.borrow_mut();
     let mut vars = Some(Slots::new(static_slot_count));
     
     //let b_class = class.borrow();
-    let cp = b_mut_class.constant_pool();
+    let cp = class.borrow_mut().constant_pool();
     //let vars = b_mut_class.static_vars_mut().unwrap();
-    let fields = b_mut_class.fields();
+    let fields = class.borrow_mut().fields();
     for field in fields {
         let field = field.borrow();
         if field.is_static() && field.is_final() {
-            init_static_final_var(&cp, vars.as_mut().unwrap(), &field);
+            init_static_final_var(class, vars.as_mut().unwrap(), &field);
         }
     }
-    b_mut_class.set_static_vars(vars);
+    class.borrow_mut().set_static_vars(vars);
 }
 
-fn init_static_final_var(cp: &Rc<RefCell<ConstantPool>>, vars: &mut Slots, field: &Field) {
+fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &mut Slots, field: &Field) {
     //let mut b_mut_class = class.borrow_mut();
     //let vars = b_mut_class.static_vars_mut().unwrap();
     //let b_class = class.borrow();
     //let b_cp = b_class.constant_pool().unwrap().borrow();
-    let b_cp = cp.borrow();
+    let cp = class.borrow_mut().constant_pool();
+    //let b_cp = cp.borrow();
     let cp_index = field.const_value_index();
     let slot_id = field.slot_id();
     if cp_index > 0 {
         let descriptor = field.descriptor();
         if descriptor == "Z" || descriptor == "B" ||
         descriptor == "C" || descriptor == "S" ||descriptor == "I" {
-            let val = b_cp.get_constant(cp_index as usize)
+            let val = *cp.borrow().get_constant(cp_index as usize)
             .as_any().downcast_ref::<i32>().unwrap();
-            vars.set_int(slot_id as usize, *val);
+            vars.set_int(slot_id as usize, val);
         } else if descriptor == "J" {
-            let val = b_cp.get_constant(cp_index as usize)
+            let val = *cp.borrow().get_constant(cp_index as usize)
             .as_any().downcast_ref::<i64>().unwrap();
-            vars.set_long(slot_id as usize, *val);
+            vars.set_long(slot_id as usize, val);
         } else if descriptor == "F" {
-            let val = b_cp.get_constant(cp_index as usize)
+            let val = *cp.borrow().get_constant(cp_index as usize)
             .as_any().downcast_ref::<f32>().unwrap();
-            vars.set_float(slot_id as usize, *val);
+            vars.set_float(slot_id as usize, val);
         } else if descriptor == "D" {
-            let val = b_cp.get_constant(cp_index as usize)
+            let val = *cp.borrow().get_constant(cp_index as usize)
             .as_any().downcast_ref::<f64>().unwrap();
-            vars.set_double(slot_id as usize, *val);
+            vars.set_double(slot_id as usize, val);
         } else if descriptor == "Ljava/lang/String;" {
             panic!("Todo");
         }
