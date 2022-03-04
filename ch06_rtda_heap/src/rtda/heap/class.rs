@@ -30,7 +30,7 @@ pub struct Class {
     interfaces: Option<Vec<Rc<RefCell<Class>>>>,
     instance_slot_count: u64,
     static_slot_count: u64,
-    static_vars: Option<Slots>,
+    static_vars: Option<Rc<RefCell<Slots>>>,
 }
 
 impl Class {
@@ -121,12 +121,12 @@ impl Class {
         self.static_slot_count
     }
 
-    pub fn set_static_vars(&mut self, static_vars: Option<Slots>) {
+    pub fn set_static_vars(&mut self, static_vars: Option<Rc<RefCell<Slots>>>) {
         self.static_vars = static_vars;
     }
 
-    pub fn static_vars_mut(&mut self) -> Option<&mut Slots> {
-        self.static_vars.as_mut()
+    pub fn static_vars(&self) -> Rc<RefCell<Slots>> {
+        self.static_vars.clone().unwrap()
     }
 
     pub fn is_public(&self) -> bool {
@@ -190,6 +190,24 @@ impl Class {
         self.is_public() || self.get_package_name() == other.borrow().get_package_name()
     }
 
+    /// jvms8 6.5.instanceof
+    /// jvms8 6.5.checkcast
+    pub fn is_assignable_from(
+        &self,
+        _self: &Rc<RefCell<Class>>,
+        other: &Rc<RefCell<Class>>) -> bool {
+        if _self.eq(other) {
+            return true;
+        }
+
+        if !_self.borrow().is_interface() {
+            return other.borrow().is_sub_class_of(_self);
+        } else {
+            return other.borrow().is_implements(_self);
+        }
+    }
+
+    /// self extends other
     pub fn is_sub_class_of(&self, other: &Rc<RefCell<Class>>) -> bool {
         let mut c = self.super_class();
         while let Some(class) = c {
@@ -199,6 +217,31 @@ impl Class {
             c = class.borrow().super_class();
         }
         false
+    }
+
+    /// self implements other
+    pub fn is_implements(&self, other: &Rc<RefCell<Class>>) -> bool {
+        let mut c = self.super_class();
+        while let Some(class) = c {
+            for i in class.borrow().interfaces().unwrap() {
+                if i.eq(other) || i.borrow().is_sub_interface_of(other) {
+                    return true;
+                }
+            }
+
+            c = class.borrow().super_class();
+        }
+        return false;
+    }
+
+    /// self extends other
+    pub fn is_sub_interface_of(&self, other: &Rc<RefCell<Class>>) -> bool {
+        for super_interface in self.interfaces().unwrap() {
+            if super_interface.eq(other) || super_interface.borrow().is_sub_interface_of(other) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

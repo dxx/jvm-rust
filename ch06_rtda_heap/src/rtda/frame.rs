@@ -52,7 +52,7 @@ impl Frame {
         self.thread.clone()
     }
 
-    pub fn get_method(&mut self) -> Rc<RefCell<Method>> {
+    pub fn get_method(&self) -> Rc<RefCell<Method>> {
         self.method.clone()
     }
 }

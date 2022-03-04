@@ -5,13 +5,13 @@ use crate::rtda::cp_fieldref::FieldRef;
 use super::super::instruction::Instruction;
 use super::super::bytecode_reader::BytecodeReader;
 
-/// Set static field in class
+/// Get field from object
 #[derive(Default, Debug)]
-pub struct PUT_STATIC {
+pub struct GET_FIELD {
     index: u64, 
 }
 
-impl Instruction for PUT_STATIC {
+impl Instruction for GET_FIELD {
     fn fetch_operands(&mut self, reader: &mut BytecodeReader) {
         self.index = reader.read_u16() as u64;
     }
@@ -22,36 +22,31 @@ impl Instruction for PUT_STATIC {
         let r_cp = current_class.borrow().constant_pool();
         let field = r_cp.borrow_mut().get_constant_mut(self.index as usize)
             .as_any_mut().downcast_mut::<FieldRef>().unwrap().resolved_field(current_class.clone());
-        
-        let class = field.borrow().get_class().unwrap();
 
-        // TODO: init class
-
-        if !field.borrow().is_static() {
+        if field.borrow().is_static() {
             panic!("java.lang.IncompatibleClassChangeError");
         }
-        if field.borrow().is_final() {
-            if current_class.ne(&class) || current_method.borrow().name() != "<clinit>" {
-                panic!("java.lang.IllegalAccessError");
-            }
+        
+        let stack = frame.get_operand_stack();
+        let _ref = stack.pop_ref();
+        if _ref.is_none() {
+            panic!("java.lang.NullPointerException");
         }
 
         let descriptor = field.borrow().descriptor();
         let slot_id = field.borrow().slot_id() as usize;
-        let slots = class.borrow_mut().static_vars();
-        let stack = frame.get_operand_stack();
 
         if descriptor.starts_with("Z") || descriptor.starts_with("B") || descriptor.starts_with("C") ||
             descriptor.starts_with("S") || descriptor.starts_with("I") {
-            slots.borrow_mut().set_int(slot_id, stack.pop_int());
+            stack.push_int(_ref.unwrap().borrow().fields().get_int(slot_id));
         } else if descriptor.starts_with("F") {
-            slots.borrow_mut().set_float(slot_id, stack.pop_float());
+            stack.push_float(_ref.unwrap().borrow().fields().get_float(slot_id));
         } else if descriptor.starts_with("J") {
-            slots.borrow_mut().set_long(slot_id, stack.pop_long());
+            stack.push_long(_ref.unwrap().borrow().fields().get_long(slot_id));
         } else if descriptor.starts_with("D") {
-            slots.borrow_mut().set_double(slot_id, stack.pop_double());
+            stack.push_double(_ref.unwrap().borrow().fields().get_double(slot_id));
         } else if descriptor.starts_with("L") || descriptor.starts_with("[") {
-            slots.borrow_mut().set_ref(slot_id, stack.pop_ref());
+            stack.push_ref(_ref.unwrap().borrow().fields().get_ref(slot_id));
         } else {
             // TODO
         }

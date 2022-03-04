@@ -547,24 +547,24 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         // 0xb1 => {
         //     Box::new(_RETURN::default())
         // },
-        // 0xb2 => {
-        //     Box::new(GET_STATIC::default())
-        // },
-        // 0xb3 => {
-        //     Box::new(PUT_STATIC::default())
-        // },
-        // 0xb4 => {
-        //     Box::new(GET_FIELD::default())
-        // },
-        // 0xb5 => {
-        //     Box::new(PUT_FIELD::default())
-        // },
-        // 0xb6 => {
-        //     Box::new(INVOKE_VIRTUAL::default())
-        // },
-        // 0xb7 => {
-        //     Box::new(INVOKE_SPECIAL::default())
-        // },
+        0xb2 => {
+            Box::new(GET_STATIC::default())
+        },
+        0xb3 => {
+            Box::new(PUT_STATIC::default())
+        },
+        0xb4 => {
+            Box::new(GET_FIELD::default())
+        },
+        0xb5 => {
+            Box::new(PUT_FIELD::default())
+        },
+        0xb6 => {
+            Box::new(INVOKE_VIRTUAL::default())
+        },
+        0xb7 => {
+            Box::new(INVOKE_SPECIAL::default())
+        },
         // 0xb8 => {
         //     Box::new(INVOKE_STATIC::default())
         // },
@@ -589,12 +589,12 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         // 0xbf => {
         //     Box::new(ATHROW::default())
         // },
-        // 0xc0 => {
-        //     Box::new(CHECK_CAST::default())
-        // },
-        // 0xc1 => {
-        //     Box::new(INSTANCE_OF::default())
-        // },
+        0xc0 => {
+            Box::new(CHECK_CAST::default())
+        },
+        0xc1 => {
+            Box::new(INSTANCE_OF::default())
+        },
         // 0xc2 => {
         //     Box::new(MONITORENTER::default())
         // },

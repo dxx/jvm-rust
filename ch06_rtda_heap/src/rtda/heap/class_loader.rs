@@ -163,18 +163,18 @@ fn calc_static_field_slot_ids(class: &Rc<RefCell<Class>>) -> usize {
 }
 
 fn alloc_and_init_static_vars(class: &Rc<RefCell<Class>>, static_slot_count: usize) {
-    let mut vars = Some(Slots::new(static_slot_count));
+    let vars = Some(Rc::new(RefCell::new(Slots::new(static_slot_count))));
     let cp = class.borrow_mut().constant_pool();
     let fields = class.borrow_mut().fields();
     for field in fields {
         if field.borrow().is_static() && field.borrow().is_final() {
-            init_static_final_var(class, vars.as_mut().unwrap(), &field);
+            init_static_final_var(class, vars.as_ref().unwrap(), &field);
         }
     }
     class.borrow_mut().set_static_vars(vars);
 }
 
-fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &mut Slots, field: &Rc<RefCell<Field>>) {
+fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &Rc<RefCell<Slots>>, field: &Rc<RefCell<Field>>) {
     let cp = class.borrow_mut().constant_pool();
     let cp_index = field.borrow().const_value_index();
     let slot_id = field.borrow().slot_id();
@@ -184,19 +184,19 @@ fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &mut Slots, field: &R
         descriptor == "C" || descriptor == "S" ||descriptor == "I" {
             let val = *cp.borrow().get_constant(cp_index as usize)
             .as_any().downcast_ref::<i32>().unwrap();
-            vars.set_int(slot_id as usize, val);
+            vars.borrow_mut().set_int(slot_id as usize, val);
         } else if descriptor == "J" {
             let val = *cp.borrow().get_constant(cp_index as usize)
             .as_any().downcast_ref::<i64>().unwrap();
-            vars.set_long(slot_id as usize, val);
+            vars.borrow_mut().set_long(slot_id as usize, val);
         } else if descriptor == "F" {
             let val = *cp.borrow().get_constant(cp_index as usize)
             .as_any().downcast_ref::<f32>().unwrap();
-            vars.set_float(slot_id as usize, val);
+            vars.borrow_mut().set_float(slot_id as usize, val);
         } else if descriptor == "D" {
             let val = *cp.borrow().get_constant(cp_index as usize)
             .as_any().downcast_ref::<f64>().unwrap();
-            vars.set_double(slot_id as usize, val);
+            vars.borrow_mut().set_double(slot_id as usize, val);
         } else if descriptor == "Ljava/lang/String;" {
             panic!("Todo");
         }
