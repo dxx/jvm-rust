@@ -20,13 +20,10 @@ impl Instruction for NEW {
 
     fn execute(&mut self, frame: &mut Frame) {
         let method = frame.get_method();
-        let b_method = method.borrow();
-        let current_class = b_method.get_class();
+        let current_class = method.borrow().get_class();
         let r_cp = current_class.borrow_mut().constant_pool();
-        let mut cp = r_cp.borrow_mut();
-        let constant = cp.get_constant_mut(self.index as usize);
-        let class_ref = constant.as_any_mut().downcast_mut::<ClassRef>().unwrap();
-        let class = class_ref.resolved_class();
+        let class = r_cp.borrow_mut().get_constant_mut(self.index as usize)
+            .as_any_mut().downcast_mut::<ClassRef>().unwrap().resolved_class(current_class);
 
         // TODO: init class
 

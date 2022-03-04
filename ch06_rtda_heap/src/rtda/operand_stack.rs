@@ -69,7 +69,7 @@ impl OperandStack {
 
     pub fn pop_ref(&mut self) -> Option<Rc<Object>> {
         self.size -= 1;
-        self.slots.remove(self.size)._ref
+        self.slots[self.size]._ref.clone()
     }
 
     pub fn push_slot(&mut self, slot: Slot) {
@@ -79,7 +79,7 @@ impl OperandStack {
 
     pub fn pop_slot(&mut self) -> Slot {
         self.size -= 1;
-        self.slots.remove(self.size)
+        self.slots[self.size].clone()
     }
 
 }

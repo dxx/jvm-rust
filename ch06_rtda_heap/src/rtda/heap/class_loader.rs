@@ -40,16 +40,9 @@ impl ClassLoader {
 
     pub fn finish_load_class(&mut self, _self: Rc<RefCell<Self>>) {
         for (name, class) in self.class_map.iter_mut() {
-            //let mut mut_class = class.borrow_mut();
             if class.borrow_mut().loader().is_none() {
                 class.borrow_mut().set_loader(Some(_self.clone()));
             }
-            // match mut_class.loader() {
-            //     Some(c) => {},
-            //     None => {
-            //         mut_class.set_loader(Some(_self.clone()));
-            //     }
-            // }
         }
     }
 
@@ -139,68 +132,54 @@ fn prepare(class: &Rc<RefCell<Class>>) {
 
 fn calc_instance_field_slot_ids(class: &Rc<RefCell<Class>>) {
     let mut slot_id = 0;
-    let mut b_mut_class = class.borrow_mut();
-    if b_mut_class.super_class().is_some() {
-        slot_id = b_mut_class.super_class().unwrap().borrow().instance_slot_count();
+    if class.borrow_mut().super_class().is_some() {
+        slot_id = class.borrow_mut().super_class().unwrap().borrow().instance_slot_count();
     }
-    for field in b_mut_class.fields() {
-        let mut field = field.borrow_mut();
-        if !field.is_static() {
-            field.set_slot_id(slot_id);
+    for field in class.borrow_mut().fields() {
+        if !field.borrow_mut().is_static() {
+            field.borrow_mut().set_slot_id(slot_id);
             slot_id += 1;
-            if field.is_long_or_double() {
+            if field.borrow_mut().is_long_or_double() {
                 slot_id += 1;
             }
         }
     }
-    b_mut_class.set_instance_slot_count(slot_id);
+    class.borrow_mut().set_instance_slot_count(slot_id);
 }
 
 fn calc_static_field_slot_ids(class: &Rc<RefCell<Class>>) -> usize {
     let mut slot_id = 0;
-    let mut b_mut_class = class.borrow_mut();
-    for field in b_mut_class.fields() {
-        let mut field = field.borrow_mut();
-        if field.is_static() {
-            field.set_slot_id(slot_id);
+    for field in class.borrow_mut().fields() {
+        if field.borrow_mut().is_static() {
+            field.borrow_mut().set_slot_id(slot_id);
             slot_id += 1;
-            if field.is_long_or_double() {
+            if field.borrow_mut().is_long_or_double() {
                 slot_id += 1;
             }
         }
     }
-    b_mut_class.set_static_slot_count(slot_id);
-    b_mut_class.static_slot_count() as usize
+    class.borrow_mut().set_static_slot_count(slot_id);
+    slot_id as usize
 }
 
 fn alloc_and_init_static_vars(class: &Rc<RefCell<Class>>, static_slot_count: usize) {
-    //let mut b_mut_class = class.borrow_mut();
     let mut vars = Some(Slots::new(static_slot_count));
-    
-    //let b_class = class.borrow();
     let cp = class.borrow_mut().constant_pool();
-    //let vars = b_mut_class.static_vars_mut().unwrap();
     let fields = class.borrow_mut().fields();
     for field in fields {
-        let field = field.borrow();
-        if field.is_static() && field.is_final() {
+        if field.borrow().is_static() && field.borrow().is_final() {
             init_static_final_var(class, vars.as_mut().unwrap(), &field);
         }
     }
     class.borrow_mut().set_static_vars(vars);
 }
 
-fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &mut Slots, field: &Field) {
-    //let mut b_mut_class = class.borrow_mut();
-    //let vars = b_mut_class.static_vars_mut().unwrap();
-    //let b_class = class.borrow();
-    //let b_cp = b_class.constant_pool().unwrap().borrow();
+fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &mut Slots, field: &Rc<RefCell<Field>>) {
     let cp = class.borrow_mut().constant_pool();
-    //let b_cp = cp.borrow();
-    let cp_index = field.const_value_index();
-    let slot_id = field.slot_id();
+    let cp_index = field.borrow().const_value_index();
+    let slot_id = field.borrow().slot_id();
     if cp_index > 0 {
-        let descriptor = field.descriptor();
+        let descriptor = field.borrow().descriptor();
         if descriptor == "Z" || descriptor == "B" ||
         descriptor == "C" || descriptor == "S" ||descriptor == "I" {
             let val = *cp.borrow().get_constant(cp_index as usize)

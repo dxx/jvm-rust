@@ -28,16 +28,16 @@ impl FieldRef {
         }
     }
 
-    pub fn resolved_field(&mut self) -> Rc<RefCell<Field>> {
+    pub fn resolved_field(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Field>> {
         if self.field.is_none() {
-            self.resolve_field_ref();
+            self.resolve_field_ref(class);
         }
         self.field.clone().unwrap()
     }
 
     /// jvms 5.4.3.2
-    fn resolve_field_ref(&mut self) {
-        let c = self.resolved_class();
+    fn resolve_field_ref(&mut self, class: Rc<RefCell<Class>>) {
+        let c = self.resolved_class(class);
         let field = self.lookup_field(
             &c, self.name.clone(), self.descriptor.clone());
 
@@ -75,16 +75,15 @@ impl FieldRef {
         None
     }
 
-    fn resolved_class(&mut self) -> Rc<RefCell<Class>> {
+    fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
         if self.class.is_none() {
-            self.resolve_class_ref();
+            self.resolve_class_ref(class);
         }
         self.class.clone().unwrap()
     }
 
     /// jvms8 5.4.3.1
-    fn resolve_class_ref(&mut self) {
-        let class = self.cp.borrow_mut().class();
+    fn resolve_class_ref(&mut self, class: Rc<RefCell<Class>>) {
         let loader = class.borrow_mut().loader().unwrap();
         let c = loader.borrow_mut().load_class(self.class_name.clone());
         loader.borrow_mut().finish_load_class(loader.clone());

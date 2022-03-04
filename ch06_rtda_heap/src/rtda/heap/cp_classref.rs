@@ -20,16 +20,15 @@ impl ClassRef {
         }
     }
 
-    pub fn resolved_class(&mut self) -> Rc<RefCell<Class>> {
+    pub fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
         if self.class.is_none() {
-            self.resolve_class_ref();
+            self.resolve_class_ref(class);
         }
         self.class.clone().unwrap()
     }
 
     /// jvms8 5.4.3.1
-    fn resolve_class_ref(&mut self) {
-        let class = self.cp.borrow_mut().class();
+    fn resolve_class_ref(&mut self, class: Rc<RefCell<Class>>) {
         let loader = class.borrow_mut().loader().unwrap();
         let c = loader.borrow_mut().load_class(self.class_name.clone());
         loader.borrow_mut().finish_load_class(loader.clone());

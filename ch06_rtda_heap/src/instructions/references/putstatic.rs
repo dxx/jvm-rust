@@ -18,13 +18,10 @@ impl Instruction for PUT_STATIC {
 
     fn execute(&mut self, frame: &mut Frame) {
         let current_method = frame.get_method();
-        let b_current_method = current_method.borrow();
-        let current_class = b_current_method.get_class();
+        let current_class = current_method.borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
-        let mut m_cp = r_cp.borrow_mut();
-        let constant = m_cp.get_constant_mut(self.index as usize);
-        let class_ref = constant.as_any_mut().downcast_mut::<FieldRef>().unwrap();
-        let field = class_ref.resolved_field();
+        let field = r_cp.borrow_mut().get_constant_mut(self.index as usize)
+            .as_any_mut().downcast_mut::<FieldRef>().unwrap().resolved_field(current_class.clone());
         
         let class = field.borrow().get_class().unwrap();
 
