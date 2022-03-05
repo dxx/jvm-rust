@@ -1,6 +1,7 @@
 use crate::classfile::member_info::MemberInfo;
 use super::access_flags::*;
 use super::class::Class;
+use super::method_descriptor::MethodDescriptorParser;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -10,6 +11,7 @@ pub fn new_methods(class: Rc<RefCell<Class>>, cf_methods: &Vec<MemberInfo>) -> V
         let mut method = Method::default();
         method.class = Some(class.clone());
         method.copy_attributes(m);
+        method.calc_arg_slot_count();
         methods.push(Rc::new(RefCell::new(method)));
     }
     methods
@@ -25,6 +27,8 @@ pub struct Method {
     max_stack: u16,
     max_locals: u16,
     code: Vec<u8>,
+
+    arg_slot_count: u64,
 }
 
 impl Method {
@@ -39,6 +43,19 @@ impl Method {
                 self.code = code_attr.code();
             },
             None => {}
+        }
+    }
+
+    pub fn calc_arg_slot_count(&mut self) {
+        let parsed_descriptor = MethodDescriptorParser::parse(self.descriptor.clone());
+        for param_type in parsed_descriptor.parameter_typs() {
+            self.arg_slot_count += 1;
+            if param_type == "J" || param_type == "D" {
+                self.arg_slot_count += 1;
+            }
+        }
+        if !self.is_static() {
+            self.arg_slot_count += 1; // `this` reference
         }
     }
 
@@ -112,6 +129,10 @@ impl Method {
 
     pub fn code(&self) -> Vec<u8> {
         self.code.clone()
+    }
+
+    pub fn arg_slot_count(&self) -> u64 {
+        self.arg_slot_count
     }
 
     /// jvms 5.4.4

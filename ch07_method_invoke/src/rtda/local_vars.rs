@@ -69,4 +69,8 @@ impl LocalVars {
         self.slots[index]._ref.clone()
     }
 
+    pub fn set_slot(&mut self, index: usize, slot: Slot) {
+        self.slots[index] = slot;
+    }
+
 }

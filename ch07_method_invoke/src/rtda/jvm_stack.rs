@@ -41,10 +41,10 @@ impl Stack {
         top
     }
 
-    pub fn top(&self) -> &Frame {
+    pub fn top_mut(&mut self) -> &mut Frame {
         if self._top.is_none() {
             panic!("jvm stack is empty!");
         }
-        self._top.as_ref().unwrap()
+        self._top.as_mut().unwrap()
     }
 }
