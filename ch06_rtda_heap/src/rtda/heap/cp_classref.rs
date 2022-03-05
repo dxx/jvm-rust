@@ -1,20 +1,18 @@
 use crate::classfile::constant_pool::cp_class::ConstantClassInfo;
 use crate::classfile::constant_pool::CONSTANT_CLASS;
 use super::class::Class;
-use super::constant_pool::{Constant, ConstantPool};
+use super::constant_pool::Constant;
 use std::rc::Rc;
 use std::cell::RefCell;
 
 pub struct ClassRef {
-    cp: Rc<RefCell<ConstantPool>>,
     class_name: String,
     class: Option<Rc<RefCell<Class>>>,
 }
 
 impl ClassRef {
-    pub fn new(cp: Rc<RefCell<ConstantPool>>, class_info: &ConstantClassInfo) -> Self {
+    pub fn new(class_info: &ConstantClassInfo) -> Self {
         ClassRef {
-            cp,
             class_name: class_info.name(),
             class: None,
         }

@@ -146,22 +146,22 @@ impl ConstantPool {
                 constant_pool::CONSTANT_CLASS  => {
                     let class_info = cp_info.as_any()
                         .downcast_ref::<cp_class::ConstantClassInfo>().unwrap();
-                    rt_cp.borrow_mut().consts.push(Some(Box::new(ClassRef::new(rt_cp.clone(), class_info))));
+                    rt_cp.borrow_mut().consts.push(Some(Box::new(ClassRef::new(class_info))));
                 },
                 constant_pool::CONSTANT_FIELD_REF  => {
                     let field_ref_info = cp_info.as_any()
                         .downcast_ref::<cp_member_ref::ConstantFieldRefInfo>().unwrap();
-                    rt_cp.borrow_mut().consts.push(Some(Box::new(FieldRef::new(rt_cp.clone(), field_ref_info))));
+                    rt_cp.borrow_mut().consts.push(Some(Box::new(FieldRef::new(field_ref_info))));
                 },
                 constant_pool::CONSTANT_METHOD_REF  => {
                     let method_ref_info = cp_info.as_any()
                         .downcast_ref::<cp_member_ref::ConstantMethodRefInfo>().unwrap();
-                    rt_cp.borrow_mut().consts.push(Some(Box::new(MethodRef::new(rt_cp.clone(), method_ref_info))));
+                    rt_cp.borrow_mut().consts.push(Some(Box::new(MethodRef::new(method_ref_info))));
                 },
                 constant_pool::CONSTANT_INTERFACE_METHOD_REF  => {
                     let interface_method_ref_info = cp_info.as_any()
                         .downcast_ref::<cp_member_ref::ConstantInterfaceMethodRefInfo>().unwrap();
-                    rt_cp.borrow_mut().consts.push(Some(Box::new(InterfaceMethodRef::new(rt_cp.clone(), interface_method_ref_info))));
+                    rt_cp.borrow_mut().consts.push(Some(Box::new(InterfaceMethodRef::new(interface_method_ref_info))));
                 },
                 _ => {
                     rt_cp.borrow_mut().consts.push(None);

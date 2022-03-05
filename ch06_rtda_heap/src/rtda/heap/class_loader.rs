@@ -93,16 +93,15 @@ impl ClassLoader {
 
     /// jvms 5.4.3.1
     fn resolve_super_class(&mut self, class: &Rc<RefCell<Class>>) {
-        let mut b_class = class.borrow_mut();
-        if b_class.name() != "java/lang/Object" {
-            let super_class = Some(self.load_class(b_class.super_classname()));
-            b_class.set_super_class(super_class);
+        if class.borrow_mut().name() != "java/lang/Object" {
+            let super_class = Some(
+                self.load_class(class.borrow_mut().super_classname()));
+            class.borrow_mut().set_super_class(super_class);
         }
     }
 
     fn resolve_interfaces(&mut self, class: &Rc<RefCell<Class>>) {
-        let b_class = class.borrow();
-        let interface_names = b_class.interface_names();
+        let interface_names = class.borrow_mut().interface_names();
         if interface_names.len() <= 0 {
             return;
         }

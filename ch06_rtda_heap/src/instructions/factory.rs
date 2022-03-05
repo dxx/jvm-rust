@@ -67,15 +67,15 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         0x11 => {
             Box::new(SIPUSH::default())
         },
-        // 0x12 => {
-        //     Box::new(LDC::default())
-        // },
-        // 0x13 => {
-        //     Box::new(LDC_W::default())
-        // },
-        // 0x14 => {
-        //     Box::new(LDC2_W::default())
-        // },
+        0x12 => {
+            Box::new(LDC::default())
+        },
+        0x13 => {
+            Box::new(LDC_W::default())
+        },
+        0x14 => {
+            Box::new(LDC2_W::default())
+        },
         0x15 => {
             Box::new(ILOAD::default())
         },
