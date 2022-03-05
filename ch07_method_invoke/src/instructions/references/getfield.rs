@@ -33,22 +33,28 @@ impl Instruction for GET_FIELD {
             panic!("java.lang.NullPointerException");
         }
 
-        let descriptor = field.borrow().descriptor();
+        let descriptor = field.borrow().descriptor().as_bytes()[0];
         let slot_id = field.borrow().slot_id() as usize;
 
-        if descriptor.starts_with("Z") || descriptor.starts_with("B") || descriptor.starts_with("C") ||
-            descriptor.starts_with("S") || descriptor.starts_with("I") {
-            stack.push_int(_ref.unwrap().borrow().fields().get_int(slot_id));
-        } else if descriptor.starts_with("F") {
-            stack.push_float(_ref.unwrap().borrow().fields().get_float(slot_id));
-        } else if descriptor.starts_with("J") {
-            stack.push_long(_ref.unwrap().borrow().fields().get_long(slot_id));
-        } else if descriptor.starts_with("D") {
-            stack.push_double(_ref.unwrap().borrow().fields().get_double(slot_id));
-        } else if descriptor.starts_with("L") || descriptor.starts_with("[") {
-            stack.push_ref(_ref.unwrap().borrow().fields().get_ref(slot_id));
-        } else {
-            // TODO
+        match descriptor {
+            b'Z' | b'B' | b'C' | b'S' | b'I' => {
+                stack.push_int(_ref.unwrap().borrow().fields().get_int(slot_id));
+            },
+            b'F' => {
+                stack.push_float(_ref.unwrap().borrow().fields().get_float(slot_id));
+            },
+            b'J' => {
+                stack.push_long(_ref.unwrap().borrow().fields().get_long(slot_id));
+            },
+            b'D' => {
+                stack.push_double(_ref.unwrap().borrow().fields().get_double(slot_id));
+            },
+            b'L' | b'[' => {
+                stack.push_ref(_ref.unwrap().borrow().fields().get_ref(slot_id));
+            },
+            _ => {
+                // TODO
+            }
         }
     }
 }

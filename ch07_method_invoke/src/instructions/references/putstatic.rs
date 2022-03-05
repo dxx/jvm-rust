@@ -36,24 +36,30 @@ impl Instruction for PUT_STATIC {
             }
         }
 
-        let descriptor = field.borrow().descriptor();
+        let descriptor = field.borrow().descriptor().as_bytes()[0];
         let slot_id = field.borrow().slot_id() as usize;
         let slots = class.borrow_mut().static_vars();
         let stack = frame.get_operand_stack();
 
-        if descriptor.starts_with("Z") || descriptor.starts_with("B") || descriptor.starts_with("C") ||
-            descriptor.starts_with("S") || descriptor.starts_with("I") {
-            slots.borrow_mut().set_int(slot_id, stack.pop_int());
-        } else if descriptor.starts_with("F") {
-            slots.borrow_mut().set_float(slot_id, stack.pop_float());
-        } else if descriptor.starts_with("J") {
-            slots.borrow_mut().set_long(slot_id, stack.pop_long());
-        } else if descriptor.starts_with("D") {
-            slots.borrow_mut().set_double(slot_id, stack.pop_double());
-        } else if descriptor.starts_with("L") || descriptor.starts_with("[") {
-            slots.borrow_mut().set_ref(slot_id, stack.pop_ref());
-        } else {
-            // TODO
+        match descriptor {
+            b'Z' | b'B' | b'C' | b'S' | b'I' => {
+                slots.borrow_mut().set_int(slot_id, stack.pop_int());
+            },
+            b'F' => {
+                slots.borrow_mut().set_float(slot_id, stack.pop_float());
+            },
+            b'J' => {
+                slots.borrow_mut().set_long(slot_id, stack.pop_long());
+            },
+            b'D' => {
+                slots.borrow_mut().set_double(slot_id, stack.pop_double());
+            },
+            b'L' | b'[' => {
+                slots.borrow_mut().set_ref(slot_id, stack.pop_ref());
+            },
+            _ => {
+                // TODO
+            }
         }
     }
 }

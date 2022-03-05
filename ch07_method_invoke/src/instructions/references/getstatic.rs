@@ -31,24 +31,30 @@ impl Instruction for GET_STATIC {
             panic!("java.lang.IncompatibleClassChangeError");
         }
 
-        let descriptor = field.borrow().descriptor();
+        let descriptor = field.borrow().descriptor().as_bytes()[0];
         let slot_id = field.borrow().slot_id() as usize;
         let slots = class.borrow_mut().static_vars();
         let stack = frame.get_operand_stack();
 
-        if descriptor.starts_with("Z") || descriptor.starts_with("B") || descriptor.starts_with("C") ||
-            descriptor.starts_with("S") || descriptor.starts_with("I") {
-            stack.push_int(slots.borrow().get_int(slot_id));
-        } else if descriptor.starts_with("F") {
-            stack.push_float(slots.borrow().get_float(slot_id));
-        } else if descriptor.starts_with("J") {
-            stack.push_long(slots.borrow().get_long(slot_id));
-        } else if descriptor.starts_with("D") {
-            stack.push_double(slots.borrow().get_double(slot_id));
-        } else if descriptor.starts_with("L") || descriptor.starts_with("[") {
-            stack.push_ref(slots.borrow().get_ref(slot_id));
-        } else {
-            // TODO
+        match descriptor {
+            b'Z' | b'B' | b'C' | b'S' | b'I' => {
+                stack.push_int(slots.borrow().get_int(slot_id));
+            },
+            b'F' => {
+                stack.push_float(slots.borrow().get_float(slot_id));
+            },
+            b'J' => {
+                stack.push_long(slots.borrow().get_long(slot_id));
+            },
+            b'D' => {
+                stack.push_double(slots.borrow().get_double(slot_id));
+            },
+            b'L' | b'[' => {
+                stack.push_ref(slots.borrow().get_ref(slot_id));
+            },
+            _ => {
+                // TODO
+            }
         }
     }
 }
