@@ -50,7 +50,12 @@ impl FieldRef {
         self.field = field;
     }
 
-    fn lookup_field(&mut self, class: &Rc<RefCell<Class>>, name: String, descriptor: String) -> Option<Rc<RefCell<Field>>> {
+    fn lookup_field(
+        &mut self,
+        class: &Rc<RefCell<Class>>,
+        name: String,
+        descriptor: String
+    ) -> Option<Rc<RefCell<Field>>> {
         for field in class.borrow_mut().fields() {
             if field.borrow().name() == name.clone() && field.borrow().descriptor() == descriptor.clone() {
                 return Some(field.clone());

@@ -113,4 +113,20 @@ impl Method {
     pub fn code(&self) -> Vec<u8> {
         self.code.clone()
     }
+
+    /// jvms 5.4.4
+    pub fn is_accessible_to(&self, class: &Rc<RefCell<Class>>) -> bool {
+        if self.is_public() {
+            return true;
+        }
+        let c = self.class.as_ref().unwrap();
+        if self.is_protected() {
+            return class.eq(c) || class.borrow().is_sub_class_of(c) ||
+            c.borrow().get_package_name() == class.borrow().get_package_name();
+        }
+        if !self.is_private() {
+            return c.borrow().get_package_name() == class.borrow().get_package_name();
+        }
+        return class.eq(c);
+    }
 }

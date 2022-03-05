@@ -8,4 +8,6 @@ pub mod cp_methodref;
 pub mod cp_interface_methodref;
 pub mod field;
 pub mod method;
+pub mod method_invoke_logic;
+pub mod method_lookup;
 pub mod slots;
