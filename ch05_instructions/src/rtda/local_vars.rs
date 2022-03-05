@@ -1,10 +1,11 @@
 use super::object::Object;
 use std::rc::Rc;
+use std::cell::RefCell;
 
 #[derive(Default, Debug, Clone)]
 pub struct Slot {
     pub num: i32,
-    pub _ref: Option<Rc<Object>>,
+    pub _ref: Option<Rc<RefCell<Object>>>,
 }
 
 #[derive(Debug)]
@@ -61,11 +62,11 @@ impl LocalVars {
         f64::from_be_bytes(bytes)
     }
 
-    pub fn set_ref(&mut self, index: usize, _ref: Option<Rc<Object>>) {
+    pub fn set_ref(&mut self, index: usize, _ref: Option<Rc<RefCell<Object>>>) {
         self.slots[index]._ref = _ref;
     }
 
-    pub fn get_ref(&self, index: usize) -> Option<Rc<Object>> {
+    pub fn get_ref(&self, index: usize) -> Option<Rc<RefCell<Object>>> {
         self.slots[index]._ref.clone()
     }
 
