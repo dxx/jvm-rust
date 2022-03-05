@@ -28,8 +28,7 @@ impl ClassRef {
     /// jvms8 5.4.3.1
     fn resolve_class_ref(&mut self, class: Rc<RefCell<Class>>) {
         let loader = class.borrow_mut().loader().unwrap();
-        let c = loader.borrow_mut().load_class(self.class_name.clone());
-        loader.borrow_mut().finish_load_class(loader.clone());
+        let c = loader.borrow_mut().load_class(loader.clone(), self.class_name.clone());
 
         if !c.borrow().is_accessible_to(&class) {
             panic!("java.lang.IllegalAccessError");
