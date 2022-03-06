@@ -26,20 +26,16 @@ impl Thread {
         self.stack.push(frame);
     }
 
-    pub fn pop_frame(&mut self) -> Option<Box<Frame>> {
+    pub fn pop_frame(&mut self) -> Option<Rc<RefCell<Frame>>> {
         self.stack.pop()
     }
 
-    pub fn current_frame(&self) -> &Frame {
+    pub fn current_frame(&self) -> Rc<RefCell<Frame>> {
         self.stack.top()
     }
 
-    pub fn current_frame_mut(&mut self) -> &mut Frame {
-        self.stack.top_mut()
-    }
-
-    pub fn top_frame_mut(&mut self) -> &mut Frame {
-        self.stack.top_mut()
+    pub fn top_frame(&mut self) -> Rc<RefCell<Frame>> {
+        self.stack.top()
     }
 
     pub fn is_stack_empty(&self) -> bool {

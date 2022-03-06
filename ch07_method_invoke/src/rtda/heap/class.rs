@@ -31,6 +31,8 @@ pub struct Class {
     instance_slot_count: u64,
     static_slot_count: u64,
     static_vars: Option<Rc<RefCell<Slots>>>,
+
+    init_started: bool,
 }
 
 impl Class {
@@ -49,6 +51,7 @@ impl Class {
             instance_slot_count: 0,
             static_slot_count: 0,
             static_vars: None,
+            init_started: false,
         };
         let rc_class = Rc::new(RefCell::new(class));
         rc_class.borrow_mut().constant_pool = Some(ConstantPool::new(rc_class.clone(), cf.constant_pool()));
@@ -161,9 +164,12 @@ impl Class {
         self.access_flags & ACC_ENUM != 0
     }
 
-
     pub fn get_main_method(&self) -> Option<Rc<RefCell<Method>>> {
         self.get_static_method("main".into(), "([Ljava/lang/String;)V".into())
+    }
+
+    pub fn get_clinit_method(&self) -> Option<Rc<RefCell<Method>>> {
+        self.get_static_method("<clinit>".into(), "()V".into())
     }
 
     pub fn get_package_name(&self) -> String {
@@ -221,6 +227,12 @@ impl Class {
 
     /// self implements other
     pub fn is_implements(&self, other: &Rc<RefCell<Class>>) -> bool {
+        for i in self.interfaces().unwrap() {
+            if i.eq(other) || i.borrow().is_sub_interface_of(other) {
+                return true;
+            }
+        }
+
         let mut c = self.super_class();
         while let Some(class) = c {
             for i in class.borrow().interfaces().unwrap() {
@@ -243,6 +255,14 @@ impl Class {
         }
         return false;
     }
+
+    pub fn start_init(&mut self) {
+        self.init_started = true;
+    }
+
+    pub fn init_started(&self) -> bool {
+        self.init_started
+    } 
 }
 
 impl PartialEq for Class {

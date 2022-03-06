@@ -2,7 +2,9 @@ pub mod bytecode_reader;
 pub mod instruction;
 
 use crate::rtda::Frame;
+use crate::rtda::Thread;
 use crate::rtda::method::Method;
+use crate::rtda::class::Class;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -26,6 +28,8 @@ pub fn invoke_method(frame: &mut Frame, method: &Rc<RefCell<Method>>) {
 		}
 	}
 
+	thread.borrow_mut().push_frame(new_frame);
+
 	// Hack!
 	if method.borrow().is_native() {
 		if method.borrow().name() == "registerNatives" {
@@ -36,6 +40,30 @@ pub fn invoke_method(frame: &mut Frame, method: &Rc<RefCell<Method>>) {
 				method.borrow().name(),
 				method.borrow().descriptor()
 			);
+		}
+	}
+}
+
+pub fn init_class(thread: &Rc<RefCell<Thread>>, class: &Rc<RefCell<Class>>) {
+	class.borrow_mut().start_init();
+	schedule_clinit(thread, class);
+	init_super_class(thread, class);
+}
+
+pub fn schedule_clinit(thread: &Rc<RefCell<Thread>>, class: &Rc<RefCell<Class>>) {
+	let clinit = class.borrow().get_clinit_method();
+	if clinit.is_some() {
+		// exec <clinit>
+		let new_frame = thread.borrow_mut().new_frame(thread.clone(), clinit.unwrap());
+		thread.borrow_mut().push_frame(new_frame);
+	}
+}
+
+pub fn init_super_class(thread: &Rc<RefCell<Thread>>, class: &Rc<RefCell<Class>>) {
+	if !class.borrow().is_interface() {
+		let super_class = class.borrow().super_class();
+		if super_class.is_some() && !super_class.as_ref().unwrap().borrow().init_started() {
+			init_class(thread, super_class.as_ref().unwrap());
 		}
 	}
 }

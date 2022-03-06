@@ -23,7 +23,7 @@ use self::factory::new_instruction;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub fn interpret(method: Rc<RefCell<Method>>) {
+pub fn interpret(method: Rc<RefCell<Method>>, log_inst: bool) {
     let thread = Rc::new(RefCell::new(Thread::new()));
     let frame = thread.borrow_mut().new_frame(
         thread.clone(),
@@ -31,48 +31,44 @@ pub fn interpret(method: Rc<RefCell<Method>>) {
     );
     thread.borrow_mut().push_frame(frame);
 
-    _loop(thread);
+    _loop(thread, log_inst);
 }
 
-fn _loop(thread: Rc<RefCell<Thread>>) {
-    // let mut frame = thread.borrow_mut().pop_frame();
+fn _loop(thread: Rc<RefCell<Thread>>, log_inst: bool) {
     let mut reader = BytecodeReader::default();
 
     loop {
-        //let mut frame = thread.borrow_mut().current_frame();
-        //let mut f = frame.as_mut().unwrap();
-        //let pc = frame.get_next_pc();
+        let frame = thread.borrow_mut().current_frame();
+        let pc = frame.borrow().get_next_pc();
 
-        let pc: Option<i64> = {
-            Some(thread.borrow().current_frame().get_next_pc())
-        };
-
-        thread.borrow_mut().set_pc(pc.unwrap());
+        thread.borrow_mut().set_pc(pc);
 
         // Decode
         reader.reset(
-            thread.borrow().current_frame().get_method().borrow().code(),
-            pc.unwrap() as usize
+            frame.borrow().get_method().borrow().code(),
+            pc as usize
         );
 
         let opcode = reader.read_u8();
         match new_instruction(opcode) {
             Ok(mut inst) => {
                 inst.fetch_operands(&mut reader);
-                thread.borrow_mut().current_frame_mut().set_next_pc(reader.pc() as i64);
+                frame.borrow_mut().set_next_pc(reader.pc() as i64);
 
-                // println!("pc: {}, inst:{:?}", thread.borrow_mut().pc(), inst);
-                log_instruction(thread.borrow().current_frame(), &inst);
+                if log_inst {
+                    log_instruction(&frame.borrow(), &inst);
+                }
 
                 // Execute
-                inst.execute(thread.borrow_mut().current_frame_mut());
-
+                inst.execute(&mut frame.borrow_mut());
+                
                 if thread.borrow().is_stack_empty() {
                     break;
                 }
             },
             Err(err) => {
-                log_frames(thread.clone());
+                log_frames(&thread);
+
                 panic!("{}", err);
             }
         }
@@ -87,12 +83,13 @@ fn log_instruction(frame: &Frame, inst: &Box<dyn Instruction>) {
     println!("{}.{} #{:2} {:?}", class_name, method_name, pc, inst);
 }
 
-fn log_frames(thread: Rc<RefCell<Thread>>) {
+fn log_frames(thread: &Rc<RefCell<Thread>>) {
     while !thread.borrow().is_stack_empty() {
         let frame = thread.borrow_mut().pop_frame();
-        let method = frame.as_ref().unwrap().get_method();
+        let method = frame.as_ref().unwrap().borrow().get_method();
+        let pc = frame.as_ref().unwrap().borrow().get_next_pc();
         let class_name = method.borrow().get_class().borrow().name();
-        println!(">> pc: {:4} {}.{}{}", frame.as_ref().unwrap().get_next_pc(),
+        println!(">> pc: {:4} {}.{}{}", pc,
             class_name, method.borrow().name(), method.borrow().descriptor());
     }
 }

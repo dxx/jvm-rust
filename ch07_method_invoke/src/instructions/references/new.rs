@@ -5,6 +5,7 @@ use crate::rtda::Object;
 use crate::rtda::cp_classref::ClassRef;
 use super::super::instruction::Instruction;
 use super::super::bytecode_reader::BytecodeReader;
+use super::super::init_class;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -26,7 +27,11 @@ impl Instruction for NEW {
         let class = r_cp.borrow_mut().get_constant_mut(self.index as usize)
             .as_any_mut().downcast_mut::<ClassRef>().unwrap().resolved_class(current_class);
 
-        // TODO: init class
+        if !class.borrow().init_started() {
+            frame.revert_next_pc();
+            init_class(&frame.get_thread(), &class);
+            return;
+        }
 
         if class.borrow().is_interface() || class.borrow().is_abstract() {
             panic!("java.lang.InstantiationError");

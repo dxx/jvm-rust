@@ -4,6 +4,7 @@ use crate::rtda::Frame;
 use crate::rtda::cp_fieldref::FieldRef;
 use super::super::instruction::Instruction;
 use super::super::bytecode_reader::BytecodeReader;
+use super::super::init_class;
 
 /// Set static field in class
 #[derive(Default, Debug)]
@@ -25,7 +26,11 @@ impl Instruction for PUT_STATIC {
         
         let class = field.borrow().get_class();
 
-        // TODO: init class
+        if !class.borrow().init_started() {
+            frame.revert_next_pc();
+            init_class(&frame.get_thread(), &class);
+            return;
+        }
 
         if !field.borrow().is_static() {
             panic!("java.lang.IncompatibleClassChangeError");

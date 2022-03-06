@@ -29,12 +29,16 @@ pub struct MethodDescriptorParser {
 impl MethodDescriptorParser {
     pub fn parse(descriptor: String) -> Box<MethodDescriptor> {
         let parsed = MethodDescriptor { parameter_typs: Vec::new(), return_type: "".into() };
-        let parser = MethodDescriptorParser {
+        let mut parser = MethodDescriptorParser {
             raw: descriptor,
             offset: 0,
             parsed: Box::new(parsed),
         };
-
+        parser.start_params();
+        parser.parse_param_types();
+        parser.end_params();
+        parser.parse_return_type();
+        parser.finish();
         parser.parsed
     }
 

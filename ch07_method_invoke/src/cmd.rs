@@ -5,6 +5,8 @@ use getopts::{Options, ParsingStyle};
 pub struct Cmd {
     pub help_flag: bool,
     pub version_flag: bool,
+    pub verbose_class_flag: bool,
+    pub verbose_inst_flag: bool,
     pub cp_option: String,
     pub x_jre_option: String,
     pub class: String,
@@ -22,6 +24,8 @@ pub fn parse_cmd() -> Cmd {
     let mut cmd = Cmd{
         help_flag: false,
         version_flag: false,
+        verbose_class_flag: false,
+        verbose_inst_flag: false,
         cp_option: "".to_string(),
         x_jre_option: "".to_string(),
         class: "".to_string(),
@@ -39,6 +43,9 @@ pub fn parse_cmd() -> Cmd {
     let opts = opts.parsing_style(ParsingStyle::StopAtFirstFree).long_only(true);
     opts.optflag("h", "help", "Print help message");
     opts.optflag("", "version", "Print version and exit");
+    opts.optflag("", "verbose", "Enable verbose output");
+    opts.optflag("", "verbose:class", "Enable verbose output");
+    opts.optflag("", "verbose:inst", "Enable verbose output");
     opts.optopt("", "classpath", "Specify the classpath", "classpath");
     opts.optopt("", "cp", "Specify the classpath", "classpath");
     opts.optopt("", "Xjre", "Path to jre", "jre");
@@ -56,6 +63,14 @@ pub fn parse_cmd() -> Cmd {
     }
     if matches.opt_present("version") {
         cmd.version_flag = true;
+    }
+    if matches.opt_present("verbose") {
+        cmd.verbose_class_flag = true;
+    } else if matches.opt_present("verbose:class") {
+        cmd.verbose_class_flag = true;
+    }
+    if matches.opt_present("verbose:inst") {
+        cmd.verbose_inst_flag = true;
     }
     match matches.opt_str("classpath") {
         Some(classpath) => {

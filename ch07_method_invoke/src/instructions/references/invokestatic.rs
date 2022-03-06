@@ -4,7 +4,7 @@ use crate::rtda::Frame;
 use crate::rtda::cp_methodref::MethodRef;
 use super::super::instruction::Instruction;
 use super::super::bytecode_reader::BytecodeReader;
-use super::super::invoke_method;
+use super::super::{invoke_method, init_class};
 
 /// Invoke a class (static) method
 #[derive(Default, Debug)]
@@ -27,6 +27,11 @@ impl Instruction for INVOKE_STATIC {
         }
 
         let class = resolved_method.borrow().get_class();
+        if !class.borrow().init_started() {
+            frame.revert_next_pc();
+            init_class(&frame.get_thread(), &class);
+            return;
+        }
 
         invoke_method(frame, &resolved_method);
     }

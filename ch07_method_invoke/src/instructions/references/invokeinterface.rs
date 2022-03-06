@@ -28,7 +28,7 @@ impl Instruction for INVOKE_INTERFACE {
         let resolved_class = r_cp.borrow_mut().get_constant_mut(self.index as usize)
             .as_any_mut().downcast_mut::<InterfaceMethodRef>().unwrap().resolved_class(current_class.clone());
         let resolved_method = r_cp.borrow_mut().get_constant_mut(self.index as usize)
-            .as_any_mut().downcast_mut::<InterfaceMethodRef>().unwrap().resolved_interface_method(current_class.clone());
+            .as_any_mut().downcast_mut::<InterfaceMethodRef>().unwrap().resolved_interface_method(resolved_class.clone());
 
         if resolved_method.borrow().is_static() || resolved_method.borrow().is_private() {
             panic!("java.lang.IncompatibleClassChangeError");

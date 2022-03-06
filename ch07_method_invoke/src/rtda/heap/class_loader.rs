@@ -17,13 +17,15 @@ pub struct ClassLoader {
     classpath: Classpath,
     // 保存加载的类，key 为类的完全限定名
     class_map: HashMap<String, Rc<RefCell<Class>>>,
+    verbose_flag: bool,
 }
 
 impl ClassLoader {
-    pub fn new(classpath: Classpath) -> Self {
+    pub fn new(classpath: Classpath, verbose_flag: bool) -> Self {
         ClassLoader {
             classpath,
             class_map: HashMap::new(),
+            verbose_flag
         }
     }
 
@@ -42,7 +44,9 @@ impl ClassLoader {
         let data = self.read_class(name.clone());
         let class = self.define_class(_self, data);
         link(&class);
-        println!("[Loaded {}", name);
+        if self.verbose_flag {
+            println!("[Loaded {}", name);
+        }
         class
     }
 
@@ -93,9 +97,6 @@ impl ClassLoader {
 
     fn resolve_interfaces(&mut self, _self: &Rc<RefCell<Self>>, class: &Rc<RefCell<Class>>) {
         let interface_names = class.borrow_mut().interface_names();
-        if interface_names.len() <= 0 {
-            return;
-        }
         let mut interfaces: Vec<Rc<RefCell<Class>>> = Vec::new();
         for name in interface_names {
             interfaces.push(self.load_class(_self.clone(), name));
