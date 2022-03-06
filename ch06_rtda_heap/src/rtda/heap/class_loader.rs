@@ -93,9 +93,6 @@ impl ClassLoader {
 
     fn resolve_interfaces(&mut self, _self: &Rc<RefCell<Self>>, class: &Rc<RefCell<Class>>) {
         let interface_names = class.borrow_mut().interface_names();
-        if interface_names.len() <= 0 {
-            return;
-        }
         let mut interfaces: Vec<Rc<RefCell<Class>>> = Vec::new();
         for name in interface_names {
             interfaces.push(self.load_class(_self.clone(), name));
