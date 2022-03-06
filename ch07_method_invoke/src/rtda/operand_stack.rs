@@ -83,4 +83,7 @@ impl OperandStack {
         self.slots[self.size].clone()
     }
 
+    pub fn get_ref_from_top(&self, n: usize) -> Option<Rc<RefCell<Object>>> {
+        self.slots[self.size - n - 1]._ref.clone()
+    }
 }

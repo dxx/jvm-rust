@@ -23,7 +23,7 @@ impl Instruction for PUT_FIELD {
         let field = r_cp.borrow_mut().get_constant_mut(self.index as usize)
             .as_any_mut().downcast_mut::<FieldRef>().unwrap().resolved_field(current_class.clone());
         
-        let class = field.borrow().get_class().unwrap();
+        let class = field.borrow().get_class();
 
         if field.borrow().is_static() {
             panic!("java.lang.IncompatibleClassChangeError");

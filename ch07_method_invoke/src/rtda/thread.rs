@@ -30,12 +30,20 @@ impl Thread {
         self.stack.pop()
     }
 
-    pub fn current_frame(&mut self) -> &mut Frame {
+    pub fn current_frame(&self) -> &Frame {
+        self.stack.top()
+    }
+
+    pub fn current_frame_mut(&mut self) -> &mut Frame {
         self.stack.top_mut()
     }
 
     pub fn top_frame_mut(&mut self) -> &mut Frame {
         self.stack.top_mut()
+    }
+
+    pub fn is_stack_empty(&self) -> bool {
+        self.stack.is_empty()
     }
 
     pub fn new_frame(&self, _self: Rc<RefCell<Self>>, method: Rc<RefCell<Method>>) -> Frame {

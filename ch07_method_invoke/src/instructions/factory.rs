@@ -529,24 +529,24 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         0xab => {
             Box::new(LOOKUP_SWITCH::default())
         },
-        // 0xac => {
-        //     Box::new(IRETURN::default())
-        // },
-        // 0xad => {
-        //     Box::new(LRETURN::default())
-        // },
-        // 0xae => {
-        //     Box::new(FRETURN::default())
-        // },
-        // 0xaf => {
-        //     Box::new(DRETURN::default())
-        // },
-        // 0xb0 => {
-        //     Box::new(ARETURN::default())
-        // },
-        // 0xb1 => {
-        //     Box::new(_RETURN::default())
-        // },
+        0xac => {
+            Box::new(IRETURN::default())
+        },
+        0xad => {
+            Box::new(LRETURN::default())
+        },
+        0xae => {
+            Box::new(FRETURN::default())
+        },
+        0xaf => {
+            Box::new(DRETURN::default())
+        },
+        0xb0 => {
+            Box::new(ARETURN::default())
+        },
+        0xb1 => {
+            Box::new(RETURN::default())
+        },
         0xb2 => {
             Box::new(GET_STATIC::default())
         },
@@ -565,12 +565,12 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         0xb7 => {
             Box::new(INVOKE_SPECIAL::default())
         },
-        // 0xb8 => {
-        //     Box::new(INVOKE_STATIC::default())
-        // },
-        // 0xb9 => {
-        //     Box::new(INVOKE_INTERFACE::default())
-        // },
+        0xb8 => {
+            Box::new(INVOKE_STATIC::default())
+        },
+        0xb9 => {
+            Box::new(INVOKE_INTERFACE::default())
+        },
         // 0xba => {
         //     Box::new(INVOKE_DYNAMIC::default())
         // },

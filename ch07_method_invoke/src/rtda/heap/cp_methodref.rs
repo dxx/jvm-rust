@@ -72,10 +72,10 @@ impl MethodRef {
         if method.is_none() {
             return lookup_method_in_interfaces(class.borrow().interfaces().as_ref().unwrap(), name, descriptor);
         }
-        None
+        method
     }
 
-    fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
+    pub fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
         if self.class.is_none() {
             self.resolve_class_ref(class);
         }

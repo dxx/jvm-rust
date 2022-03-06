@@ -1,9 +1,11 @@
 #![allow(non_camel_case_types)]
 
-use crate::rtda::Frame;
+use crate::rtda::{Frame, OperandStack};
 use crate::rtda::cp_methodref::MethodRef;
+use crate::rtda::method_lookup::lookup_method_in_class;
 use super::super::instruction::Instruction;
 use super::super::bytecode_reader::BytecodeReader;
+use super::super::invoke_method;
 
 /// Invoke instance method; dispatch based on class
 #[derive(Default, Debug)]
@@ -16,34 +18,65 @@ impl Instruction for INVOKE_VIRTUAL {
         self.index = reader.read_u16() as u64;
     }
 
-    /// Hack!
     fn execute(&mut self, frame: &mut Frame) {
-        let current_method = frame.get_method();
-        let current_class = current_method.borrow().get_class();
+        let current_class = frame.get_method().borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
-        let cp = r_cp.borrow();
-        let method_ref = cp.get_constant(self.index as usize)
-            .as_any().downcast_ref::<MethodRef>().unwrap();
+        let resolved_method = r_cp.borrow_mut().get_constant_mut(self.index as usize)
+            .as_any_mut().downcast_mut::<MethodRef>().unwrap().resolved_method(current_class.clone());
 
-        if method_ref.name() == "println" {
-            let stack = frame.get_operand_stack();
-            let descriptor = method_ref.descriptor();
-            if descriptor == "(Z)V" {
-                println!("{}", stack.pop_int() != 0);
-            } else if descriptor == "(C)V" {
-                println!("{}", stack.pop_int());
-            } else if descriptor == "(I)V" || descriptor == "(B)V" || descriptor == "(S)V" {
-                println!("{}", stack.pop_int());
-            } else if descriptor == "(F)V" {
-                println!("{}", stack.pop_float());
-            } else if descriptor == "(J)V" {
-                println!("{}", stack.pop_long());
-            } else if descriptor == "(D)V" {
-                println!("{}", stack.pop_double());
-            } else {
-                panic!("println: {}", descriptor);
-            }
-            stack.pop_ref();
+        if resolved_method.borrow().is_static() {
+            panic!("java.lang.IncompatibleClassChangeError");
         }
+
+        let _ref = frame.get_operand_stack().get_ref_from_top(
+            (resolved_method.borrow().arg_slot_count() - 1) as usize);
+        if _ref.is_none() {
+            if resolved_method.borrow().name() == "println" {
+                // Hack!
+                println(frame.get_operand_stack(), resolved_method.borrow().descriptor());
+                return;
+            }
+
+            panic!("java.lang.NullPointerException");
+        }
+
+        if resolved_method.borrow().is_protected() &&
+            resolved_method.borrow().get_class().borrow().is_sub_class_of(&current_class) &&
+            resolved_method.borrow().get_class().borrow().get_package_name() != current_class.borrow().get_package_name() &&
+            _ref.as_ref().unwrap().borrow().class().ne(&current_class) &&
+            !_ref.as_ref().unwrap().borrow().class().borrow().is_sub_class_of(&current_class) {
+            panic!("java.lang.IllegalAccessError");
+        }
+
+        let method_to_be_invoked = lookup_method_in_class(
+            _ref.as_ref().unwrap().borrow().class(),
+            resolved_method.borrow().name(),
+            resolved_method.borrow().descriptor());
+
+        if method_to_be_invoked.is_none() || method_to_be_invoked.as_ref().unwrap().borrow().is_abstract() {
+            panic!("java.lang.AbstractMethodError");
+        }
+
+        invoke_method(frame, method_to_be_invoked.as_ref().unwrap());
     }
+}
+
+/// Hack!
+fn println(stack: &mut OperandStack, descriptor: String) {
+    if descriptor == "(Z)V" {
+        println!("{}", stack.pop_int() != 0);
+    } else if descriptor == "(C)V" {
+        println!("{}", stack.pop_int());
+    } else if descriptor == "(I)V" || descriptor == "(B)V" || descriptor == "(S)V" {
+        println!("{}", stack.pop_int());
+    } else if descriptor == "(F)V" {
+        println!("{}", stack.pop_float());
+    } else if descriptor == "(J)V" {
+        println!("{}", stack.pop_long());
+    } else if descriptor == "(D)V" {
+        println!("{}", stack.pop_double());
+    } else {
+        panic!("println: {}", descriptor);
+    }
+    stack.pop_ref();
 }

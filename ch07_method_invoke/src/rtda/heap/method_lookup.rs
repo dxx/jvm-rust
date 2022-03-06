@@ -8,7 +8,7 @@ pub fn lookup_method_in_class(
     name: String,
     descriptor: String,
 ) -> Option<Rc<RefCell<Method>>> {
-    let mut c = class.borrow().super_class();
+    let mut c = Some(class.clone());
     while let Some(class) = c {
         for method in class.borrow().methods() {
             if method.borrow().name() == name && method.borrow().descriptor() == descriptor {

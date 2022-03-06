@@ -68,7 +68,7 @@ impl InterfaceMethodRef {
         return lookup_method_in_interfaces(iface.borrow().interfaces().as_ref().unwrap(), name, descriptor);
     }
 
-    fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
+    pub fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
         if self.class.is_none() {
             self.resolve_class_ref(class);
         }
