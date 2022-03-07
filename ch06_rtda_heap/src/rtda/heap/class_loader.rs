@@ -27,28 +27,20 @@ impl ClassLoader {
         }
     }
 
-    pub fn load_class(&mut self, name: String) -> Rc<RefCell<Class>> {
+    pub fn load_class(&mut self, _self: Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {
         match self.class_map.get(&name) {
             Some(class) => { // Already loaded
                 class.clone()
             },
             None => {
-                self.load_non_array_class(name)
+                self.load_non_array_class(&_self, name)
             }
         }
     }
 
-    pub fn finish_load_class(&mut self, _self: Rc<RefCell<Self>>) {
-        for (name, class) in self.class_map.iter_mut() {
-            if class.borrow_mut().loader().is_none() {
-                class.borrow_mut().set_loader(Some(_self.clone()));
-            }
-        }
-    }
-
-    fn load_non_array_class(&mut self, name: String) -> Rc<RefCell<Class>> {
+    fn load_non_array_class(&mut self, _self: &Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {
         let data = self.read_class(name.clone());
-        let class = self.define_class(data);
+        let class = self.define_class(_self, data);
         link(&class);
         println!("[Loaded {}", name);
         class
@@ -66,14 +58,13 @@ impl ClassLoader {
     }
 
     /// jvms 5.3.5
-    fn define_class(&mut self, data: Vec<u8>) -> Rc<RefCell<Class>> {
+    fn define_class(&mut self, _self: &Rc<RefCell<Self>>, data: Vec<u8>) -> Rc<RefCell<Class>> {
         let class = ClassLoader::parse_class(data);
 
-        // 类加载完成后再 Set class loader
-        // class.borrow_mut().set_loader(Some(_self));
+        class.borrow_mut().set_loader(Some(_self.clone()));
 
-        self.resolve_super_class(&class);
-        self.resolve_interfaces(&class);
+        self.resolve_super_class(_self, &class);
+        self.resolve_interfaces(_self, &class);
         
         self.class_map.insert(class.borrow().name(), class.clone());
         class
@@ -92,23 +83,19 @@ impl ClassLoader {
     }
 
     /// jvms 5.4.3.1
-    fn resolve_super_class(&mut self, class: &Rc<RefCell<Class>>) {
-        let mut b_class = class.borrow_mut();
-        if b_class.name() != "java/lang/Object" {
-            let super_class = Some(self.load_class(b_class.super_classname()));
-            b_class.set_super_class(super_class);
+    fn resolve_super_class(&mut self, _self: &Rc<RefCell<Self>>, class: &Rc<RefCell<Class>>) {
+        if class.borrow_mut().name() != "java/lang/Object" {
+            let super_class = Some(
+                self.load_class(_self.clone(), class.borrow_mut().super_classname()));
+            class.borrow_mut().set_super_class(super_class);
         }
     }
 
-    fn resolve_interfaces(&mut self, class: &Rc<RefCell<Class>>) {
-        let b_class = class.borrow();
-        let interface_names = b_class.interface_names();
-        if interface_names.len() <= 0 {
-            return;
-        }
+    fn resolve_interfaces(&mut self, _self: &Rc<RefCell<Self>>, class: &Rc<RefCell<Class>>) {
+        let interface_names = class.borrow_mut().interface_names();
         let mut interfaces: Vec<Rc<RefCell<Class>>> = Vec::new();
         for name in interface_names {
-            interfaces.push(self.load_class(name));
+            interfaces.push(self.load_class(_self.clone(), name));
         }
         class.borrow_mut().set_interfaces(Some(interfaces));
     }

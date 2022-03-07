@@ -12,6 +12,7 @@ members = [
     "ch04_rtda",
     "ch05_instructions",
     "ch06_rtda_heap",
+    "ch07_method_invoke",
 ]
 
 [dependencies]

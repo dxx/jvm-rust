@@ -221,6 +221,12 @@ impl Class {
 
     /// self implements other
     pub fn is_implements(&self, other: &Rc<RefCell<Class>>) -> bool {
+        for i in self.interfaces().unwrap() {
+            if i.eq(other) || i.borrow().is_sub_interface_of(other) {
+                return true;
+            }
+        }
+
         let mut c = self.super_class();
         while let Some(class) = c {
             for i in class.borrow().interfaces().unwrap() {

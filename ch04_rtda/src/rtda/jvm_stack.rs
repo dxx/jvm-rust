@@ -1,50 +1,44 @@
 use super::frame::Frame;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 /// JVM Stack
 pub struct Stack {
     max_size: usize,
-    size: usize,
-    _top: Option<Box<Frame>>, // Stack is implemented as linked list
+    top: usize,
+    frames: Vec<Option<Rc<RefCell<Frame>>>>,
 }
 
 impl Stack {
     pub fn new(max_size: usize) -> Self {
         Stack {
             max_size,
-            size: 0,
-            _top: None,
+            top: 0,
+            frames: vec![None; max_size],
         }
     }
 
-    pub fn push(&mut self, mut frame: Frame) {
-        if self.size >= self.max_size {
+    pub fn push(&mut self, frame: Frame) {
+        if self.top >= self.max_size {
             panic!("java.lang.StackOverflowError");
         }
 
-        if self._top.is_some() {
-            frame.set_lower(self._top.take());
-        }
-
-        self._top = Some(Box::new(frame));
-        self.size += 1;
+        self.frames[self.top] = Some(Rc::new(RefCell::new(frame)));
+        self.top += 1;
     }
 
-    pub fn pop(&mut self) -> Option<Box<Frame>> {
-        if self._top.is_none() {
+    pub fn pop(&mut self) -> Option<Rc<RefCell<Frame>>> {
+        if self.top == 0 {
             panic!("jvm stack is empty!");
         }
-        let mut top = self._top.take();
-        self._top = top.as_mut().unwrap().lower.take();
-
-        self.size -= 1;
-
-        top
+        self.top -= 1;
+        self.frames[self.top].clone()
     }
 
-    pub fn top(&self) -> &Frame {
-        if self._top.is_none() {
+    pub fn top(&self) -> Rc<RefCell<Frame>> {
+        if self.top == 0 {
             panic!("jvm stack is empty!");
         }
-        self._top.as_ref().unwrap()
+        self.frames[self.top - 1].clone().unwrap()
     }
 }

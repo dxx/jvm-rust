@@ -2,12 +2,11 @@ use crate::classfile::constant_pool::cp_member_ref::ConstantInterfaceMethodRefIn
 use crate::classfile::constant_pool::CONSTANT_INTERFACE_METHOD_REF;
 use super::class::Class;
 use super::method::Method;
-use super::constant_pool::{Constant, ConstantPool};
+use super::constant_pool::Constant;
 use std::rc::Rc;
 use std::cell::RefCell;
 
 pub struct InterfaceMethodRef {
-    cp: Rc<RefCell<ConstantPool>>,
     class_name: String,
     class: Option<Rc<RefCell<Class>>>,
     name: String,
@@ -16,10 +15,9 @@ pub struct InterfaceMethodRef {
 }
 
 impl InterfaceMethodRef {
-    pub fn new(cp: Rc<RefCell<ConstantPool>>, ref_info: &ConstantInterfaceMethodRefInfo) -> Self {
+    pub fn new(ref_info: &ConstantInterfaceMethodRefInfo) -> Self {
         let (name, descriptor) = ref_info.name_and_descriptor();
         InterfaceMethodRef {
-            cp,
             class_name: ref_info.class_name(),
             class: None,
             name,

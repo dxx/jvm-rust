@@ -6,7 +6,6 @@ use std::cell::RefCell;
 
 /// Stack Frame
 pub struct Frame {
-    pub lower: Option<Box<Frame>>, // Stack is implemented as linked list
     local_vars: LocalVars,
     operand_stack: OperandStack,
     next_pc: i64, // The next instruction after the call
@@ -19,17 +18,12 @@ impl Frame {
         let max_locals = method.borrow().max_locals() as usize;
         let max_stack = method.borrow().max_stack() as usize;
         Frame {
-            lower: None,
             next_pc: 0,
             thread,
             method,
             local_vars: LocalVars::new(max_locals),
             operand_stack: OperandStack::new(max_stack),
         }
-    }
-
-    pub fn set_lower(&mut self, lower: Option<Box<Frame>>) {
-        self.lower = lower;
     }
 
     pub fn get_local_vars(&mut self) -> &mut LocalVars {

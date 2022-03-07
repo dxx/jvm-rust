@@ -26,11 +26,11 @@ impl Thread {
         self.stack.push(frame);
     }
 
-    pub fn pop_frame(&mut self) -> Option<Box<Frame>> {
+    pub fn pop_frame(&mut self) -> Option<Rc<RefCell<Frame>>> {
         self.stack.pop()
     }
 
-    pub fn current_frame(&self) -> &Frame {
+    pub fn current_frame(&self) -> Rc<RefCell<Frame>> {
         self.stack.top()
     }
 

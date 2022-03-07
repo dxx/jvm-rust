@@ -5,7 +5,7 @@ use super::super::instruction::Instruction;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Invoke instance method;
-/// special handling for superclass, private, and instance initialization method invocations
+/// Special handling for superclass, private, and instance initialization method invocations
 #[derive(Default, Debug)]
 pub struct INVOKE_SPECIAL {
     index: u64,
@@ -16,7 +16,7 @@ impl Instruction for INVOKE_SPECIAL {
         self.index = reader.read_u16() as u64;
     }
 
-    /// hack!
+    /// Hack!
     fn execute(&mut self, frame: &mut Frame) {
         frame.get_operand_stack().pop_ref();
     }

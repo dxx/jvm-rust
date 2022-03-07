@@ -2,12 +2,11 @@ use crate::classfile::constant_pool::cp_member_ref::ConstantFieldRefInfo;
 use crate::classfile::constant_pool::CONSTANT_FIELD_REF;
 use super::class::Class;
 use super::field::Field;
-use super::constant_pool::{Constant, ConstantPool};
+use super::constant_pool::Constant;
 use std::rc::Rc;
 use std::cell::RefCell;
 
 pub struct FieldRef {
-    cp: Rc<RefCell<ConstantPool>>,
     class_name: String,
     class: Option<Rc<RefCell<Class>>>,
     name: String,
@@ -16,10 +15,9 @@ pub struct FieldRef {
 }
 
 impl FieldRef {
-    pub fn new(cp: Rc<RefCell<ConstantPool>>, ref_info: &ConstantFieldRefInfo) -> Self {
+    pub fn new(ref_info: &ConstantFieldRefInfo) -> Self {
         let (name, descriptor) = ref_info.name_and_descriptor();
         FieldRef {
-            cp,
             class_name: ref_info.class_name(),
             class: None,
             name,
@@ -37,7 +35,7 @@ impl FieldRef {
 
     /// jvms 5.4.3.2
     fn resolve_field_ref(&mut self, class: Rc<RefCell<Class>>) {
-        let c = self.resolved_class(class);
+        let c = self.resolved_class(class.clone());
         let field = self.lookup_field(
             &c, self.name.clone(), self.descriptor.clone());
 
@@ -45,7 +43,7 @@ impl FieldRef {
             panic!("java.lang.NoSuchFieldError");
         }
 
-        if !field.as_ref().unwrap().borrow().is_accessible_to(&self.cp.borrow().class()) {
+        if !field.as_ref().unwrap().borrow().is_accessible_to(&class) {
             panic!("java.lang.IllegalAccessError");
         }
         
@@ -85,8 +83,7 @@ impl FieldRef {
     /// jvms8 5.4.3.1
     fn resolve_class_ref(&mut self, class: Rc<RefCell<Class>>) {
         let loader = class.borrow_mut().loader().unwrap();
-        let c = loader.borrow_mut().load_class(self.class_name.clone());
-        loader.borrow_mut().finish_load_class(loader.clone());
+        let c = loader.borrow_mut().load_class(loader.clone(), self.class_name.clone());
 
         if !c.borrow().is_accessible_to(&class) {
             panic!("java.lang.IllegalAccessError");

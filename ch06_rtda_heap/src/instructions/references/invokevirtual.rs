@@ -16,17 +16,18 @@ impl Instruction for INVOKE_VIRTUAL {
         self.index = reader.read_u16() as u64;
     }
 
-    /// hack!
+    /// Hack!
     fn execute(&mut self, frame: &mut Frame) {
         let current_method = frame.get_method();
         let current_class = current_method.borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
-        let method = r_cp.borrow_mut().get_constant_mut(self.index as usize)
-            .as_any_mut().downcast_mut::<MethodRef>().unwrap().resolved_method();
+        let cp = r_cp.borrow();
+        let method_ref = cp.get_constant(self.index as usize)
+            .as_any().downcast_ref::<MethodRef>().unwrap();
 
-        if method.borrow().name() == "println" {
+        if method_ref.name() == "println" {
             let stack = frame.get_operand_stack();
-            let descriptor = method.borrow().descriptor();
+            let descriptor = method_ref.descriptor();
             if descriptor == "(Z)V" {
                 println!("{}", stack.pop_int() != 0);
             } else if descriptor == "(C)V" {
@@ -40,7 +41,7 @@ impl Instruction for INVOKE_VIRTUAL {
             } else if descriptor == "(D)V" {
                 println!("{}", stack.pop_double());
             } else {
-                panic!("{}", descriptor);
+                panic!("println: {}", descriptor);
             }
             stack.pop_ref();
         }

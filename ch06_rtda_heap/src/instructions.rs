@@ -33,12 +33,11 @@ pub fn interpret(method: Rc<RefCell<Method>>) {
 }
 
 fn _loop(thread: Rc<RefCell<Thread>>, bytecode: Vec<u8>) {
-    let mut frame = thread.borrow_mut().pop_frame();
+    let frame = thread.borrow_mut().pop_frame().unwrap();
     let mut reader = BytecodeReader::default();
 
     loop {
-        let mut f = frame.as_mut().unwrap();
-        let pc = f.get_next_pc();
+        let pc = frame.borrow().get_next_pc();
         thread.borrow_mut().set_pc(pc);
 
         // Decode
@@ -47,15 +46,15 @@ fn _loop(thread: Rc<RefCell<Thread>>, bytecode: Vec<u8>) {
         match new_instruction(opcode) {
             Ok(mut inst) => {
                 inst.fetch_operands(&mut reader);
-                f.set_next_pc(reader.pc() as i64);
+                frame.borrow_mut().set_next_pc(reader.pc() as i64);
 
                 // Execute
                 println!("pc: {}, inst:{:?}", pc, inst);
-                inst.execute(&mut f);
+                inst.execute(&mut frame.borrow_mut());
             },
             Err(err) => {
-                // println!("LocalVars: {:?}", f.get_local_vars());
-                // println!("OperandStack: {:?}", f.get_operand_stack());
+                // println!("LocalVars: {:?}", frame.borrow_mut().get_local_vars());
+                // println!("OperandStack: {:?}", frame.borrow_mut().get_operand_stack());
                 panic!("{}", err);
             }
         }
