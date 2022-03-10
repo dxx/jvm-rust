@@ -35,9 +35,23 @@ impl ClassLoader {
                 class.clone()
             },
             None => {
+                if name.as_bytes()[0] == b'[' {
+                    return self.load_array_class(&_self, name);
+                }
                 self.load_non_array_class(&_self, name)
             }
         }
+    }
+
+    fn load_array_class(&mut self, _self: &Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {
+        let array_class = Class::new_array_class(name);
+
+        array_class.borrow_mut().set_loader(Some(_self.clone()));
+
+        self.resolve_super_class(_self, &array_class);
+        self.resolve_interfaces(_self, &array_class);
+
+        array_class
     }
 
     fn load_non_array_class(&mut self, _self: &Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {

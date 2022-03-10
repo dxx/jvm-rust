@@ -1,4 +1,8 @@
+mod anewarray;
+mod arraylength;
+mod multianewarray;
 mod new;
+mod newarray;
 mod checkcast;
 mod getfield;
 mod getstatic;
@@ -10,7 +14,11 @@ mod invokevirtual;
 mod putfield;
 mod putstatic;
 
+pub use self::anewarray::*;
+pub use self::arraylength::*;
+pub use self::multianewarray::*;
 pub use self::new::*;
+pub use self::newarray::*;
 pub use self::checkcast::*;
 pub use self::getfield::*;
 pub use self::getstatic::*;

@@ -1,19 +1,21 @@
 use crate::classfile::ClassFile;
+use crate::rtda::object::Object;
 use crate::rtda::heap::slots::Slots;
 use super::access_flags::ACC_ABSTRACT;
 use super::access_flags::ACC_ANNOTATION;
 use super::access_flags::ACC_ENUM;
 use super::access_flags::ACC_FINAL;
 use super::access_flags::ACC_INTERFACE;
+use super::access_flags::ACC_PUBLIC;
 use super::access_flags::ACC_SUPER;
 use super::access_flags::ACC_SYNTHETIC;
 use super::class_loader::ClassLoader;
 use super::constant_pool::ConstantPool;
+use super::class_name_helper::get_array_class_name;
 use super::field::Field;
 use super::field::new_fields;
 use super::method::Method;
 use super::method::new_methods;
-use super::access_flags::*;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -58,6 +60,26 @@ impl Class {
         rc_class.borrow_mut().fields = Some(new_fields(rc_class.clone(), cf.fields()));
         rc_class.borrow_mut().methods = Some(new_methods(rc_class.clone(), cf.methods()));
         rc_class
+    }
+
+    pub fn new_array_class(name: String) -> Rc<RefCell<Self>> {
+        let class = Class {
+            access_flags: ACC_PUBLIC,
+            name: name,
+            super_classname: "java/lang/Object".into(),
+            interface_names: vec!["java/lang/Cloneable".into(), "java/io/Serializable".into()],
+            constant_pool: None,
+            fields: None,
+            methods: None,
+            loader: None,
+            super_class: None,
+            interfaces: None,
+            instance_slot_count: 0,
+            static_slot_count: 0,
+            static_vars: None,
+            init_started: true,
+        };
+        Rc::new(RefCell::new(class))
     }
 
     pub fn name(&self) -> String {
@@ -206,10 +228,32 @@ impl Class {
             return true;
         }
 
-        if !_self.borrow().is_interface() {
-            return other.borrow().is_sub_class_of(_self);
-        } else {
-            return other.borrow().is_implements(_self);
+        if !other.borrow().is_array() {
+            if !other.borrow().is_interface() { // other is class
+                if !_self.borrow().is_interface() { // _self is not interface
+                    return other.borrow().is_sub_class_of(_self);
+                } else { // _self is interface
+                    return other.borrow().is_implements(_self);
+                }
+            } else { // other is interface
+                if !_self.borrow().is_interface() { // _self is not interface
+                    return _self.borrow().is_jl_object();
+                } else { // _self is interface
+                    return other.borrow().is_sub_interface_of(_self)
+                }
+            }
+        } else { // other is array
+            if !_self.borrow().is_array() {
+                if !_self.borrow().is_interface() { // _self is class
+                    return _self.borrow().is_jl_object();
+                } else { // _self is interface
+                    return _self.borrow().is_jl_cloneable() || _self.borrow().is_jio_serializable();
+                }
+            } else { // _self is array
+                let oc = other.borrow_mut().component_class();
+                let sc = _self.borrow_mut().component_class();
+                return oc.eq(&sc) || sc.borrow().is_assignable_from(&sc, &oc);
+            }
         }
     }
 
@@ -262,7 +306,29 @@ impl Class {
 
     pub fn init_started(&self) -> bool {
         self.init_started
-    } 
+    }
+
+    pub fn new_object(&self, class: Rc<RefCell<Class>>) -> Object {
+        Object::new(class)
+    }
+
+    pub fn array_class(&mut self) -> Rc<RefCell<Class>> {
+        let array_class_name = get_array_class_name(self.name.clone());
+        let loader = self.loader.as_mut().unwrap();
+        return loader.borrow_mut().load_class(loader.clone(), array_class_name);
+    }
+
+    fn is_jl_object(&self) -> bool {
+        self.name == "java/lang/Object"
+    }
+
+    fn is_jl_cloneable(&self) -> bool {
+        self.name == "java/lang/Cloneable"
+    }
+
+    fn is_jio_serializable(&self) -> bool {
+        self.name == "java/io/Serializable"
+    }
 }
 
 impl PartialEq for Class {

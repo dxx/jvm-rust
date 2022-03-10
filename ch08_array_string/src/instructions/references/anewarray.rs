@@ -4,17 +4,16 @@ use crate::rtda::Frame;
 use crate::rtda::cp_classref::ClassRef;
 use super::super::instruction::Instruction;
 use super::super::bytecode_reader::BytecodeReader;
-use super::super::init_class;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-/// Create new object
+/// Create new array of reference
 #[derive(Default, Debug)]
-pub struct NEW {
+pub struct ANEW_ARRAY {
     index: u64, 
 }
 
-impl Instruction for NEW {
+impl Instruction for ANEW_ARRAY {
     fn fetch_operands(&mut self, reader: &mut BytecodeReader) {
         self.index = reader.read_u16() as u64;
     }
@@ -23,19 +22,17 @@ impl Instruction for NEW {
         let method = frame.get_method();
         let current_class = method.borrow().get_class();
         let r_cp = current_class.borrow_mut().constant_pool();
-        let class = r_cp.borrow_mut().get_constant_mut(self.index as usize)
+        let component_class = r_cp.borrow_mut().get_constant_mut(self.index as usize)
             .as_any_mut().downcast_mut::<ClassRef>().unwrap().resolved_class(current_class);
 
-        if !class.borrow().init_started() {
-            frame.revert_next_pc();
-            init_class(&frame.get_thread(), &class);
-            return;
+        let stack = frame.get_operand_stack();
+        let count = stack.pop_int();
+        if count < 0 {
+            panic!("java.lang.NegativeArraySizeException");
         }
 
-        if class.borrow().is_interface() || class.borrow().is_abstract() {
-            panic!("java.lang.InstantiationError");
-        }
-        let _ref = class.borrow().new_object(class.clone());
-        frame.get_operand_stack().push_ref(Some(Rc::new(RefCell::new(_ref))));
+        let arr_class = component_class.borrow_mut().array_class();
+        let arr = arr_class.borrow_mut().new_array(arr_class.clone(), count as usize);
+        stack.push_ref(Some(Rc::new(RefCell::new(arr))));
     }
 }

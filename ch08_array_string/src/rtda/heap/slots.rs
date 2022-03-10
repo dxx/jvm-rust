@@ -1,4 +1,6 @@
 use crate::rtda::object::Object;
+use crate::rtda::object::SLOTS;
+use crate::rtda::ObjectData;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -69,4 +71,18 @@ impl Slots {
         self.slots[index]._ref.clone()
     }
 
+}
+
+impl ObjectData for Slots {
+    fn tag(&self) -> u8 {
+        SLOTS
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
+        self
+    }
 }

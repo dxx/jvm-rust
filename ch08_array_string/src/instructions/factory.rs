@@ -151,30 +151,30 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         0x2d => {
             Box::new(ALOAD_3::default())
         },
-        // 0x2e => {
-        //     Box::new(IALOAD::default())
-        // },
-        // 0x2f => {
-        //     Box::new(LALOAD::default())
-        // },
-        // 0x30 => {
-        //     Box::new(FALOAD::default())
-        // },
-        // 0x31 => {
-        //     Box::new(DALOAD::default())
-        // },
-        // 0x32 => {
-        //     Box::new(AALOAD::default())
-        // },
-        // 0x33 => {
-        //     Box::new(BALOAD::default())
-        // },
-        // 0x34 => {
-        //     Box::new(CALOAD::default())
-        // },
-        // 0x35 => {
-        //     Box::new(SALOAD::default())
-        // },
+        0x2e => {
+            Box::new(IALOAD::default())
+        },
+        0x2f => {
+            Box::new(LALOAD::default())
+        },
+        0x30 => {
+            Box::new(FALOAD::default())
+        },
+        0x31 => {
+            Box::new(DALOAD::default())
+        },
+        0x32 => {
+            Box::new(AALOAD::default())
+        },
+        0x33 => {
+            Box::new(BALOAD::default())
+        },
+        0x34 => {
+            Box::new(CALOAD::default())
+        },
+        0x35 => {
+            Box::new(SALOAD::default())
+        },
         0x36 => {
             Box::new(ISTORE::default())
         },
@@ -250,30 +250,30 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         0x4e => {
             Box::new(ASTORE_3::default())
         },
-        // 0x4f => {
-        //     Box::new(IASTORE::default())
-        // },
-        // 0x50 => {
-        //     Box::new(LASTORE::default())
-        // },
-        // 0x51 => {
-        //     Box::new(FASTORE::default())
-        // },
-        // 0x52 => {
-        //     Box::new(DASTORE::default())
-        // },
-        // 0x53 => {
-        //     Box::new(AASTORE::default())
-        // },
-        // 0x54 => {
-        //     Box::new(BASTORE::default())
-        // },
-        // 0x55 => {
-        //     Box::new(CASTORE::default())
-        // },
-        // 0x56 => {
-        //     Box::new(SASTORE::default())
-        // },
+        0x4f => {
+            Box::new(IASTORE::default())
+        },
+        0x50 => {
+            Box::new(LASTORE::default())
+        },
+        0x51 => {
+            Box::new(FASTORE::default())
+        },
+        0x52 => {
+            Box::new(DASTORE::default())
+        },
+        0x53 => {
+            Box::new(AASTORE::default())
+        },
+        0x54 => {
+            Box::new(BASTORE::default())
+        },
+        0x55 => {
+            Box::new(CASTORE::default())
+        },
+        0x56 => {
+            Box::new(SASTORE::default())
+        },
         0x57 => {
             Box::new(POP::default())
         },
@@ -577,15 +577,15 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         0xbb => {
             Box::new(NEW::default())
         },
-        // 0xbc => {
-        //     Box::new(NEW_ARRAY::default())
-        // },
-        // 0xbd => {
-        //     Box::new(ANEW_ARRAY::default())
-        // },
-        // 0xbe => {
-        //     Box::new(ARRAYLENG::default())
-        // },
+        0xbc => {
+            Box::new(NEW_ARRAY::default())
+        },
+        0xbd => {
+            Box::new(ANEW_ARRAY::default())
+        },
+        0xbe => {
+            Box::new(ARRAY_LENGTH::default())
+        },
         // 0xbf => {
         //     Box::new(ATHROW::default())
         // },
@@ -604,9 +604,9 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         0xc4 => {
             Box::new(WIDE::default())
         },
-        // 0xc5 => {
-        //     Box::new(MULTI_ANEW_ARRAY::default())
-        // },
+        0xc5 => {
+            Box::new(MULTI_ANEW_ARRAY::default())
+        },
         0xc6 => {
             Box::new(IFNULL::default())
         },

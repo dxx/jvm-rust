@@ -3,9 +3,19 @@ use super::heap::class::Class;
 use std::rc::Rc;
 use std::cell::RefCell;
 
+pub const SLOTS: u8 = 10;
+
+pub trait ObjectData {
+    fn tag(&self) -> u8;
+
+    fn as_any(&self) -> &dyn std::any::Any;
+
+    fn as_any_mut(&mut self) -> &mut dyn std::any::Any;
+}
+
 pub struct Object {
     class: Rc<RefCell<Class>>,
-    fields: Slots,
+    data: Box<dyn ObjectData>, // Slots for Object, []int32 for int[] ...
 }
 
 impl PartialEq for Object {
@@ -23,10 +33,17 @@ impl PartialEq for Object {
 }
 
 impl Object {
+    /// Create normal (non-array) object
     pub fn new(class: Rc<RefCell<Class>>) -> Self {
+        Object::new_data(
+            class.clone(),
+            Box::new(Slots::new(class.borrow().instance_slot_count() as usize)))
+    }
+
+    pub fn new_data(class: Rc<RefCell<Class>>, data: Box<dyn ObjectData>) -> Self {
         Object {
-            class: class.clone(),
-            fields: Slots::new(class.borrow().instance_slot_count() as usize),
+            class,
+            data,
         }
     }
 
@@ -35,14 +52,22 @@ impl Object {
     }
 
     pub fn fields(&self) -> &Slots {
-        &self.fields
+        self.data.as_any().downcast_ref::<Slots>().as_ref().unwrap()
     }
 
     pub fn fields_mut(&mut self) -> &mut Slots {
-        &mut self.fields
+        self.data.as_any_mut().downcast_mut::<Slots>().unwrap()
     }
 
     pub fn is_instance_of(&self, class: &Rc<RefCell<Class>>) -> bool {
         class.borrow().is_assignable_from(class, &self.class)
+    }
+
+    pub fn data(&self) -> &Box<dyn ObjectData> {
+        &self.data
+    }
+
+    pub fn data_mut(&mut self) -> &mut Box<dyn ObjectData> {
+        &mut self.data
     }
 }
