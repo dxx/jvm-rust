@@ -3,6 +3,7 @@
 use crate::rtda::{Frame, OperandStack};
 use crate::rtda::cp_methodref::MethodRef;
 use crate::rtda::method_lookup::lookup_method_in_class;
+use crate::rtda::string_pool;
 use super::super::instruction::Instruction;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::invoke_method;
@@ -75,6 +76,10 @@ fn println(stack: &mut OperandStack, descriptor: String) {
         println!("{}", stack.pop_long());
     } else if descriptor == "(D)V" {
         println!("{}", stack.pop_double());
+    } else if descriptor == "(Ljava/lang/String;)V" {
+        let j_str = stack.pop_ref();
+        let r_str = string_pool::rust_string(j_str.as_ref().unwrap());
+        println!("{}", r_str);
     } else {
         panic!("println: {}", descriptor);
     }

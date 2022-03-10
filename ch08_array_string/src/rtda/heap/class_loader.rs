@@ -203,7 +203,11 @@ fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &Rc<RefCell<Slots>>, 
             .as_any().downcast_ref::<f64>().unwrap();
             vars.borrow_mut().set_double(slot_id as usize, val);
         } else if descriptor == "Ljava/lang/String;" {
-            panic!("Todo");
+            let val = &*cp.borrow().get_constant(cp_index as usize)
+            .as_any().downcast_ref::<String>().unwrap().clone();
+            let interned_str = cp.borrow_mut().string_pool_mut().jstring(
+                    class.borrow().loader().unwrap(), val.into());
+            vars.borrow_mut().set_ref(slot_id as usize, Some(interned_str));
         }
     }
 }

@@ -70,4 +70,17 @@ impl Object {
     pub fn data_mut(&mut self) -> &mut Box<dyn ObjectData> {
         &mut self.data
     }
+
+    /// Reflection
+    pub fn get_ref_var(&mut self, name: String, descriptor: String) -> Rc<RefCell<Object>> {
+        let field = self.class.borrow().get_field(name, descriptor, false);
+        let slots = self.data.as_any_mut().downcast_mut::<Slots>().unwrap();
+        slots.get_ref(field.unwrap().borrow().slot_id() as usize).unwrap()
+    }
+
+    pub fn set_ref_var(&mut self, name: String, descriptor: String, _ref: Rc<RefCell<Object>>) {
+        let field = self.class.borrow().get_field(name, descriptor, false);
+        let slots = self.data.as_any_mut().downcast_mut::<Slots>().unwrap();
+        slots.set_ref(field.unwrap().borrow().slot_id() as usize, Some(_ref));
+    }
 }

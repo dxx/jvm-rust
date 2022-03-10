@@ -318,6 +318,30 @@ impl Class {
         return loader.borrow_mut().load_class(loader.clone(), array_class_name);
     }
 
+    pub fn get_field(&self, name: String, descriptor: String, is_static: bool) -> Option<Rc<RefCell<Field>>> {
+        for field in self.fields.as_ref().unwrap() {
+            if field.borrow().is_static() == is_static &&
+                field.borrow().name() == name &&
+                field.borrow().descriptor() == descriptor {
+                    return Some(field.clone());
+            }
+        }
+
+        let mut c = self.super_class();
+        while let Some(class) = c {
+            for field in class.borrow().fields() {
+                if field.borrow().is_static() == is_static &&
+                    field.borrow().name() == name &&
+                    field.borrow().descriptor() == descriptor {
+                        return Some(field);
+                    }
+            }
+
+            c = class.borrow().super_class();
+        }
+        return None;
+    }
+
     fn is_jl_object(&self) -> bool {
         self.name == "java/lang/Object"
     }
@@ -329,6 +353,7 @@ impl Class {
     fn is_jio_serializable(&self) -> bool {
         self.name == "java/io/Serializable"
     }
+    
 }
 
 impl PartialEq for Class {

@@ -92,6 +92,13 @@ fn _ldc(frame: &mut Frame, index: u64) {
                 .as_any().downcast_ref::<f32>().unwrap();
             stack.push_float(val);
         },
+        constant_pool::CONSTANT_STRING => {
+            let val = &*r_cp.borrow_mut().get_constant(index as usize)
+                .as_any().downcast_ref::<String>().unwrap().clone();
+            let interned_str = r_cp.borrow_mut().string_pool_mut().jstring(
+                current_class.borrow().loader().unwrap(), val.into());
+            stack.push_ref(Some(interned_str));
+        },
         _ => {
             panic!("TODO: ldc!");
         }
