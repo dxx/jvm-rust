@@ -11,6 +11,7 @@ use crate::cmd::{parse_cmd, Cmd};
 use crate::classpath::Classpath;
 use crate::rtda::class_loader::ClassLoader;
 use crate::instructions::interpret;
+use std::path::MAIN_SEPARATOR;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -29,12 +30,15 @@ fn main() {
 fn start_jvm(cmd: Cmd) {
     let cp = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
     let class_loader = Rc::new(RefCell::new(ClassLoader::new(cp, cmd.verbose_class_flag)));
-    let main_class = class_loader.borrow_mut().load_class(class_loader.clone(), cmd.class.clone());
+
+    let class_name = cmd.class.replace(".", &MAIN_SEPARATOR.to_string());
+
+    let main_class = class_loader.borrow_mut().load_class(class_loader.clone(), class_name);
 
     let main_method = main_class.borrow_mut().get_main_method();
     match main_method {
         Some(member) => {
-            interpret(member.clone(), cmd.verbose_inst_flag);
+            interpret(member.clone(), cmd.verbose_inst_flag, cmd.args);
         },
         None => {
             println!("Main method not found in class {}", &cmd.class);

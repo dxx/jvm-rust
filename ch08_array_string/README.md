@@ -27,3 +27,9 @@ jvm-rust ❯ ./target/debug/ch08_array_string -cp "/Users/dxx/Desktop" jvmrust.c
 95
 97
 ```
+
+```shell
+jvm-rust ❯ ./target/debug/ch08_array_string -cp "/Users/dxx/Desktop" jvmrust.ch08.PrintArgs foo 你好，世界!
+foo
+你好，世界!
+```

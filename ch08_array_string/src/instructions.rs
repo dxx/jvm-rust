@@ -15,23 +15,53 @@ mod factory;
 pub use self::base::*;
 
 use crate::rtda::Thread;
-use crate::rtda::method::Method;
 use crate::rtda::Frame;
+use crate::rtda::Object;
+use crate::rtda::method::Method;
 use self::instruction::Instruction;
 use self::bytecode_reader::BytecodeReader;
 use self::factory::new_instruction;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub fn interpret(method: Rc<RefCell<Method>>, log_inst: bool) {
+pub fn interpret(method: Rc<RefCell<Method>>, log_inst: bool, args: Vec<String>) {
     let thread = Rc::new(RefCell::new(Thread::new()));
-    let frame = thread.borrow_mut().new_frame(
+    let mut frame = thread.borrow_mut().new_frame(
         thread.clone(),
         method.clone(),
     );
+    
+    let j_args = create_args_array(method, args);
+    frame.get_local_vars().set_ref(0, Some(j_args));
+
     thread.borrow_mut().push_frame(frame);
 
     _loop(thread, log_inst);
+}
+
+fn create_args_array(
+    method: Rc<RefCell<Method>>,
+    args: Vec<String>,
+) -> Rc<RefCell<Object>> {
+    let class = method.borrow().get_class();
+    let loader = class.borrow_mut().loader().unwrap();
+    let constant_pool = class.borrow_mut().constant_pool();
+    let mut constant_pool = constant_pool.borrow_mut();
+    let string_pool = constant_pool.string_pool_mut();
+
+    let string_class = loader.borrow_mut().load_class(
+        loader.clone(),
+    "java/lang/String".into());
+    let array_class = string_class.borrow_mut().array_class();
+    let mut args_arr = array_class.borrow_mut().new_array(array_class.clone(), args.len());
+    
+    let j_args = args_arr.refs_mut();
+    for i in 0..args.len() {
+        let j_str = string_pool.jstring(loader.clone(), args[i].clone());
+        j_args[i] = Some(j_str);
+    }
+
+    Rc::new(RefCell::new(args_arr))
 }
 
 fn _loop(thread: Rc<RefCell<Thread>>, log_inst: bool) {
