@@ -2,6 +2,7 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
 
@@ -39,7 +40,7 @@ impl Instruction for TABLE_SWITCH {
         self.jump_offsets = reader.read_i32s(jump_offset_count);
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let index = frame.get_operand_stack().pop_int();
         let offset = 
         if index >= self.low && index <= self.high {
@@ -48,5 +49,7 @@ impl Instruction for TABLE_SWITCH {
             self.default_offset
         };
         branch(frame, offset as i64);
+
+        Ok(())
     }
 }

@@ -2,14 +2,17 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 
 /// Compare float
 #[derive(Default, Debug)]
 pub struct FCMPG;
 
 impl Instruction for FCMPG {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _fcmp(frame, true);
+
+		Ok(())
     }
 }
 
@@ -17,8 +20,10 @@ impl Instruction for FCMPG {
 pub struct FCMPL;
 
 impl Instruction for FCMPL {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _fcmp(frame, false);
+
+		Ok(())
     }
 }
 

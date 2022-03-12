@@ -2,6 +2,7 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 
 /// Duplicate the top operand stack value
 #[derive(Default, Debug)]
@@ -14,12 +15,14 @@ impl Instruction for DUP {
     ///                |
     ///                V
     /// [...][c][b][a][a]
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let slot = stack.pop_slot();
         let slot2 = slot.clone();
         stack.push_slot(slot);
         stack.push_slot(slot2);
+
+        Ok(())
     }
 }
 
@@ -34,13 +37,15 @@ impl Instruction for DUP_X1 {
     ///          |
     ///          V
     /// [...][c][a][b][a]
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
         stack.push_slot(slot1.clone());
         stack.push_slot(slot2);
         stack.push_slot(slot1);
+
+        Ok(())
     }
 }
 
@@ -55,7 +60,7 @@ impl Instruction for DUP_X2 {
     ///       |
     ///       V
     /// [...][a][c][b][a]
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
@@ -64,6 +69,8 @@ impl Instruction for DUP_X2 {
         stack.push_slot(slot3);
         stack.push_slot(slot2);
         stack.push_slot(slot1);
+
+        Ok(())
     }
 }
 
@@ -78,7 +85,7 @@ impl Instruction for DUP2 {
     ///                |  |
     ///                V  V
     /// [...][c][b][a][b][a]
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
@@ -86,6 +93,8 @@ impl Instruction for DUP2 {
         stack.push_slot(slot1.clone());
         stack.push_slot(slot2);
         stack.push_slot(slot1);
+
+        Ok(())
     }
 }
 
@@ -100,7 +109,7 @@ impl Instruction for DUP2_X1 {
     ///       |  |
     ///       V  V
     /// [...][b][a][c][b][a]
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
@@ -110,6 +119,8 @@ impl Instruction for DUP2_X1 {
         stack.push_slot(slot3);
         stack.push_slot(slot2);
         stack.push_slot(slot1);
+
+        Ok(())
     }
 }
 
@@ -124,7 +135,7 @@ impl Instruction for DUP2_X2 {
     ///       |   __/
     ///       V  V
     /// [...][b][a][d][c][b][a]
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
@@ -136,5 +147,7 @@ impl Instruction for DUP2_X2 {
         stack.push_slot(slot3);
         stack.push_slot(slot2);
         stack.push_slot(slot1);
+
+        Ok(())
     }
 }

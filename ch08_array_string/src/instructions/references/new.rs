@@ -3,6 +3,7 @@
 use crate::rtda::Frame;
 use crate::rtda::cp_classref::ClassRef;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::init_class;
 use std::rc::Rc;
@@ -19,7 +20,7 @@ impl Instruction for NEW {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let method = frame.get_method();
         let current_class = method.borrow().get_class();
         let r_cp = current_class.borrow_mut().constant_pool();
@@ -29,13 +30,15 @@ impl Instruction for NEW {
         if !class.borrow().init_started() {
             frame.revert_next_pc();
             init_class(&frame.get_thread(), &class);
-            return;
+            return Ok(());
         }
 
         if class.borrow().is_interface() || class.borrow().is_abstract() {
-            panic!("java.lang.InstantiationError");
+            return Err("java.lang.InstantiationError".into());
         }
         let _ref = class.borrow().new_object(class.clone());
         frame.get_operand_stack().push_ref(Some(Rc::new(RefCell::new(_ref))));
+
+        Ok(())
     }
 }

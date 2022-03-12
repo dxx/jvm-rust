@@ -3,6 +3,7 @@
 use crate::rtda::Frame;
 use crate::rtda::cp_classref::ClassRef;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -18,7 +19,7 @@ impl Instruction for ANEW_ARRAY {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let method = frame.get_method();
         let current_class = method.borrow().get_class();
         let r_cp = current_class.borrow_mut().constant_pool();
@@ -28,11 +29,13 @@ impl Instruction for ANEW_ARRAY {
         let stack = frame.get_operand_stack();
         let count = stack.pop_int();
         if count < 0 {
-            panic!("java.lang.NegativeArraySizeException");
+            return Err("java.lang.NegativeArraySizeException".into());
         }
 
         let arr_class = component_class.borrow_mut().array_class();
         let arr = arr_class.borrow_mut().new_array(arr_class.clone(), count as usize);
         stack.push_ref(Some(Rc::new(RefCell::new(arr))));
+
+        Ok(())
     }
 }

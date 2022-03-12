@@ -4,6 +4,7 @@ use crate::rtda::Frame;
 use crate::rtda::class::Class;
 use crate::rtda::class_loader::ClassLoader;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -28,23 +29,25 @@ impl Instruction for NEW_ARRAY {
         self.atype = reader.read_u8();
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let method = frame.get_method();
         let stack = frame.get_operand_stack();
         let count = stack.pop_int();
         if count < 0 {
-            panic!("java.lang.NegativeArraySizeException");
+            return Err("java.lang.NegativeArraySizeException".into());
         }
 
         let class_loader = method.borrow().get_class().borrow().loader();
-        let arr_class = get_primitive_array_class(class_loader.unwrap(), self.atype);
+        let arr_class = get_primitive_array_class(class_loader.unwrap(), self.atype)?;
         let arr = arr_class.borrow_mut().new_array(arr_class.clone(), count as usize);
         stack.push_ref(Some(Rc::new(RefCell::new(arr))));
+
+        Ok(())
     }
 }
 
-fn get_primitive_array_class(loader: Rc<RefCell<ClassLoader>>, atype: u8) -> Rc<RefCell<Class>> {
-    match atype {
+fn get_primitive_array_class(loader: Rc<RefCell<ClassLoader>>, atype: u8) -> std::result::Result<Rc<RefCell<Class>>, String> {
+    let class = match atype {
         AT_BOOLEAN => {
             loader.borrow_mut().load_class(loader.clone(), "[Z".into())
         },
@@ -70,7 +73,8 @@ fn get_primitive_array_class(loader: Rc<RefCell<ClassLoader>>, atype: u8) -> Rc<
             loader.borrow_mut().load_class(loader.clone(), "[D".into())
         },
         _ => {
-            panic!("Invalid atype!");
+            return Err("Invalid atype!".into());
         }
-    }
+    };
+    Ok(class)
 }

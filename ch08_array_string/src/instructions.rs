@@ -90,7 +90,12 @@ fn _loop(thread: Rc<RefCell<Thread>>, log_inst: bool) {
                 }
 
                 // Execute
-                inst.execute(&mut frame.borrow_mut());
+                let result = inst.execute(&mut frame.borrow_mut());
+                if result.is_err() {
+                    log_frames(&thread);
+        
+                    panic!("{}", result.err().unwrap());
+                }
                 
                 if thread.borrow().is_stack_empty() {
                     break;

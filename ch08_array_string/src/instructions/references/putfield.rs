@@ -3,6 +3,7 @@
 use crate::rtda::Frame;
 use crate::rtda::cp_fieldref::FieldRef;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Set field in object
@@ -16,7 +17,7 @@ impl Instruction for PUT_FIELD {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let current_method = frame.get_method();
         let current_class = current_method.borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
@@ -26,11 +27,11 @@ impl Instruction for PUT_FIELD {
         let class = field.borrow().get_class();
 
         if field.borrow().is_static() {
-            panic!("java.lang.IncompatibleClassChangeError");
+            return Err("java.lang.IncompatibleClassChangeError".into());
         }
         if field.borrow().is_final() {
             if current_class.ne(&class) || current_method.borrow().name() != "<init>" {
-                panic!("java.lang.IllegalAccessError");
+                return Err("java.lang.IllegalAccessError".into());
             }
         }
 
@@ -88,5 +89,7 @@ impl Instruction for PUT_FIELD {
                 // TODO
             }
         }
+
+        Ok(())
     }
 }

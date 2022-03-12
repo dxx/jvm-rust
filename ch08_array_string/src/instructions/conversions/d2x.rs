@@ -2,17 +2,20 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 
 /// Convert double to float
 #[derive(Default, Debug)]
 pub struct D2F;
 
 impl Instruction for D2F {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let d = stack.pop_double();
         let f = d as f32;
         stack.push_float(f);
+
+        Ok(())
     }
 }
 
@@ -21,11 +24,13 @@ impl Instruction for D2F {
 pub struct D2I;
 
 impl Instruction for D2I {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let d = stack.pop_double();
         let i = d as i32;
         stack.push_int(i);
+
+        Ok(())
     }
 }
 
@@ -34,10 +39,12 @@ impl Instruction for D2I {
 pub struct D2L;
 
 impl Instruction for D2L {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let d = stack.pop_double();
         let l = d as i64;
         stack.push_long(l);
+
+        Ok(())
     }
 }

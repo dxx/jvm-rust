@@ -3,6 +3,7 @@
 use crate::rtda::Frame;
 use crate::rtda::cp_fieldref::FieldRef;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Get field from object
@@ -16,7 +17,7 @@ impl Instruction for GET_FIELD {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let current_method = frame.get_method();
         let current_class = current_method.borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
@@ -24,13 +25,13 @@ impl Instruction for GET_FIELD {
             .as_any_mut().downcast_mut::<FieldRef>().unwrap().resolved_field(current_class.clone());
 
         if field.borrow().is_static() {
-            panic!("java.lang.IncompatibleClassChangeError");
+            return Err("java.lang.IncompatibleClassChangeError".into());
         }
         
         let stack = frame.get_operand_stack();
         let _ref = stack.pop_ref();
         if _ref.is_none() {
-            panic!("java.lang.NullPointerException");
+            return Err("java.lang.NullPointerException".into());
         }
 
         let descriptor = field.borrow().descriptor().as_bytes()[0];
@@ -56,5 +57,7 @@ impl Instruction for GET_FIELD {
                 // TODO
             }
         }
+
+        Ok(())
     }
 }

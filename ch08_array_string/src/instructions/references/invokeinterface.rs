@@ -4,6 +4,7 @@ use crate::rtda::Frame;
 use crate::rtda::cp_interface_methodref::InterfaceMethodRef;
 use crate::rtda::method_lookup::lookup_method_in_class;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::invoke_method;
 
@@ -22,7 +23,7 @@ impl Instruction for INVOKE_INTERFACE {
         reader.read_u8(); // must be 0
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let current_class = frame.get_method().borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let resolved_class = r_cp.borrow_mut().get_constant_mut(self.index as usize)
@@ -31,16 +32,16 @@ impl Instruction for INVOKE_INTERFACE {
             .as_any_mut().downcast_mut::<InterfaceMethodRef>().unwrap().resolved_interface_method(resolved_class.clone());
 
         if resolved_method.borrow().is_static() || resolved_method.borrow().is_private() {
-            panic!("java.lang.IncompatibleClassChangeError");
+            return Err("java.lang.IncompatibleClassChangeError".into());
         }
 
         let _ref = frame.get_operand_stack().get_ref_from_top(
             (resolved_method.borrow().arg_slot_count() - 1) as usize);
         if _ref.is_none() {
-            panic!("java.lang.NullPointerException");
+            return Err("java.lang.NullPointerException".into());
         }
         if !_ref.as_ref().unwrap().borrow().class().borrow().is_implements(&resolved_class) {
-            panic!("java.lang.IncompatibleClassChangeError");
+            return Err("java.lang.IncompatibleClassChangeError".into());
         }
 
         let method_to_be_invoked = lookup_method_in_class(
@@ -49,13 +50,15 @@ impl Instruction for INVOKE_INTERFACE {
             resolved_method.borrow().descriptor());
 
         if method_to_be_invoked.is_none() || method_to_be_invoked.as_ref().unwrap().borrow().is_abstract() {
-            panic!("java.lang.AbstractMethodError");
+            return Err("java.lang.AbstractMethodError".into());
         }
         if !method_to_be_invoked.as_ref().unwrap().borrow().is_public() {
-            panic!("java.lang.IllegalAccessError");
+            return Err("java.lang.IllegalAccessError".into());
         }
 
         invoke_method(frame, method_to_be_invoked.as_ref().unwrap());
+
+        Ok(())
     }
 }
 

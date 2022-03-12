@@ -2,6 +2,7 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Load float from local variable
@@ -15,8 +16,10 @@ impl Instruction for FLOAD {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _fload(frame, self.index);
+
+        Ok(())
     }
 }
 
@@ -24,8 +27,10 @@ impl Instruction for FLOAD {
 pub struct FLOAD_0;
 
 impl Instruction for FLOAD_0 {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _fload(frame, 0);
+
+        Ok(())
     }
 }
 
@@ -33,8 +38,10 @@ impl Instruction for FLOAD_0 {
 pub struct FLOAD_1;
 
 impl Instruction for FLOAD_1 {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _fload(frame, 1);
+
+        Ok(())
     }
 }
 
@@ -42,8 +49,10 @@ impl Instruction for FLOAD_1 {
 pub struct FLOAD_2;
 
 impl Instruction for FLOAD_2 {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _fload(frame, 2);
+
+        Ok(())
     }
 }
 
@@ -51,8 +60,10 @@ impl Instruction for FLOAD_2 {
 pub struct FLOAD_3;
 
 impl Instruction for FLOAD_3 {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _fload(frame, 3);
+
+        Ok(())
     }
 }
 

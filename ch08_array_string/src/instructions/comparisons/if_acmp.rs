@@ -2,6 +2,7 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
 
@@ -16,10 +17,12 @@ impl Instruction for IF_ACMPEQ {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         if _acmp(frame) {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -33,10 +36,12 @@ impl Instruction for IF_ACMPNE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         if !_acmp(frame) {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 

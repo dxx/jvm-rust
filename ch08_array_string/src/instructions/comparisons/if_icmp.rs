@@ -2,6 +2,7 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
 
@@ -16,11 +17,13 @@ impl Instruction for IF_ICMPEQ {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let (val1, val2)= _icmp_pop(frame);
         if val1 == val2 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -34,11 +37,13 @@ impl Instruction for IF_ICMPNE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let (val1, val2)= _icmp_pop(frame);
         if val1 != val2 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -52,11 +57,13 @@ impl Instruction for IF_ICMPLT {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let (val1, val2)= _icmp_pop(frame);
         if val1 < val2 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -70,11 +77,13 @@ impl Instruction for IF_ICMPLE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let (val1, val2)= _icmp_pop(frame);
         if val1 <= val2 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -88,11 +97,13 @@ impl Instruction for IF_ICMPGT {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let (val1, val2)= _icmp_pop(frame);
         if val1 > val2 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -106,11 +117,13 @@ impl Instruction for IF_ICMPGE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let (val1, val2)= _icmp_pop(frame);
         if val1 >= val2 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 

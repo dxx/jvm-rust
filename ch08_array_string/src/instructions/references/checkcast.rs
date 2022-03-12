@@ -3,6 +3,7 @@
 use crate::rtda::Frame;
 use crate::rtda::cp_classref::ClassRef;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Check whether object is of given type
@@ -16,14 +17,14 @@ impl Instruction for CHECK_CAST {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let method = frame.get_method();
         let stack = frame.get_operand_stack();
         let _ref = stack.pop_ref();
         stack.push_ref(_ref.clone());
 
         if _ref.is_none() {
-            return;
+            return Ok(());
         }
 
         let current_class = method.borrow().get_class();
@@ -32,8 +33,10 @@ impl Instruction for CHECK_CAST {
             .as_any_mut().downcast_mut::<ClassRef>().unwrap().resolved_class(current_class);
 
         if !_ref.unwrap().borrow().is_instance_of(&class) {
-            panic!("java.lang.ClassCastException");
+            return Err("java.lang.ClassCastException".into());
         }
+
+        Ok(())
     }
 
 }

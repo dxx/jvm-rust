@@ -2,14 +2,17 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 
 /// Compare double
 #[derive(Default, Debug)]
 pub struct DCMPG;
 
 impl Instruction for DCMPG {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _dcmp(frame, true);
+
+		Ok(())
     }
 }
 
@@ -17,8 +20,10 @@ impl Instruction for DCMPG {
 pub struct DCMPL;
 
 impl Instruction for DCMPL {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _dcmp(frame, false);
+
+		Ok(())
     }
 }
 

@@ -3,6 +3,7 @@
 use crate::rtda::Frame;
 use crate::classfile::constant_pool;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Push item from run-time constant pool
@@ -16,8 +17,10 @@ impl Instruction for LDC {
         self.index = reader.read_u8() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _ldc(frame, self.index);
+
+        Ok(())
     }
 }
 
@@ -32,8 +35,10 @@ impl Instruction for LDC_W {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _ldc(frame, self.index);
+
+        Ok(())
     }
 }
 
@@ -48,7 +53,7 @@ impl Instruction for LDC2_W {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let index = self.index;
         let method = frame.get_method();
         let stack = frame.get_operand_stack();
@@ -71,6 +76,8 @@ impl Instruction for LDC2_W {
                 panic!("java.lang.ClassFormatError");
             }
         }
+
+        Ok(())
     }
 }
 

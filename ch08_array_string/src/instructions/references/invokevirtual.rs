@@ -5,6 +5,7 @@ use crate::rtda::cp_methodref::MethodRef;
 use crate::rtda::method_lookup::lookup_method_in_class;
 use crate::rtda::string_pool;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::invoke_method;
 
@@ -19,14 +20,14 @@ impl Instruction for INVOKE_VIRTUAL {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let current_class = frame.get_method().borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let resolved_method = r_cp.borrow_mut().get_constant_mut(self.index as usize)
             .as_any_mut().downcast_mut::<MethodRef>().unwrap().resolved_method(current_class.clone());
 
         if resolved_method.borrow().is_static() {
-            panic!("java.lang.IncompatibleClassChangeError");
+            return Err("java.lang.IncompatibleClassChangeError".into());
         }
 
         let _ref = frame.get_operand_stack().get_ref_from_top(
@@ -35,10 +36,10 @@ impl Instruction for INVOKE_VIRTUAL {
             if resolved_method.borrow().name() == "println" {
                 // Hack!
                 println(frame.get_operand_stack(), resolved_method.borrow().descriptor());
-                return;
+                return Ok(());
             }
 
-            panic!("java.lang.NullPointerException");
+            return Err("java.lang.NullPointerException".into());
         }
 
         if resolved_method.borrow().is_protected() &&
@@ -46,7 +47,7 @@ impl Instruction for INVOKE_VIRTUAL {
             resolved_method.borrow().get_class().borrow().get_package_name() != current_class.borrow().get_package_name() &&
             _ref.as_ref().unwrap().borrow().class().ne(&current_class) &&
             !_ref.as_ref().unwrap().borrow().class().borrow().is_sub_class_of(&current_class) {
-            panic!("java.lang.IllegalAccessError");
+            return Err("java.lang.IllegalAccessError".into());
         }
 
         let method_to_be_invoked = lookup_method_in_class(
@@ -55,10 +56,12 @@ impl Instruction for INVOKE_VIRTUAL {
             resolved_method.borrow().descriptor());
 
         if method_to_be_invoked.is_none() || method_to_be_invoked.as_ref().unwrap().borrow().is_abstract() {
-            panic!("java.lang.AbstractMethodError");
+            return Err("java.lang.AbstractMethodError".into());
         }
 
         invoke_method(frame, method_to_be_invoked.as_ref().unwrap());
+
+        Ok(())
     }
 }
 

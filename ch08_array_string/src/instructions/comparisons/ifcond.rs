@@ -2,6 +2,7 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
 
@@ -16,11 +17,13 @@ impl Instruction for IFEQ {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let val = frame.get_operand_stack().pop_int();
         if val == 0 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -34,11 +37,13 @@ impl Instruction for IFNE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let val = frame.get_operand_stack().pop_int();
         if val != 0 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -52,11 +57,13 @@ impl Instruction for IFLT {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let val = frame.get_operand_stack().pop_int();
         if val < 0 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -70,11 +77,13 @@ impl Instruction for IFLE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let val = frame.get_operand_stack().pop_int();
         if val <= 0 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -88,11 +97,13 @@ impl Instruction for IFGT {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let val = frame.get_operand_stack().pop_int();
         if val > 0 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }
 
@@ -106,10 +117,12 @@ impl Instruction for IFGE {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let val = frame.get_operand_stack().pop_int();
         if val >= 0 {
             branch(frame, self.offset);
         }
+
+        Ok(())
     }
 }

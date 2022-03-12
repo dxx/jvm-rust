@@ -2,6 +2,7 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 
 // Boolean AND int
 
@@ -9,12 +10,14 @@ use super::super::instruction::Instruction;
 pub struct IAND;
 
 impl Instruction for IAND {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
         let result = v1 & v2;
         stack.push_int(result);
+
+        Ok(())
     }
 }
 
@@ -23,11 +26,13 @@ impl Instruction for IAND {
 pub struct LAND;
 
 impl Instruction for LAND {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let stack = frame.get_operand_stack();
         let v2 = stack.pop_long();
         let v1 = stack.pop_long();
         let result = v1 & v2;
         stack.push_long(result);
+
+        Ok(())
     }
 }

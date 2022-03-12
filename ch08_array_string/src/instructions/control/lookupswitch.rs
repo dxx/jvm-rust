@@ -2,6 +2,7 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
 
@@ -32,17 +33,19 @@ impl Instruction for LOOKUP_SWITCH {
 	    self.match_offsets = reader.read_i32s(self.npairs * 2);
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let key = frame.get_operand_stack().pop_int();
         let mut i = 0_i32;
         while i < self.npairs * 2 {
             if self.match_offsets[i as usize] == key {
                 let offset = self.match_offsets[(i + 1) as usize];
                 branch(frame, offset as i64);
-                return;
+                return Ok(());
             }
             i += 2;
         }
         branch(frame, self.default_offset as i64);
+
+        Ok(())
     }
 }

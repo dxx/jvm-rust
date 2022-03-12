@@ -2,6 +2,7 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Load double from local variable
@@ -15,8 +16,10 @@ impl Instruction for DLOAD {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _dload(frame, self.index);
+
+        Ok(())
     }
 }
 
@@ -24,8 +27,10 @@ impl Instruction for DLOAD {
 pub struct DLOAD_0;
 
 impl Instruction for DLOAD_0 {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _dload(frame, 0);
+
+        Ok(())
     }
 }
 
@@ -33,8 +38,10 @@ impl Instruction for DLOAD_0 {
 pub struct DLOAD_1;
 
 impl Instruction for DLOAD_1 {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _dload(frame, 1);
+
+        Ok(())
     }
 }
 
@@ -42,8 +49,10 @@ impl Instruction for DLOAD_1 {
 pub struct DLOAD_2;
 
 impl Instruction for DLOAD_2 {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _dload(frame, 2);
+
+        Ok(())
     }
 }
 
@@ -51,8 +60,10 @@ impl Instruction for DLOAD_2 {
 pub struct DLOAD_3;
 
 impl Instruction for DLOAD_3 {
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         _dload(frame, 3);
+
+        Ok(())
     }
 }
 

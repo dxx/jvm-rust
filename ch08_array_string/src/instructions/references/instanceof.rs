@@ -3,6 +3,7 @@
 use crate::rtda::Frame;
 use crate::rtda::cp_classref::ClassRef;
 use super::super::instruction::Instruction;
+use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Determine if object is of given type
@@ -16,13 +17,13 @@ impl Instruction for INSTANCE_OF {
         self.index = reader.read_u16() as u64;
     }
     
-    fn execute(&mut self, frame: &mut Frame) {
+    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let method = frame.get_method();
         let stack = frame.get_operand_stack();
         let _ref = stack.pop_ref();
         if _ref.is_none() {
             stack.push_int(0);
-            return;
+            return Ok(());
         }
 
         let current_class = method.borrow().get_class();
@@ -35,5 +36,7 @@ impl Instruction for INSTANCE_OF {
         } else {
             stack.push_int(0);
         }
+
+        Ok(())
     }
 }
