@@ -65,12 +65,12 @@ impl Class {
     pub fn new_array_class(name: String) -> Rc<RefCell<Self>> {
         let class = Class {
             access_flags: ACC_PUBLIC,
-            name: name,
+            name,
             super_classname: "java/lang/Object".into(),
             interface_names: vec!["java/lang/Cloneable".into(), "java/io/Serializable".into()],
             constant_pool: None,
-            fields: None,
-            methods: None,
+            fields: Some(vec![]),
+            methods: Some(vec![]),
             loader: None,
             super_class: None,
             interfaces: None,
