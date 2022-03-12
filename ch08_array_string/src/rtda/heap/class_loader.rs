@@ -51,6 +51,7 @@ impl ClassLoader {
         self.resolve_super_class(_self, &array_class);
         self.resolve_interfaces(_self, &array_class);
 
+        self.class_map.insert(array_class.borrow().name(), array_class.clone());
         array_class
     }
 
