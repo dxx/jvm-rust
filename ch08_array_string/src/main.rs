@@ -10,6 +10,7 @@ mod instructions;
 use crate::cmd::{parse_cmd, Cmd};
 use crate::classpath::Classpath;
 use crate::rtda::class_loader::ClassLoader;
+use crate::rtda::string_pool::StringPool;
 use crate::instructions::interpret;
 use std::path::MAIN_SEPARATOR;
 use std::rc::Rc;
@@ -29,7 +30,8 @@ fn main() {
 
 fn start_jvm(cmd: Cmd) {
     let cp = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
-    let class_loader = Rc::new(RefCell::new(ClassLoader::new(cp, cmd.verbose_class_flag)));
+    let class_loader = Rc::new(RefCell::new(
+        ClassLoader::new(cp, StringPool::new(), cmd.verbose_class_flag)));
 
     let class_name = cmd.class.replace(".", &MAIN_SEPARATOR.to_string());
 

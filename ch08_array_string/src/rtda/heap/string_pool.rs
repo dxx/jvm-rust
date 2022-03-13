@@ -9,10 +9,10 @@ pub struct StringPool {
 }
 
 impl StringPool {
-    pub fn new() -> Self {
-        StringPool {
+    pub fn new() -> Rc<RefCell<Self>> {
+        Rc::new(RefCell::new(StringPool {
             pool: HashMap::new(),
-        }
+        }))
     }
 
     pub fn jstring(&mut self, loader: Rc<RefCell<ClassLoader>>, rstr: String) -> Rc<RefCell<Object>> {

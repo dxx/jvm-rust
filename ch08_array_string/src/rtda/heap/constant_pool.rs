@@ -8,7 +8,6 @@ use super::cp_classref::ClassRef;
 use super::cp_fieldref::FieldRef;
 use super::cp_methodref::MethodRef;
 use super::cp_interface_methodref::InterfaceMethodRef;
-use super::string_pool::StringPool;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -93,7 +92,6 @@ impl Constant for String {
 pub struct ConstantPool {
     class: Rc<RefCell<Class>>,
     consts: Vec<Option<Box<dyn Constant>>>,
-    string_pool: Box<StringPool>,
 }
 
 impl ConstantPool {
@@ -101,11 +99,9 @@ impl ConstantPool {
         let b_cf_cp = cf_cp.borrow();
         let len = b_cf_cp.constant_len();
         let consts: Vec<Option<Box<dyn Constant>>> = Vec::new();
-        let string_pool = Box::new(StringPool::new());
         let rt_cp = Rc::new(RefCell::new(ConstantPool {
             class,
             consts,
-            string_pool,
         }));
         rt_cp.borrow_mut().consts.push(None);
 
@@ -200,9 +196,5 @@ impl ConstantPool {
                 panic!("No constants at index {}", index);
             }
         }
-    }
-
-    pub fn string_pool_mut(&mut self) -> &mut Box<StringPool> {
-        &mut self.string_pool
     }
 }
