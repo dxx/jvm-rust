@@ -14,6 +14,7 @@ members = [
     "ch06_rtda_heap",
     "ch07_method_invoke",
     "ch08_array_string",
+    "ch09_native",
 ]
 
 [dependencies]
