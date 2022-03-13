@@ -10,5 +10,38 @@ jvm-rust ❯ cargo build -p ch09_native
 
 ```shell
 jvm-rust ❯ ./target/debug/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.GetClassTest
+void
+boolean
+byte
+char
+short
+int
+long
+float
+double
+java.lang.Object
+jvmrust.ch09.GetClassTest
+[I
+[[I
+[Ljava.lang.Object;
+[[Ljava.lang.Object;
+java.lang.Runnable
+java.lang.String
+[D
+[Ljava.lang.String;
+```
 
+```shell
+jvm-rust ❯ ./target/debug/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.StringTest
+true
+false
+true
+```
+
+```shell
+jvm-rust ❯ ./target/debug/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.ObjectTest
+24215960
+jvmrust.ch09.ObjectTest@1718198
+false
+true
 ```

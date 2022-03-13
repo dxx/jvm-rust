@@ -11,6 +11,7 @@ use super::access_flags::ACC_SUPER;
 use super::access_flags::ACC_SYNTHETIC;
 use super::class_loader::ClassLoader;
 use super::constant_pool::ConstantPool;
+use super::string_pool::StringPool;
 use super::class_name_helper::get_array_class_name;
 use super::class_name_helper::PRIMITIVE_TYPES;
 use super::field::Field;
@@ -37,11 +38,12 @@ pub struct Class {
     static_vars: Option<Rc<RefCell<Slots>>>,
 
     init_started: bool,
+    string_pool: Rc<RefCell<StringPool>>,
     j_class: Option<Rc<RefCell<Object>>>,
 }
 
 impl Class {
-    pub fn new(cf: &ClassFile) -> Rc<RefCell<Self>> {
+    pub fn new(cf: &ClassFile, string_pool: Rc<RefCell<StringPool>>) -> Rc<RefCell<Self>> {
         let class = Class {
             access_flags: cf.access_flags(),
             name: cf.class_name(),
@@ -57,6 +59,7 @@ impl Class {
             static_slot_count: 0,
             static_vars: None,
             init_started: false,
+            string_pool,
             j_class: None,
         };
         let rc_class = Rc::new(RefCell::new(class));
@@ -66,7 +69,7 @@ impl Class {
         rc_class
     }
 
-    pub fn new_array_class(name: String) -> Rc<RefCell<Self>> {
+    pub fn new_array_class(name: String, string_pool: Rc<RefCell<StringPool>>) -> Rc<RefCell<Self>> {
         let class = Class {
             access_flags: ACC_PUBLIC,
             name,
@@ -82,12 +85,13 @@ impl Class {
             static_slot_count: 0,
             static_vars: None,
             init_started: true,
+            string_pool,
             j_class: None,
         };
         Rc::new(RefCell::new(class))
     }
 
-    pub fn new_primitive_class(name: String) -> Rc<RefCell<Self>> {
+    pub fn new_primitive_class(name: String, string_pool: Rc<RefCell<StringPool>>) -> Rc<RefCell<Self>> {
         let class = Class {
             access_flags: ACC_PUBLIC,
             name,
@@ -103,6 +107,7 @@ impl Class {
             static_slot_count: 0,
             static_vars: None,
             init_started: true,
+            string_pool,
             j_class: None,
         };
         Rc::new(RefCell::new(class))
@@ -366,6 +371,10 @@ impl Class {
             c = class.borrow().super_class();
         }
         return None;
+    }
+
+    pub fn string_pool(&self) -> Rc<RefCell<StringPool>> {
+        self.string_pool.clone()
     }
 
     pub fn j_class(&self) -> Option<Rc<RefCell<Object>>> {

@@ -86,6 +86,7 @@ fn _ldc(frame: &mut Frame, index: u64) {
     let method = frame.get_method();
     let stack = frame.get_operand_stack();
     let current_class = method.borrow().get_class();
+    let string_pool = current_class.borrow_mut().string_pool();
     let r_cp = current_class.borrow_mut().constant_pool();
     let tag = r_cp.borrow().get_constant(index as usize).tag();
 
@@ -103,7 +104,7 @@ fn _ldc(frame: &mut Frame, index: u64) {
         constant_pool::CONSTANT_STRING => {
             let val = &*r_cp.borrow_mut().get_constant(index as usize)
                 .as_any().downcast_ref::<String>().unwrap().clone();
-            let interned_str = r_cp.borrow_mut().string_pool_mut().jstring(
+            let interned_str = string_pool.borrow_mut().jstring(
                 current_class.borrow().loader().unwrap(), val.into());
             stack.push_ref(Some(interned_str));
         },

@@ -46,9 +46,7 @@ fn create_args_array(
 ) -> Rc<RefCell<Object>> {
     let class = method.borrow().get_class();
     let loader = class.borrow_mut().loader().unwrap();
-    let constant_pool = class.borrow_mut().constant_pool();
-    let mut constant_pool = constant_pool.borrow_mut();
-    let string_pool = constant_pool.string_pool_mut();
+    let string_pool = class.borrow_mut().string_pool();
 
     let string_class = loader.borrow_mut().load_class(
         loader.clone(),
@@ -58,7 +56,7 @@ fn create_args_array(
     
     let j_args = args_arr.refs_mut();
     for i in 0..args.len() {
-        let j_str = string_pool.jstring(loader.clone(), args[i].clone());
+        let j_str = string_pool.borrow_mut().jstring(loader.clone(), args[i].clone());
         j_args[i] = Some(j_str);
     }
 

@@ -9,10 +9,10 @@ pub struct StringPool {
 }
 
 impl StringPool {
-    pub fn new() -> Self {
-        StringPool {
+    pub fn new() -> Rc<RefCell<Self>> {
+        Rc::new(RefCell::new(StringPool {
             pool: HashMap::new(),
-        }
+        }))
     }
 
     pub fn jstring(&mut self, loader: Rc<RefCell<ClassLoader>>, rstr: String) -> Rc<RefCell<Object>> {
@@ -72,11 +72,11 @@ pub fn intern_string(obj: &Rc<RefCell<Object>>) -> Rc<RefCell<Object>> {
     let rust_string = rust_string(obj);
     let class = obj.borrow().class().clone();
     let loader = class.borrow().loader().unwrap();
-    let constant_pool = class.borrow().constant_pool();
-    if constant_pool.borrow_mut().string_pool_mut().is_exist(rust_string.clone()) {
-        return constant_pool.borrow_mut().string_pool_mut().jstring(loader.clone(), rust_string);
+    let string_pool = class.borrow().string_pool();
+    if string_pool.borrow_mut().is_exist(rust_string.clone()) {
+        return string_pool.borrow_mut().jstring(loader.clone(), rust_string);
     }
-    constant_pool.borrow_mut().string_pool_mut().add(rust_string, obj.clone());
+    string_pool.borrow_mut().add(rust_string, obj.clone());
 
     obj.clone()
 }

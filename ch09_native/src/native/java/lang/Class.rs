@@ -31,11 +31,11 @@ fn get_name0(frame: &mut Frame) {
     
     let current_class = frame.get_method().borrow().get_class();
     let loader = current_class.borrow_mut().loader().unwrap();
-    let constant_pool = current_class.borrow_mut().constant_pool();
+    let string_pool = current_class.borrow_mut().string_pool();
 
     let name = this.unwrap().borrow().extra().unwrap()
         .as_any().downcast_ref::<ClassData>().unwrap().java_name();
-    let name_obj = constant_pool.borrow_mut().string_pool_mut().jstring(loader.clone(), name);
+    let name_obj = string_pool.borrow_mut().jstring(loader.clone(), name);
 
     frame.get_operand_stack().push_ref(Some(name_obj));
 }

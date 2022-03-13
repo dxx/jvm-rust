@@ -5,6 +5,7 @@ use crate::rtda::slots::Slots;
 use crate::rtda::ClassData;
 use super::class::Class;
 use super::field::Field;
+use super::string_pool::StringPool;
 use super::class_name_helper::PRIMITIVE_TYPES;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -20,14 +21,16 @@ pub struct ClassLoader {
     // 保存加载的类，key 为类的完全限定名
     class_map: HashMap<String, Rc<RefCell<Class>>>,
     verbose_flag: bool,
+    string_pool: Rc<RefCell<StringPool>>,
 }
 
 impl ClassLoader {
-    pub fn new(classpath: Classpath, verbose_flag: bool) -> Rc<RefCell<Self>> {
+    pub fn new(classpath: Classpath, string_pool: Rc<RefCell<StringPool>>, verbose_flag: bool) -> Rc<RefCell<Self>> {
         let class_loader = ClassLoader {
             classpath,
             class_map: HashMap::new(),
-            verbose_flag
+            verbose_flag,
+            string_pool,
         };
         let class_loader = Rc::new(RefCell::new(class_loader));
         class_loader.borrow_mut().load_basic_class(&class_loader);
@@ -61,7 +64,7 @@ impl ClassLoader {
 
         let mut obj = j_class_mut.new_object(j_class.clone());
 
-        let class = Class::new_primitive_class(class_name);
+        let class = Class::new_primitive_class(class_name, self.string_pool.clone());
         obj.set_extra(Some(Box::new(ClassData::new(class.borrow_mut().name()))));
 
         class.borrow_mut().set_loader(Some(_self.clone()));
@@ -99,7 +102,7 @@ impl ClassLoader {
     }
 
     fn load_array_class(&mut self, _self: &Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {
-        let array_class = Class::new_array_class(name);
+        let array_class = Class::new_array_class(name, self.string_pool.clone());
 
         array_class.borrow_mut().set_loader(Some(_self.clone()));
 
@@ -133,7 +136,7 @@ impl ClassLoader {
 
     /// jvms 5.3.5
     fn define_class(&mut self, _self: &Rc<RefCell<Self>>, data: Vec<u8>) -> Rc<RefCell<Class>> {
-        let class = ClassLoader::parse_class(data);
+        let class = ClassLoader::parse_class(data, self.string_pool.clone());
 
         class.borrow_mut().set_loader(Some(_self.clone()));
 
@@ -144,11 +147,11 @@ impl ClassLoader {
         class
     }
 
-    fn parse_class(data: Vec<u8>) -> Rc<RefCell<Class>> {
+    fn parse_class(data: Vec<u8>, string_pool: Rc<RefCell<StringPool>>) -> Rc<RefCell<Class>> {
         let cf_result = ClassFile::parse(data);
         match cf_result {
             Ok(cf) => {
-                Class::new(&cf)
+                Class::new(&cf, string_pool)
             },
             Err(err) => {
                 panic!("{}", err);
@@ -236,6 +239,7 @@ fn alloc_and_init_static_vars(class: &Rc<RefCell<Class>>, static_slot_count: usi
 }
 
 fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &Rc<RefCell<Slots>>, field: &Rc<RefCell<Field>>) {
+    let string_pool = class.borrow_mut().string_pool();
     let cp = class.borrow_mut().constant_pool();
     let cp_index = field.borrow().const_value_index();
     let slot_id = field.borrow().slot_id();
@@ -261,7 +265,7 @@ fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &Rc<RefCell<Slots>>, 
         } else if descriptor == "Ljava/lang/String;" {
             let val = &*cp.borrow().get_constant(cp_index as usize)
             .as_any().downcast_ref::<String>().unwrap().clone();
-            let interned_str = cp.borrow_mut().string_pool_mut().jstring(
+            let interned_str = string_pool.borrow_mut().jstring(
                     class.borrow().loader().unwrap(), val.into());
             vars.borrow_mut().set_ref(slot_id as usize, Some(interned_str));
         }
