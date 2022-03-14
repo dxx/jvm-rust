@@ -1,9 +1,10 @@
 # jvm-rust
 
-参考[自己动手写 Java 虚拟机源码](https://github.com/zxh0/jvmgo-book)，用 rust 语言实现 JVM。
+参考[自己动手写 Java 虚拟机](https://github.com/zxh0/jvmgo-book)源码，用 rust 语言实现 JVM。
 
 ## 开发环境
 
+* MacOS Monterey 12.1
 * Rust 1.57.0
 * JDK 1.8
 
@@ -13,4 +14,4 @@
 
 ## 运行
 
-每一节有单独的 `README.md`。
+参考每一节的 `README.md`。
