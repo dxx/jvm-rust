@@ -1,6 +1,6 @@
 # jvm-rust
 
-参考[自己动手写Java虚拟机源码](https://github.com/zxh0/jvmgo-book)，用 rust 语言实现 JVM。
+参考[自己动手写 Java 虚拟机源码](https://github.com/zxh0/jvmgo-book)，用 rust 语言实现 JVM。
 
 ## 开发环境
 
