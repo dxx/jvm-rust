@@ -256,13 +256,21 @@ pub fn array_copy(
             let _dest = &mut _dest[dest_pos..dest_pos + length];
             _dest.copy_from_slice(_src);
         },
-        // REFS => {
-        //     let _src = src.data_mut().as_any_mut().downcast_mut::<Vec<Option<Rc<RefCell<Object>>>>>().unwrap();
-        //     let _dest = dest.data_mut().as_any_mut().downcast_mut::<Vec<Option<Rc<RefCell<Object>>>>>().unwrap();
-        //     let _src = &_src[src_pos..src_pos + length];
-        //     let _dest = &mut _dest[dest_pos..dest_pos + length];
-        //     _dest.copy_from_slice(_src);
-        // },
+        REFS => {
+            let _src = src.data_mut().as_any_mut().downcast_mut::<Vec<Option<Rc<RefCell<Object>>>>>().unwrap();
+            let _dest = dest.data_mut().as_any_mut().downcast_mut::<Vec<Option<Rc<RefCell<Object>>>>>().unwrap();
+            let _src = &_src[src_pos..src_pos + length];
+            let _dest = &mut _dest[dest_pos..dest_pos + length];
+            //_dest.copy_from_slice(&_src);
+
+            // 引用复制
+            for i in 0.._dest.len() {
+                if i >= _src.len() {
+                    break;
+                }
+                _dest[i] = _src[i].clone();
+            }
+        },
         _ => {
             panic!("Not array!");
         }
