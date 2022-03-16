@@ -7,7 +7,7 @@ pub mod entry_zip;
 use crate::classpath::entry::{Entry, new_entry};
 use crate::classpath::entry_wildcard::WildcardEntry;
 use std::fmt;
-use std::path::{Path, MAIN_SEPARATOR};
+use std::path::Path;
 use std::env;
 
 pub struct Classpath {
@@ -78,8 +78,6 @@ impl Classpath {
 
 impl Entry for Classpath {
     fn read_class(&self, class_name: &str) -> Result<Vec<u8>, String> {
-        // 将 . 替换成路径分隔符
-        let class_name = class_name.to_string().replace(".", &MAIN_SEPARATOR.to_string());
         let class = class_name.to_string() + ".class";
         return match self.boot_classpath.read_class(&class) {
             Ok(data) => Ok(data),

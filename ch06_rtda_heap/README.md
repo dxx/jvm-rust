@@ -3,13 +3,13 @@
 #### 编译：
 
 ```shell
-jvm-rust ❯ cargo build -p ch06_rtda_heap
+jvm-rust ❯ cargo build -p ch06_rtda_heap --release
 ```
 
 #### 运行：
 
 ```shell
-jvm-rust ❯ ./target/debug/ch06_rtda_heap -cp "/Users/dxx/Desktop" jvmrust.ch06.MyObject
+jvm-rust ❯ ./target/release/ch06_rtda_heap -cp "/Users/dxx/Desktop" jvmrust.ch06.MyObject
 ...
 [Loaded java/lang/Object
 [Loaded jvmrust.ch06.MyObject
