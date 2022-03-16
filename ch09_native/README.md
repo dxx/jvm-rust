@@ -40,8 +40,8 @@ true
 
 ```shell
 jvm-rust ❯ ./target/release/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.ObjectTest
-24215960
-jvmrust.ch09.ObjectTest@1718198
+22415000
+jvmrust.ch09.ObjectTest@1560698
 false
 true
 ```
