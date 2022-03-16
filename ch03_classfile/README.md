@@ -3,13 +3,13 @@
 #### 编译：
 
 ```shell
-jvm-rust ❯ cargo build -p ch03_classfile
+jvm-rust ❯ cargo build -p ch03_classfile --release
 ```
 
 #### 运行：
 
 ```shell
-jvm-rust ❯ ./target/debug/ch03_classfile java.lang.String
+jvm-rust ❯ ./target/release/ch03_classfile java.lang.String
 classpath: /Users/dxx/Desktop/jvm-rust class: java.lang.String args: []
 version: 52.0
 constants count: 548
