@@ -3,13 +3,13 @@
 #### 编译：
 
 ```shell
-jvm-rust ❯ cargo build -p ch09_native
+jvm-rust ❯ cargo build -p ch09_native --release
 ```
 
 #### 运行：
 
 ```shell
-jvm-rust ❯ ./target/debug/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.GetClassTest
+jvm-rust ❯ ./target/release/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.GetClassTest
 void
 boolean
 byte
@@ -32,14 +32,14 @@ java.lang.String
 ```
 
 ```shell
-jvm-rust ❯ ./target/debug/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.StringTest
+jvm-rust ❯ ./target/release/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.StringTest
 true
 false
 true
 ```
 
 ```shell
-jvm-rust ❯ ./target/debug/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.ObjectTest
+jvm-rust ❯ ./target/release/ch09_native -cp "/Users/dxx/Desktop" jvmrust.ch09.ObjectTest
 24215960
 jvmrust.ch09.ObjectTest@1718198
 false
