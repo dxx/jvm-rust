@@ -3,13 +3,13 @@
 #### 编译：
 
 ```shell
-jvm-rust ❯ cargo build -p ch04_rtda
+jvm-rust ❯ cargo build -p ch04_rtda --release
 ```
 
 #### 运行：
 
 ```shell
-jvm-rust ❯ ./target/debug/ch04_rtda test
+jvm-rust ❯ ./target/release/ch04_rtda test
 100
 -100
 2997924580
