@@ -27,7 +27,8 @@ fn main() {
 
 fn start_jvm(cmd: Cmd) {
     let cp = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
-    let class_file = load_class(cmd.class.clone(), cp);
+    let class_name = cmd.class.replace(".", "/");
+    let class_file = load_class(class_name, cp);
 
     match get_main_method(&class_file) {
         Some(member_info) => {
@@ -39,7 +40,7 @@ fn start_jvm(cmd: Cmd) {
     }
 }
 
-fn load_class(class_name: String, class_path: Classpath) -> ClassFile {
+fn load_class(class_name: String, mut class_path: Classpath) -> ClassFile {
     let class_data = match class_path.read_class(&class_name) {
         Ok(class_data) => class_data,
         Err(err) => panic!("{}", err),
