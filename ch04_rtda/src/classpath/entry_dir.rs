@@ -18,7 +18,7 @@ impl DirEntry {
 }
 
 impl Entry for DirEntry {
-    fn read_class(&self, class_name: &str) -> Result<Vec<u8>, String> {
+    fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String> {
         let path = Path::new(&self.abs_dir);
         let new_path = path.join(class_name);
         let mut file = match File::open(&new_path) {
