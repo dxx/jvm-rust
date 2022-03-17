@@ -103,18 +103,18 @@ impl Object {
 
 
 pub struct ClassData {
-    name: String,
+    class: Rc<RefCell<Class>>,
 }
 
 impl ClassData {
-    pub fn new(name: String) -> Self {
+    pub fn new(class: Rc<RefCell<Class>>) -> Self {
         ClassData {
-            name
+            class
         }
     }
 
     pub fn java_name(&self) -> String {
-        self.name.replace("/", ".")
+        self.class.borrow().name().replace("/", ".")
     }
 }
 

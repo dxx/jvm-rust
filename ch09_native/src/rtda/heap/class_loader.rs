@@ -44,7 +44,7 @@ impl ClassLoader {
         for (name, class) in self.class_map.iter() {
             if class.borrow_mut().j_class().is_none() {
                 let mut obj = j_class_mut.new_object(j_class.clone());
-                obj.set_extra(Some(Box::new(ClassData::new(class.borrow_mut().name()))));
+                obj.set_extra(Some(Box::new(ClassData::new(class.clone()))));
 
                 class.borrow_mut().set_j_class(Some(Rc::new(RefCell::new(obj))));
             }
@@ -65,7 +65,7 @@ impl ClassLoader {
         let mut obj = j_class_mut.new_object(j_class.clone());
 
         let class = Class::new_primitive_class(class_name, self.string_pool.clone());
-        obj.set_extra(Some(Box::new(ClassData::new(class.borrow_mut().name()))));
+        obj.set_extra(Some(Box::new(ClassData::new(class.clone()))));
 
         class.borrow_mut().set_loader(Some(_self.clone()));
         class.borrow_mut().set_j_class(Some(Rc::new(RefCell::new(obj))));
@@ -91,7 +91,7 @@ impl ClassLoader {
                     let j_class = j_class.unwrap();
                     let j_class_mut = unsafe { j_class.as_ptr().as_mut().unwrap() };
                     let mut obj = j_class_mut.new_object(j_class.clone());
-                    obj.set_extra(Some(Box::new(ClassData::new(class.as_mut().unwrap().borrow_mut().name()))));
+                    obj.set_extra(Some(Box::new(ClassData::new(class.clone().unwrap()))));
 
                     class.as_mut().unwrap().borrow_mut().set_j_class(Some(Rc::new(RefCell::new(obj))));
                 }
