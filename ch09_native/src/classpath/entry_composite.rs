@@ -22,8 +22,8 @@ impl CompositeEntry {
 }
 
 impl Entry for CompositeEntry {
-    fn read_class(&self, class_name: &str) -> Result<Vec<u8>, String> {
-        for entry in &self.entries {
+    fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String> {
+        for entry in &mut self.entries {
             match entry.read_class(class_name) {
                 Ok(data) => {
                     return Ok(data);

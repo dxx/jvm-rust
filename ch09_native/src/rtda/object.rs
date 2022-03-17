@@ -114,7 +114,7 @@ impl ClassData {
     }
 
     pub fn java_name(&self) -> String {
-        self.name.replace(std::path::MAIN_SEPARATOR.to_string().as_str(), ".")
+        self.name.replace("/", ".")
     }
 }
 

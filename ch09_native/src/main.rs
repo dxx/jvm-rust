@@ -30,7 +30,7 @@ fn start_jvm(cmd: Cmd) {
     let cp = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
     let class_loader = ClassLoader::new(cp, StringPool::new(), cmd.verbose_class_flag);
 
-    let class_name = cmd.class.replace(".", std::path::MAIN_SEPARATOR.to_string().as_str());
+    let class_name = cmd.class.replace(".", "/");
 
     let main_class = class_loader.borrow_mut().load_class(class_loader.clone(), class_name);
 
