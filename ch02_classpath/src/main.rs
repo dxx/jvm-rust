@@ -17,11 +17,12 @@ fn main() {
 }
 
 fn start_jvm(cmd: Cmd) {
-    let cp = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
+    let mut cp = Classpath::parse(&cmd.x_jre_option, &cmd.cp_option);
 
     println!("classpath: {} class: {} args: {:?}", cp, cmd.class, cmd.args);
 
-    let class_data = match cp.read_class(&cmd.class) {
+    let class_name = cmd.class.replace(".", "/");
+    let class_data = match cp.read_class(&class_name) {
         Ok(class_data) => class_data,
         Err(err) => { panic!("Could not find or load main class {}: {}", cmd.class, err); },
     };

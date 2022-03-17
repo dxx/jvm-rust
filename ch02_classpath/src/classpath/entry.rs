@@ -13,7 +13,7 @@ pub const PATH_SEPARATOR: char = ';';
 pub const PATH_SEPARATOR: char = ':';
 
 pub trait Entry: fmt::Display {
-    fn read_class(&self, class_name: &str) -> Result<Vec<u8>, String>;
+    fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String>;
 }
 
 /// 获取指定路径的绝对路径
