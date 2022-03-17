@@ -77,7 +77,7 @@ impl Classpath {
 }
 
 impl Entry for Classpath {
-    fn read_class(&self, class_name: &str) -> Result<Vec<u8>, String> {
+    fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String> {
         let class = class_name.to_string() + ".class";
         return match self.boot_classpath.read_class(&class) {
             Ok(data) => Ok(data),

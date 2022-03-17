@@ -3,13 +3,13 @@
 #### 编译：
 
 ```shell
-jvm-rust ❯ cargo build -p ch08_array_string --release
+jvm-rust ❯ cargo build -p ch08_array_string
 ```
 
 #### 运行：
 
 ```shell
-jvm-rust ❯ ./target/release/ch08_array_string -cp "/Users/dxx/Desktop" jvmrust.ch08.BubbleSortTest
+jvm-rust ❯ ./target/debug/ch08_array_string -cp "/Users/dxx/Desktop" jvmrust.ch08.BubbleSortTest
 9
 10
 11

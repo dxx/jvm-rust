@@ -12,7 +12,6 @@ use crate::classpath::Classpath;
 use crate::rtda::class_loader::ClassLoader;
 use crate::rtda::string_pool::StringPool;
 use crate::instructions::interpret;
-use std::path::MAIN_SEPARATOR;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -33,7 +32,7 @@ fn start_jvm(cmd: Cmd) {
     let class_loader = Rc::new(RefCell::new(
         ClassLoader::new(cp, StringPool::new(), cmd.verbose_class_flag)));
 
-    let class_name = cmd.class.replace(".", &MAIN_SEPARATOR.to_string());
+    let class_name = cmd.class.replace(".", "/");
 
     let main_class = class_loader.borrow_mut().load_class(class_loader.clone(), class_name);
 
