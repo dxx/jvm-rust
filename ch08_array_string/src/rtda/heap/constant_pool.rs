@@ -89,12 +89,14 @@ impl Constant for String {
     }
 }
 
+/// 运行时常量池
 pub struct ConstantPool {
     class: Rc<RefCell<Class>>,
     consts: Vec<Option<Box<dyn Constant>>>,
 }
 
 impl ConstantPool {
+    /// 将常量池转化成运行时常量池
     pub fn new(class: Rc<RefCell<Class>>, cf_cp: &Rc<RefCell<constant_pool::ConstantPool>>) -> Rc<RefCell<Self>> {
         let b_cf_cp = cf_cp.borrow();
         let len = b_cf_cp.constant_len();

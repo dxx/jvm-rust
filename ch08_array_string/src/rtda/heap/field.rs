@@ -22,8 +22,8 @@ pub struct Field {
     descriptor: String,
     class: Option<Rc<RefCell<Class>>>,
 
-    const_value_index: u64,
-	slot_id:           u64,
+    const_value_index: u64, // 常量池中的索引
+	slot_id:           u64, // 字段在 Slots 中的索引
 }
 
 impl Field {
