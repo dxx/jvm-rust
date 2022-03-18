@@ -1,0 +1,10 @@
+[package]
+name = "ch10_exception"
+version = "0.1.0"
+authors = ["dxx <dx1898@foxmail.com>"]
+edition = "2021"
+
+[dependencies]
+getopts = "0.2"
+zip = { version = "0.5", default-features = false, features = ["deflate"] }
+lazy_static = "1.4.0"
