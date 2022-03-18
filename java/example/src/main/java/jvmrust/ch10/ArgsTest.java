@@ -1,6 +1,8 @@
 package jvmrust.ch10;
 
-public class ParseIntTest {
+import java.util.Arrays;
+
+public class ArgsTest {
 
     public static void main(String[] args) {
         foo(args);
@@ -16,10 +18,9 @@ public class ParseIntTest {
 
     private static void bar(String[] args) {
         if (args.length == 0) {
-            throw new IndexOutOfBoundsException("no args!");
+            throw new IndexOutOfBoundsException("No args!");
         }
-        int x = Integer.parseInt(args[0]);
-        System.out.println(x);
+        System.out.println(Arrays.toString(args));
     }
 
 }
