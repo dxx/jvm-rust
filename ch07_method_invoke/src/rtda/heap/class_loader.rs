@@ -117,8 +117,8 @@ fn verify(class: &Rc<RefCell<Class>>) {
 /// jvms 5.4.2
 fn prepare(class: &Rc<RefCell<Class>>) {
     calc_instance_field_slot_ids(class);
-    let static_slot_count = calc_static_field_slot_ids(class);
-    alloc_and_init_static_vars(class, static_slot_count);
+    calc_static_field_slot_ids(class);
+    alloc_and_init_static_vars(class);
 }
 
 fn calc_instance_field_slot_ids(class: &Rc<RefCell<Class>>) {
@@ -138,7 +138,7 @@ fn calc_instance_field_slot_ids(class: &Rc<RefCell<Class>>) {
     class.borrow_mut().set_instance_slot_count(slot_id);
 }
 
-fn calc_static_field_slot_ids(class: &Rc<RefCell<Class>>) -> usize {
+fn calc_static_field_slot_ids(class: &Rc<RefCell<Class>>) {
     let mut slot_id = 0;
     for field in class.borrow_mut().fields() {
         if field.borrow_mut().is_static() {
@@ -150,10 +150,10 @@ fn calc_static_field_slot_ids(class: &Rc<RefCell<Class>>) -> usize {
         }
     }
     class.borrow_mut().set_static_slot_count(slot_id);
-    slot_id as usize
 }
 
-fn alloc_and_init_static_vars(class: &Rc<RefCell<Class>>, static_slot_count: usize) {
+fn alloc_and_init_static_vars(class: &Rc<RefCell<Class>>) {
+    let static_slot_count = class.borrow_mut().static_slot_count() as usize;
     let vars = Some(Rc::new(RefCell::new(Slots::new(static_slot_count))));
     let cp = class.borrow_mut().constant_pool();
     let fields = class.borrow_mut().fields();
