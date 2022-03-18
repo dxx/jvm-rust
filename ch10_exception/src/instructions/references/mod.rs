@@ -1,5 +1,6 @@
 mod anewarray;
 mod arraylength;
+mod athrow;
 mod multianewarray;
 mod new;
 mod newarray;
@@ -16,6 +17,7 @@ mod putstatic;
 
 pub use self::anewarray::*;
 pub use self::arraylength::*;
+pub use self::athrow::*;
 pub use self::multianewarray::*;
 pub use self::new::*;
 pub use self::newarray::*;

@@ -20,15 +20,23 @@ impl AttributeInfo for SourceFileAttribute {
         self.source_file_index = reader.read_u16();
     }
 
+    fn name(&self) -> &str {
+        return "SourceFile";
+    }
+
     fn as_any(&self) -> &dyn std::any::Any {
         self
     }
 }
 
 impl SourceFileAttribute {
-    pub fn new (cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new(cp: Rc<RefCell<ConstantPool>>) -> Self {
         let mut sfa = SourceFileAttribute::default();
         sfa.constant_pool = cp;
         sfa
+    }
+
+    pub fn file_name(&self) -> String {
+        self.constant_pool.borrow().get_utf8(self.source_file_index)
     }
 }

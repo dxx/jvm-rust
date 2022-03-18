@@ -4,12 +4,12 @@ pub mod attr_constant_value;
 mod attr_enclosing_method;
 mod attr_exceptions;
 mod attr_inner_classes;
-mod attr_line_number_table;
+pub mod attr_line_number_table;
 mod attr_local_variable_table;
 mod attr_local_variable_type_table;
 mod attr_markers;
 mod attr_signature;
-mod attr_source_file;
+pub mod attr_source_file;
 mod attr_unparsed;
 
 /// attribute_info {
@@ -32,6 +32,7 @@ use std::cell::RefCell;
 
 pub trait AttributeInfo {
     fn read_info(&mut self, reader: &mut ClassReader);
+    
     // 获取名称
     fn name(&self) -> &str {
         return "";

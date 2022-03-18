@@ -114,7 +114,7 @@ impl ClassData {
     }
 
     pub fn java_name(&self) -> String {
-        self.class.borrow().name().replace("/", ".")
+        self.class.borrow().java_name()
     }
 }
 

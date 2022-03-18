@@ -9,11 +9,12 @@
 
 use super::{AttributeInfo, ClassReader};
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct LineNumberTableAttribute {
     line_number_table: Vec<LineNumberTableEntry>,
 }
 
+#[derive(Clone)]
 pub struct LineNumberTableEntry {
     start_pc: u16,
     line_number: u16,
@@ -31,8 +32,25 @@ impl AttributeInfo for LineNumberTableAttribute {
         }
         self.line_number_table = line_number_table;
     }
+
+    fn name(&self) -> &str {
+        return "LineNumberTable";
+    }
     
     fn as_any(&self) -> &dyn std::any::Any {
         self
+    }
+}
+
+impl LineNumberTableAttribute {
+    pub fn get_line_number(&self, pc: i64) -> i64 {
+        for i in (0..self.line_number_table.len()).rev() {
+            let entry = self.line_number_table.get(i);
+            if pc >= entry.as_ref().unwrap().start_pc as i64 {
+                return entry.unwrap().line_number as i64;
+            }
+        }
+
+        -1
     }
 }

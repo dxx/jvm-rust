@@ -10,6 +10,8 @@ pub mod float;
 pub mod string;
 #[path = "./native/java/lang/System.rs" ]
 pub mod system;
+#[path = "./native/java/lang/Throwable.rs" ]
+pub mod throwable;
 
 use crate::rtda::Frame;
 use lazy_static::lazy_static;
@@ -27,6 +29,7 @@ lazy_static! {
         hashmap.insert("java/lang/Float".into(), float::init);
         hashmap.insert("java/lang/String".into(), string::init);
         hashmap.insert("java/lang/System".into(), system::init);
+        hashmap.insert("java/lang/Throwable".into(), throwable::init);
 
         hashmap
     };

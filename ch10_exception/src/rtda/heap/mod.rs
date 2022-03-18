@@ -15,3 +15,4 @@ pub mod method_descriptor;
 pub mod method_lookup;
 pub mod slots;
 pub mod string_pool;
+pub mod exception_table;

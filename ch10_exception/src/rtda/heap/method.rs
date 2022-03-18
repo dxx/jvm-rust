@@ -1,6 +1,8 @@
 use crate::classfile::member_info::MemberInfo;
+use crate::classfile::attribute_info::attr_line_number_table::LineNumberTableAttribute;
 use super::access_flags::*;
 use super::class::Class;
+use super::exception_table::ExceptionTable;
 use super::method_descriptor::MethodDescriptorParser;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -26,6 +28,9 @@ pub struct Method {
     code: Vec<u8>,
 
     arg_slot_count: u64,
+
+    exception_table: Option<ExceptionTable>,
+    line_number_table: Option<LineNumberTableAttribute>,
 }
 
 impl Method {
@@ -50,6 +55,10 @@ impl Method {
                 self.max_stack = code_attr.max_stack();
                 self.max_locals = code_attr.max_locals();
                 self.code = code_attr.code();
+                self.exception_table = Some(ExceptionTable::new(
+                    code_attr.exception_table(),
+                    &self.class.as_ref().unwrap().borrow().constant_pool()));
+                self.line_number_table = code_attr.line_number_table_attribute();
             },
             None => {}
         }
@@ -183,5 +192,24 @@ impl Method {
             return c.borrow().get_package_name() == class.borrow().get_package_name();
         }
         return class.eq(c);
+    }
+
+    pub fn find_exception_handler(&mut self, ex_class: &Rc<RefCell<Class>>, pc: i64) -> i64 {
+        let handler = self.exception_table.as_mut().unwrap().find_exception_handler(ex_class, pc);
+        if handler.is_some() {
+            return handler.unwrap().handler_pc();
+        }
+
+        -1
+    }
+
+    pub fn get_line_number(&self, pc: i64) -> i64 {
+        if self.is_native() {
+            return -2;
+        }
+        if self.line_number_table.is_none() {
+            return -1;
+        }
+        self.line_number_table.as_ref().unwrap().get_line_number(pc)
     }
 }

@@ -98,4 +98,11 @@ impl OperandStack {
             self.push_int(0);
         }
     }
+
+    pub fn clear(&mut self) {
+        self.size = 0;
+        for slot in self.slots.iter_mut() {
+            slot._ref = None;
+        }
+    }
 }

@@ -18,7 +18,7 @@
 use std::rc::Rc;
 use std::cell::RefCell;
 use super::ConstantPool;
-use super::{AttributeInfo, ClassReader};
+use super::{AttributeInfo, ClassReader, LineNumberTableAttribute};
 
 #[derive(Default)]
 pub struct CodeAttribute {
@@ -67,6 +67,19 @@ impl CodeAttribute {
     pub fn code(&self) -> Vec<u8> {
         self.code.clone()
     }
+
+    pub fn exception_table(&self) -> &Vec<ExceptionTableEntry> {
+        &self.exception_table
+    }
+    
+    pub fn line_number_table_attribute(&self) -> Option<LineNumberTableAttribute> {
+        for attr in &self.attributes {
+            if attr.name() == "LineNumberTable" {
+                return Some(attr.as_any().downcast_ref::<LineNumberTableAttribute>().unwrap().clone());
+            }
+        }
+        None
+    }
 }
 
 pub struct ExceptionTableEntry {
@@ -74,6 +87,24 @@ pub struct ExceptionTableEntry {
     end_pc: u16,
     handler_pc: u16,
     catch_type: u16,
+}
+
+impl ExceptionTableEntry {
+    pub fn start_pc(&self) -> u16 {
+        self.start_pc
+    }
+
+    pub fn end_pc(&self) -> u16 {
+        self.end_pc
+    }
+
+    pub fn handler_pc(&self) -> u16 {
+        self.handler_pc
+    }
+
+    pub fn catch_type(&self) -> u16 {
+        self.catch_type
+    }
 }
 
 fn read_exception_table(reader: &mut ClassReader) -> Vec<ExceptionTableEntry> {

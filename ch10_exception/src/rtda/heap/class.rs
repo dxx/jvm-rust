@@ -25,6 +25,7 @@ use std::vec;
 pub struct Class {
     access_flags: u16,
     name: String,
+    source_file_name: String,
     super_classname: String,
     interface_names: Vec<String>,
     constant_pool: Option<Rc<RefCell<ConstantPool>>>,
@@ -47,6 +48,7 @@ impl Class {
         let class = Class {
             access_flags: cf.access_flags(),
             name: cf.class_name(),
+            source_file_name: cf.source_file_name(),
             super_classname: cf.super_class_name(),
             interface_names: cf.interface_names(),
             constant_pool: None,
@@ -73,6 +75,7 @@ impl Class {
         let class = Class {
             access_flags: ACC_PUBLIC,
             name,
+            source_file_name: "Unknown".into(),
             super_classname: "java/lang/Object".into(),
             interface_names: vec!["java/lang/Cloneable".into(), "java/io/Serializable".into()],
             constant_pool: None,
@@ -95,6 +98,7 @@ impl Class {
         let class = Class {
             access_flags: ACC_PUBLIC,
             name,
+            source_file_name: "Unknown".into(),
             super_classname: "".into(),
             interface_names: vec![],
             constant_pool: None,
@@ -115,6 +119,14 @@ impl Class {
 
     pub fn name(&self) -> String {
         self.name.clone()
+    }
+
+    pub fn java_name(&self) -> String {
+        self.name.replace("/", ".")
+    }
+
+    pub fn source_file_name(&self) -> String {
+        self.source_file_name.clone()
     }
 
     pub fn fields(&self) -> Vec<Rc<RefCell<Field>>> {

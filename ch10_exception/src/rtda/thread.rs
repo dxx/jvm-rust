@@ -38,8 +38,16 @@ impl Thread {
         self.stack.top()
     }
 
+    pub fn get_frames(&self) -> Vec<Rc<RefCell<Frame>>> {
+        self.stack.get_frames()
+    }
+
     pub fn is_stack_empty(&self) -> bool {
         self.stack.is_empty()
+    }
+
+    pub fn clear_stack(&mut self) {
+        self.stack.clear();
     }
 
     pub fn new_frame(&self, _self: Rc<RefCell<Self>>, method: Rc<RefCell<Method>>) -> Frame {

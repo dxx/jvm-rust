@@ -42,7 +42,21 @@ impl Stack {
         self.frames[self.top - 1].clone().unwrap()
     }
 
+    pub fn get_frames(&self) -> Vec<Rc<RefCell<Frame>>> {
+        let mut frames = Vec::new();
+        for i in (0..self.top).rev() {
+            frames.push(self.frames[i].clone().unwrap());
+        }
+        frames
+    }
+
     pub fn is_empty(&self) -> bool {
         self.top == 0
+    }
+
+    pub fn clear(&mut self) {
+        while !self.is_empty() {
+            self.pop();
+        }
     }
 }

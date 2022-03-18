@@ -24,6 +24,7 @@ pub mod attribute_info;
 
 use crate::classfile::constant_pool::read_constant_pool;
 use crate::classfile::attribute_info::read_attributes;
+use crate::classfile::attribute_info::attr_source_file::SourceFileAttribute;
 use self::class_reader::ClassReader;
 use self::constant_pool::ConstantPool;
 use self::member_info::MemberInfo;
@@ -147,5 +148,23 @@ impl ClassFile {
             interface_names.push(self.constant_pool.borrow().get_class_name(*i))
         }
         interface_names.to_vec()
+    }
+
+    fn source_file_attribute(&self) -> Option<&SourceFileAttribute> {
+        for attr in &self.attributes {
+            if attr.name() == "SourceFile" {
+                return attr.as_any().downcast_ref::<SourceFileAttribute>();
+            }
+        }
+        None
+    }
+
+    pub fn source_file_name(&self) -> String {
+        let source_file = self.source_file_attribute();
+        if source_file.is_some() {
+            return source_file.unwrap().file_name();
+        }
+        
+        "Unknown".into()
     }
  }

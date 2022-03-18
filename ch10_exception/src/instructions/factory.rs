@@ -587,9 +587,9 @@ pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
         0xbe => {
             Box::new(ARRAY_LENGTH::default())
         },
-        // 0xbf => {
-        //     Box::new(ATHROW::default())
-        // },
+        0xbf => {
+            Box::new(ATHROW::default())
+        },
         0xc0 => {
             Box::new(CHECK_CAST::default())
         },

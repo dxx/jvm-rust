@@ -5,6 +5,7 @@ use super::constant_pool::Constant;
 use std::rc::Rc;
 use std::cell::RefCell;
 
+#[derive(Clone)]
 pub struct ClassRef {
     class_name: String,
     class: Option<Rc<RefCell<Class>>>,

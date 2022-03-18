@@ -26,7 +26,7 @@ impl AttributeInfo for SignatureAttribute {
 }
 
 impl SignatureAttribute {
-    pub fn new (cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new(cp: Rc<RefCell<ConstantPool>>) -> Self {
         let mut sa = SignatureAttribute::default();
         sa.constant_pool = cp;
         sa
