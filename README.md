@@ -10,7 +10,7 @@
 
 ## 目录说明
 
-本源码目录结构按照 [jvm-book](https://github.com/zxh0/jvmgo-book) 组织，说明如下：
+本源码目录结构按照 [jvmgo-book](https://github.com/zxh0/jvmgo-book) 组织，说明如下：
 
 * ch01_cmd: 命令行处理
 * ch02_classpath: 查找 Class 文件
