@@ -18,6 +18,6 @@ impl Instruction for INVOKE_SPECIAL {
 
     /// Hack!
     fn execute(&mut self, frame: &mut Frame) {
-        frame.get_operand_stack().pop_ref();
+        frame.operand_stack_mut().pop_ref();
     }
 }

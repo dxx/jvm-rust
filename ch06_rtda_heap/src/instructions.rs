@@ -37,7 +37,7 @@ fn _loop(thread: Rc<RefCell<Thread>>, bytecode: Vec<u8>) {
     let mut reader = BytecodeReader::default();
 
     loop {
-        let pc = frame.borrow().get_next_pc();
+        let pc = frame.borrow().next_pc();
         thread.borrow_mut().set_pc(pc);
 
         // Decode
@@ -53,8 +53,8 @@ fn _loop(thread: Rc<RefCell<Thread>>, bytecode: Vec<u8>) {
                 inst.execute(&mut frame.borrow_mut());
             },
             Err(err) => {
-                // println!("LocalVars: {:?}", frame.borrow_mut().get_local_vars());
-                // println!("OperandStack: {:?}", frame.borrow_mut().get_operand_stack());
+                // println!("LocalVars: {:?}", frame.borrow_mut().local_vars_mut());
+                // println!("OperandStack: {:?}", frame.borrow_mut().operand_stack_mut());
                 panic!("{}", err);
             }
         }

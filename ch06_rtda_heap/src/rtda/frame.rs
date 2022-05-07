@@ -26,11 +26,11 @@ impl Frame {
         }
     }
 
-    pub fn get_local_vars(&mut self) -> &mut LocalVars {
+    pub fn local_vars_mut(&mut self) -> &mut LocalVars {
         &mut self.local_vars
     }
 
-    pub fn get_operand_stack(&mut self) -> &mut OperandStack {
+    pub fn operand_stack_mut(&mut self) -> &mut OperandStack {
         &mut self.operand_stack
     }
 
@@ -38,15 +38,15 @@ impl Frame {
         self.next_pc = next_pc;
     }
 
-    pub fn get_next_pc(&self) -> i64 {
+    pub fn next_pc(&self) -> i64 {
         self.next_pc
     }
 
-    pub fn get_thread(&self) -> Rc<RefCell<Thread>> {
+    pub fn thread(&self) -> Rc<RefCell<Thread>> {
         self.thread.clone()
     }
 
-    pub fn get_method(&self) -> Rc<RefCell<Method>> {
+    pub fn method(&self) -> Rc<RefCell<Method>> {
         self.method.clone()
     }
 }

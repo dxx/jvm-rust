@@ -17,7 +17,7 @@ impl Instruction for IFEQ {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let val = frame.get_operand_stack().pop_int();
+        let val = frame.operand_stack_mut().pop_int();
         if val == 0 {
             branch(frame, self.offset);
         }
@@ -35,7 +35,7 @@ impl Instruction for IFNE {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let val = frame.get_operand_stack().pop_int();
+        let val = frame.operand_stack_mut().pop_int();
         if val != 0 {
             branch(frame, self.offset);
         }
@@ -53,7 +53,7 @@ impl Instruction for IFLT {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let val = frame.get_operand_stack().pop_int();
+        let val = frame.operand_stack_mut().pop_int();
         if val < 0 {
             branch(frame, self.offset);
         }
@@ -71,7 +71,7 @@ impl Instruction for IFLE {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let val = frame.get_operand_stack().pop_int();
+        let val = frame.operand_stack_mut().pop_int();
         if val <= 0 {
             branch(frame, self.offset);
         }
@@ -89,7 +89,7 @@ impl Instruction for IFGT {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let val = frame.get_operand_stack().pop_int();
+        let val = frame.operand_stack_mut().pop_int();
         if val > 0 {
             branch(frame, self.offset);
         }
@@ -107,7 +107,7 @@ impl Instruction for IFGE {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let val = frame.get_operand_stack().pop_int();
+        let val = frame.operand_stack_mut().pop_int();
         if val >= 0 {
             branch(frame, self.offset);
         }

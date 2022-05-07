@@ -18,7 +18,7 @@ impl Instruction for INVOKE_VIRTUAL {
 
     /// Hack!
     fn execute(&mut self, frame: &mut Frame) {
-        let current_method = frame.get_method();
+        let current_method = frame.method();
         let current_class = current_method.borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let cp = r_cp.borrow();
@@ -26,7 +26,7 @@ impl Instruction for INVOKE_VIRTUAL {
             .as_any().downcast_ref::<MethodRef>().unwrap();
 
         if method_ref.name() == "println" {
-            let stack = frame.get_operand_stack();
+            let stack = frame.operand_stack_mut();
             let descriptor = method_ref.descriptor();
             if descriptor == "(Z)V" {
                 println!("{}", stack.pop_int() != 0);

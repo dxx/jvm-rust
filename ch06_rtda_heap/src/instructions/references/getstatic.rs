@@ -17,7 +17,7 @@ impl Instruction for GET_STATIC {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let current_method = frame.get_method();
+        let current_method = frame.method();
         let current_class = current_method.borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let field = r_cp.borrow_mut().get_constant_mut(self.index as usize)
@@ -34,7 +34,7 @@ impl Instruction for GET_STATIC {
         let descriptor = field.borrow().descriptor();
         let slot_id = field.borrow().slot_id() as usize;
         let slots = class.borrow_mut().static_vars();
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
 
         if descriptor.starts_with("Z") || descriptor.starts_with("B") || descriptor.starts_with("C") ||
             descriptor.starts_with("S") || descriptor.starts_with("I") {
