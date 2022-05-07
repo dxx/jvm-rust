@@ -23,8 +23,8 @@ fn main() {
 
 fn start_jvm(cmd: Cmd) {
     let mut frame = Frame::new(100, 100);
-    test_local_vars(frame.get_local_vars());
-    test_operand_stack(frame.get_operand_stack());
+    test_local_vars(frame.local_vars_mut());
+    test_operand_stack(frame.operand_stack_mut());
 }
 
 fn test_local_vars(local_vars: &mut LocalVars) {
