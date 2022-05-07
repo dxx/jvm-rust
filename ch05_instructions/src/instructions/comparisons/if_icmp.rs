@@ -115,7 +115,7 @@ impl Instruction for IF_ICMPGE {
 }
 
 fn _icmp_pop(frame: &mut Frame) -> (i32, i32) {
-    let stack = frame.get_operand_stack();
+    let stack = frame.operand_stack_mut();
     let val2 = stack.pop_int();
     let val1 = stack.pop_int();
     (val1, val2)

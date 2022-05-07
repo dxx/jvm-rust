@@ -57,6 +57,6 @@ impl Instruction for FLOAD_3 {
 }
 
 fn _fload(frame: &mut Frame, index: usize) {
-    let val = frame.get_local_vars().get_float(index);
-    frame.get_operand_stack().push_float(val);
+    let val = frame.local_vars_mut().get_float(index);
+    frame.operand_stack_mut().push_float(val);
 }

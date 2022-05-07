@@ -57,6 +57,6 @@ impl Instruction for DSTORE_3 {
 }
 
 fn _dstore(frame: &mut Frame, index: usize) {
-    let val = frame.get_operand_stack().pop_double();
-    frame.get_local_vars().set_double(index, val);
+    let val = frame.operand_stack_mut().pop_double();
+    frame.local_vars_mut().set_double(index, val);
 }

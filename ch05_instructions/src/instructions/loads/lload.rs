@@ -57,6 +57,6 @@ impl Instruction for LLOAD_3 {
 }
 
 fn _lload(frame: &mut Frame, index: usize) {
-    let val = frame.get_local_vars().get_long(index);
-    frame.get_operand_stack().push_long(val);
+    let val = frame.local_vars_mut().get_long(index);
+    frame.operand_stack_mut().push_long(val);
 }

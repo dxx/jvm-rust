@@ -57,6 +57,6 @@ impl Instruction for ISTORE_3 {
 }
 
 fn _istore(frame: &mut Frame, index: usize) {
-    let val = frame.get_operand_stack().pop_int();
-    frame.get_local_vars().set_int(index, val);
+    let val = frame.operand_stack_mut().pop_int();
+    frame.local_vars_mut().set_int(index, val);
 }

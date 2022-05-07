@@ -9,7 +9,7 @@ pub struct DADD;
 
 impl Instruction for DADD {
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_double();
         let v1 = stack.pop_double();
         let result = v1 + v2;
@@ -23,7 +23,7 @@ pub struct FADD;
 
 impl Instruction for FADD {
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_float();
         let v1 = stack.pop_float();
         let result = v1 + v2;
@@ -37,7 +37,7 @@ pub struct IADD;
 
 impl Instruction for IADD {
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
         let result = v1 + v2;
@@ -51,7 +51,7 @@ pub struct LADD;
 
 impl Instruction for LADD {
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_long();
         let v1 = stack.pop_long();
         let result = v1 + v2;
