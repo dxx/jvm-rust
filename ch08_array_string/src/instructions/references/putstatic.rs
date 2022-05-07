@@ -19,7 +19,7 @@ impl Instruction for PUT_STATIC {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let current_method = frame.get_method();
+        let current_method = frame.method();
         let current_class = current_method.borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let field = r_cp.borrow_mut().get_constant_mut(self.index as usize)
@@ -29,7 +29,7 @@ impl Instruction for PUT_STATIC {
 
         if !class.borrow().init_started() {
             frame.revert_next_pc();
-            init_class(&frame.get_thread(), &class);
+            init_class(&frame.thread(), &class);
             return Ok(());
         }
 
@@ -45,7 +45,7 @@ impl Instruction for PUT_STATIC {
         let descriptor = field.borrow().descriptor().as_bytes()[0];
         let slot_id = field.borrow().slot_id() as usize;
         let slots = class.borrow_mut().static_vars();
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
 
         match descriptor {
             b'Z' | b'B' | b'C' | b'S' | b'I' => {

@@ -68,6 +68,6 @@ impl Instruction for LSTORE_3 {
 }
 
 fn _lstore(frame: &mut Frame, index: usize) {
-    let val = frame.get_operand_stack().pop_long();
-    frame.get_local_vars().set_long(index, val);
+    let val = frame.operand_stack_mut().pop_long();
+    frame.local_vars_mut().set_long(index, val);
 }

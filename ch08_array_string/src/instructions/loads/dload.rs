@@ -68,6 +68,6 @@ impl Instruction for DLOAD_3 {
 }
 
 fn _dload(frame: &mut Frame, index: usize) {
-    let val = frame.get_local_vars().get_double(index);
-    frame.get_operand_stack().push_double(val);
+    let val = frame.local_vars_mut().get_double(index);
+    frame.operand_stack_mut().push_double(val);
 }

@@ -32,7 +32,7 @@ pub fn interpret(method: Rc<RefCell<Method>>, log_inst: bool, args: Vec<String>)
     );
     
     let j_args = create_args_array(method, args);
-    frame.get_local_vars().set_ref(0, Some(j_args));
+    frame.local_vars_mut().set_ref(0, Some(j_args));
 
     thread.borrow_mut().push_frame(frame);
 
@@ -67,13 +67,13 @@ fn _loop(thread: Rc<RefCell<Thread>>, log_inst: bool) {
 
     loop {
         let frame = thread.borrow_mut().current_frame();
-        let pc = frame.borrow().get_next_pc();
+        let pc = frame.borrow().next_pc();
 
         thread.borrow_mut().set_pc(pc);
 
         // Decode
         reader.reset(
-            frame.borrow().get_method().borrow().code(),
+            frame.borrow().method().borrow().code(),
             pc as usize
         );
 
@@ -109,18 +109,18 @@ fn _loop(thread: Rc<RefCell<Thread>>, log_inst: bool) {
 }
 
 fn log_instruction(frame: &Frame, inst: &Box<dyn Instruction>) {
-    let method = frame.get_method();
+    let method = frame.method();
     let class_name = method.borrow().get_class().borrow().name();
     let method_name = method.borrow().name();
-    let pc = frame.get_thread().borrow().pc();
+    let pc = frame.thread().borrow().pc();
     println!("{}.{} #{:2} {:?}", class_name, method_name, pc, inst);
 }
 
 fn log_frames(thread: &Rc<RefCell<Thread>>) {
     while !thread.borrow().is_stack_empty() {
         let frame = thread.borrow_mut().pop_frame();
-        let method = frame.as_ref().unwrap().borrow().get_method();
-        let pc = frame.as_ref().unwrap().borrow().get_next_pc();
+        let method = frame.as_ref().unwrap().borrow().method();
+        let pc = frame.as_ref().unwrap().borrow().next_pc();
         let class_name = method.borrow().get_class().borrow().name();
         println!(">> pc: {:4} {}.{}{}", pc,
             class_name, method.borrow().name(), method.borrow().descriptor());

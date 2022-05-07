@@ -18,7 +18,7 @@ impl Instruction for IFNULL {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        if frame.get_operand_stack().pop_ref() == None {
+        if frame.operand_stack_mut().pop_ref() == None {
             branch(frame, self.offset);
         }
 
@@ -38,7 +38,7 @@ impl Instruction for IFNONNULL {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        if frame.get_operand_stack().pop_ref() != None {
+        if frame.operand_stack_mut().pop_ref() != None {
             branch(frame, self.offset);
         }
 
