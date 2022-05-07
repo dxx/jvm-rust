@@ -14,7 +14,7 @@ pub fn init() {
 /// public static native void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
 /// (Ljava/lang/Object;ILjava/lang/Object;II)V
 fn arraycopy(frame: &mut Frame) {
-    let vars = frame.get_local_vars();
+    let vars = frame.local_vars_mut();
     let src = vars.get_ref(0);
     let src_pos = vars.get_int(1);
     let dest = vars.get_ref(2);

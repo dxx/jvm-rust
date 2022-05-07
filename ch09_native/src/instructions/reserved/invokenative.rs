@@ -11,7 +11,7 @@ pub struct INVOKE_NATIVE;
 
 impl Instruction for INVOKE_NATIVE {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let method = frame.get_method();
+        let method = frame.method();
         let class_name = method.borrow().get_class().borrow().name();
         let method_name = method.borrow().name();
         let method_descriptor = method.borrow().descriptor();

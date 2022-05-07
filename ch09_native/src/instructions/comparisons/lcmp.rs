@@ -10,7 +10,7 @@ pub struct LCMP;
 
 impl Instruction for LCMP {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_long();
         let v1 = stack.pop_long();
         if v1 > v2 {

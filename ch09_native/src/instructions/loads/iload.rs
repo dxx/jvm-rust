@@ -68,6 +68,6 @@ impl Instruction for ILOAD_3 {
 }
 
 fn _iload(frame: &mut Frame, index: usize) {
-    let val = frame.get_local_vars().get_int(index);
-    frame.get_operand_stack().push_int(val);
+    let val = frame.local_vars_mut().get_int(index);
+    frame.operand_stack_mut().push_int(val);
 }

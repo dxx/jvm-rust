@@ -17,7 +17,7 @@ impl Instruction for BIPUSH {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        frame.get_operand_stack().push_int(self.val as i32);
+        frame.operand_stack_mut().push_int(self.val as i32);
 
         Ok(())
     }
@@ -35,7 +35,7 @@ impl Instruction for SIPUSH {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        frame.get_operand_stack().push_int(self.val as i32);
+        frame.operand_stack_mut().push_int(self.val as i32);
 
         Ok(())
     }

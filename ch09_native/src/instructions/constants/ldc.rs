@@ -56,8 +56,8 @@ impl Instruction for LDC2_W {
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
         let index = self.index;
-        let method = frame.get_method();
-        let stack = frame.get_operand_stack();
+        let method = frame.method();
+        let stack = frame.operand_stack_mut();
         let current_class = method.borrow().get_class();
         let r_cp = current_class.borrow_mut().constant_pool();
         let tag = r_cp.borrow().get_constant(index as usize).tag();
@@ -83,8 +83,8 @@ impl Instruction for LDC2_W {
 }
 
 fn _ldc(frame: &mut Frame, index: u64) {
-    let method = frame.get_method();
-    let stack = frame.get_operand_stack();
+    let method = frame.method();
+    let stack = frame.operand_stack_mut();
     let current_class = method.borrow().get_class();
     let string_pool = current_class.borrow_mut().string_pool();
     let r_cp = current_class.borrow_mut().constant_pool();

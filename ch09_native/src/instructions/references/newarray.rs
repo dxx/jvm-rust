@@ -30,8 +30,8 @@ impl Instruction for NEW_ARRAY {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let method = frame.get_method();
-        let stack = frame.get_operand_stack();
+        let method = frame.method();
+        let stack = frame.operand_stack_mut();
         let count = stack.pop_int();
         if count < 0 {
             return Err("java.lang.NegativeArraySizeException".into());

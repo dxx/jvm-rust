@@ -68,6 +68,6 @@ impl Instruction for FSTORE_3 {
 }
 
 fn _fstore(frame: &mut Frame, index: usize) {
-    let val = frame.get_operand_stack().pop_float();
-    frame.get_local_vars().set_float(index, val);
+    let val = frame.operand_stack_mut().pop_float();
+    frame.local_vars_mut().set_float(index, val);
 }

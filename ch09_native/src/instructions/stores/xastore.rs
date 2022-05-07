@@ -12,7 +12,7 @@ pub struct AASTORE;
 
 impl Instruction for AASTORE {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let _ref = stack.pop_ref();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -36,7 +36,7 @@ pub struct BASTORE;
 
 impl Instruction for BASTORE {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let val = stack.pop_int();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -60,7 +60,7 @@ pub struct CASTORE;
 
 impl Instruction for CASTORE {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let val = stack.pop_int();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -84,7 +84,7 @@ pub struct DASTORE;
 
 impl Instruction for DASTORE {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let val = stack.pop_double();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -108,7 +108,7 @@ pub struct FASTORE;
 
 impl Instruction for FASTORE {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let val = stack.pop_float();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -132,7 +132,7 @@ pub struct IASTORE;
 
 impl Instruction for IASTORE {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let val = stack.pop_int();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -156,7 +156,7 @@ pub struct LASTORE;
 
 impl Instruction for LASTORE {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let val = stack.pop_long();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -180,7 +180,7 @@ pub struct SASTORE;
 
 impl Instruction for SASTORE {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let val = stack.pop_int();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();

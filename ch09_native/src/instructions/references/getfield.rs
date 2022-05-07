@@ -18,7 +18,7 @@ impl Instruction for GET_FIELD {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let current_method = frame.get_method();
+        let current_method = frame.method();
         let current_class = current_method.borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let field = r_cp.borrow_mut().get_constant_mut(self.index as usize)
@@ -28,7 +28,7 @@ impl Instruction for GET_FIELD {
             return Err("java.lang.IncompatibleClassChangeError".into());
         }
         
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let _ref = stack.pop_ref();
         if _ref.is_none() {
             return Err("java.lang.NullPointerException".into());
