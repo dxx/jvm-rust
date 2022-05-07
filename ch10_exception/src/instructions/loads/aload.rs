@@ -68,6 +68,6 @@ impl Instruction for ALOAD_3 {
 }
 
 fn _aload(frame: &mut Frame, index: usize) {
-    let val = frame.get_local_vars().get_ref(index);
-    frame.get_operand_stack().push_ref(val);
+    let val = frame.local_vars_mut().get_ref(index);
+    frame.operand_stack_mut().push_ref(val);
 }

@@ -10,7 +10,7 @@ pub struct ARRAY_LENGTH;
 
 impl Instruction for ARRAY_LENGTH {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let _ref = stack.pop_ref();
         if _ref.is_none() {
             panic!("java.lang.NullPointerException");

@@ -18,8 +18,8 @@ impl Instruction for CHECK_CAST {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let method = frame.get_method();
-        let stack = frame.get_operand_stack();
+        let method = frame.method();
+        let stack = frame.operand_stack_mut();
         let _ref = stack.pop_ref();
         stack.push_ref(_ref.clone());
 

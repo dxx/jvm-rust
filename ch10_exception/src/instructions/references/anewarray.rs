@@ -20,13 +20,13 @@ impl Instruction for ANEW_ARRAY {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let method = frame.get_method();
+        let method = frame.method();
         let current_class = method.borrow().get_class();
         let r_cp = current_class.borrow_mut().constant_pool();
         let component_class = r_cp.borrow_mut().get_constant_mut(self.index as usize)
             .as_any_mut().downcast_mut::<ClassRef>().unwrap().resolved_class(current_class);
 
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let count = stack.pop_int();
         if count < 0 {
             return Err("java.lang.NegativeArraySizeException".into());

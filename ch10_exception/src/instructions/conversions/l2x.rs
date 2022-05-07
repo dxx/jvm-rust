@@ -10,7 +10,7 @@ pub struct L2D;
 
 impl Instruction for L2D {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let l = stack.pop_long();
         let d = l as f64;
         stack.push_double(d);
@@ -25,7 +25,7 @@ pub struct L2F;
 
 impl Instruction for L2F {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let l = stack.pop_long();
         let f = l as f32;
         stack.push_float(f);
@@ -40,7 +40,7 @@ pub struct L2I;
 
 impl Instruction for L2I {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let l = stack.pop_long();
         let i = l as i32;
         stack.push_int(i);

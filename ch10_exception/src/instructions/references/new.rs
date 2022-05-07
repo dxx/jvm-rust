@@ -21,7 +21,7 @@ impl Instruction for NEW {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let method = frame.get_method();
+        let method = frame.method();
         let current_class = method.borrow().get_class();
         let r_cp = current_class.borrow_mut().constant_pool();
         let class = r_cp.borrow_mut().get_constant_mut(self.index as usize)
@@ -29,7 +29,7 @@ impl Instruction for NEW {
 
         if !class.borrow().init_started() {
             frame.revert_next_pc();
-            init_class(&frame.get_thread(), &class);
+            init_class(&frame.thread(), &class);
             return Ok(());
         }
 
@@ -37,7 +37,7 @@ impl Instruction for NEW {
             return Err("java.lang.InstantiationError".into());
         }
         let _ref = class.borrow().new_object(class.clone());
-        frame.get_operand_stack().push_ref(Some(Rc::new(RefCell::new(_ref))));
+        frame.operand_stack_mut().push_ref(Some(Rc::new(RefCell::new(_ref))));
 
         Ok(())
     }

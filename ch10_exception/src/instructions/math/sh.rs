@@ -10,7 +10,7 @@ pub struct ISHL;
 
 impl Instruction for ISHL {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
         let s = v2 as u32 & 0x1f;
@@ -27,7 +27,7 @@ pub struct ISHR;
 
 impl Instruction for ISHR {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
         let s = v2 as u32 & 0x1f;
@@ -44,7 +44,7 @@ pub struct IUSHR;
 
 impl Instruction for IUSHR {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
         let s = v2 as u32 & 0x1f;
@@ -61,7 +61,7 @@ pub struct LSHL;
 
 impl Instruction for LSHL {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_int();
         let v1 = stack.pop_long();
         let s = v2 as u32 & 0x3f;
@@ -78,7 +78,7 @@ pub struct LSHR;
 
 impl Instruction for LSHR {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_int();
         let v1 = stack.pop_long();
         let s = v2 as u32 & 0x3f;
@@ -95,7 +95,7 @@ pub struct LUSHR;
 
 impl Instruction for LUSHR {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let v2 = stack.pop_int();
         let v1 = stack.pop_long();
         let s = v2 as u32 & 0x3f;

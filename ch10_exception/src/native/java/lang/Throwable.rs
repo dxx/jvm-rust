@@ -41,10 +41,10 @@ impl ObjectExtra for Vec<StackTraceElement> {
 /// private native Throwable fillInStackTrace(int dummy);
 /// (I)Ljava/lang/Throwable;
 fn fill_in_stack_trace(frame: &mut Frame) {
-    let mut this = frame.get_local_vars().get_this();
-    frame.get_operand_stack().push_ref(this.clone());
+    let mut this = frame.local_vars_mut().get_this();
+    frame.operand_stack_mut().push_ref(this.clone());
 
-    let stes = create_stack_trace_elements(this.as_ref().unwrap(), &frame.get_thread());
+    let stes = create_stack_trace_elements(this.as_ref().unwrap(), &frame.thread());
     this.as_mut().unwrap().borrow_mut().set_extra(Some(Box::new(stes)));
 }
 
@@ -73,12 +73,12 @@ fn distance_to_object(class: &Rc<RefCell<Class>>) -> i64 {
 }
 
 fn create_stack_trace_element(frame: &Frame) -> StackTraceElement {
-    let method = frame.get_method();
+    let method = frame.method();
     let class = method.borrow().get_class();
     let file_name = class.borrow().source_file_name();
     let class_name = class.borrow().java_name();
     let method_name = method.borrow().name();
-    let line_number = method.borrow().get_line_number(frame.get_next_pc() - 1);
+    let line_number = method.borrow().get_line_number(frame.next_pc() - 1);
 
     StackTraceElement {
         file_name,

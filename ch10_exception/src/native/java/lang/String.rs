@@ -11,8 +11,8 @@ pub fn init() {
 // public native String intern();
 // ()Ljava/lang/String;
 fn intern(frame: &mut Frame) {
-    let this = frame.get_local_vars().get_this();
+    let this = frame.local_vars_mut().get_this();
     let interned = string_pool::intern_string(this.as_ref().unwrap());
 
-    frame.get_operand_stack().push_ref(Some(interned));
+    frame.operand_stack_mut().push_ref(Some(interned));
 }

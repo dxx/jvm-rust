@@ -41,7 +41,7 @@ impl Instruction for TABLE_SWITCH {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let index = frame.get_operand_stack().pop_int();
+        let index = frame.operand_stack_mut().pop_int();
         let offset = 
         if index >= self.low && index <= self.high {
             self.jump_offsets[(index - self.low) as usize]

@@ -14,22 +14,22 @@ pub fn init() {
 /// static native Class<?> getPrimitiveClass(String name);
 /// (Ljava/lang/String;)Ljava/lang/Class;
 fn get_primitive_class(frame: &mut Frame) {
-    let name_obj = frame.get_local_vars().get_ref(0);
+    let name_obj = frame.local_vars_mut().get_ref(0);
     let name = string_pool::rust_string(name_obj.as_ref().unwrap());
 
-    let current_class = frame.get_method().borrow().get_class();
+    let current_class = frame.method().borrow().get_class();
     let loader = current_class.borrow_mut().loader().unwrap();
     let class = loader.borrow_mut().load_class(loader.clone(), name).borrow().j_class();
 
-    frame.get_operand_stack().push_ref(class);
+    frame.operand_stack_mut().push_ref(class);
 }
 
 /// private native String getName0();
 /// ()Ljava/lang/String;
 fn get_name0(frame: &mut Frame) {
-    let this = frame.get_local_vars().get_this();
+    let this = frame.local_vars_mut().get_this();
     
-    let current_class = frame.get_method().borrow().get_class();
+    let current_class = frame.method().borrow().get_class();
     let loader = current_class.borrow_mut().loader().unwrap();
     let string_pool = current_class.borrow_mut().string_pool();
 
@@ -37,11 +37,11 @@ fn get_name0(frame: &mut Frame) {
         .as_any().downcast_ref::<ClassData>().unwrap().java_name();
     let name_obj = string_pool.borrow_mut().jstring(loader.clone(), name);
 
-    frame.get_operand_stack().push_ref(Some(name_obj));
+    frame.operand_stack_mut().push_ref(Some(name_obj));
 }
 
 /// private static native boolean desiredAssertionStatus0(Class<?> clazz);
 /// (Ljava/lang/Class;)Z
 fn desired_assertion_status0(frame: &mut Frame) {
-    frame.get_operand_stack().push_boolean(false);
+    frame.operand_stack_mut().push_boolean(false);
 }

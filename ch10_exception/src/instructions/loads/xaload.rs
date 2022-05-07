@@ -12,7 +12,7 @@ pub struct AALOAD;
 
 impl Instruction for AALOAD {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
 
@@ -35,7 +35,7 @@ pub struct BALOAD;
 
 impl Instruction for BALOAD {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
 
@@ -58,7 +58,7 @@ pub struct CALOAD;
 
 impl Instruction for CALOAD {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
 
@@ -81,7 +81,7 @@ pub struct DALOAD;
 
 impl Instruction for DALOAD {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
 
@@ -104,7 +104,7 @@ pub struct FALOAD;
 
 impl Instruction for FALOAD {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
 
@@ -127,7 +127,7 @@ pub struct IALOAD;
 
 impl Instruction for IALOAD {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
 
@@ -150,7 +150,7 @@ pub struct LALOAD;
 
 impl Instruction for LALOAD {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
 
@@ -173,7 +173,7 @@ pub struct SALOAD;
 
 impl Instruction for SALOAD {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
 

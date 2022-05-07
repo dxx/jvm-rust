@@ -14,12 +14,12 @@ pub struct ATHROW;
 
 impl Instruction for ATHROW {
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let ex = frame.get_operand_stack().pop_ref();
+        let ex = frame.operand_stack_mut().pop_ref();
         if ex.is_none() {
             return Err("java.lang.NullPointerException".into());
         }
 
-        let thread = frame.get_thread();
+        let thread = frame.thread();
         if !find_and_goto_exception_handler(&thread, ex.clone().unwrap()) {
             thread.borrow_mut().clear_stack();
         
@@ -37,12 +37,12 @@ fn find_and_goto_exception_handler(
     loop {
         let frame = thread.borrow().current_frame();
         let frame_mut = unsafe { frame.as_ptr().as_mut().unwrap() };
-        let pc = frame_mut.get_next_pc() - 1;
+        let pc = frame_mut.next_pc() - 1;
 
-        let handler_pc = frame_mut.get_method().borrow_mut()
+        let handler_pc = frame_mut.method().borrow_mut()
             .find_exception_handler(ex.borrow().class(), pc);
         if handler_pc > 0 {
-            let stack = frame_mut.get_operand_stack();
+            let stack = frame_mut.operand_stack_mut();
             stack.clear();
             stack.push_ref(Some(ex));
             frame_mut.set_next_pc(handler_pc);

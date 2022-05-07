@@ -19,7 +19,7 @@ impl Instruction for IINC {
     }
 
     fn execute(&mut self, frame: &mut Frame) -> Result<String> {
-        let local_vars = frame.get_local_vars();
+        let local_vars = frame.local_vars_mut();
         let val = local_vars.get_int(self.index);
         let val = val + self._const;
         local_vars.set_int(self.index, val);

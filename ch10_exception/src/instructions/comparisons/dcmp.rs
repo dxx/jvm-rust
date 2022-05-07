@@ -28,7 +28,7 @@ impl Instruction for DCMPL {
 }
 
 fn _dcmp(frame: &mut Frame, g_flag: bool) {
-	let stack = frame.get_operand_stack();
+	let stack = frame.operand_stack_mut();
 	let v2 = stack.pop_double();
 	let v1 = stack.pop_double();
 	if v1 > v2 {

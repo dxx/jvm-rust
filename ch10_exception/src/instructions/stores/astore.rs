@@ -68,6 +68,6 @@ impl Instruction for ASTORE_3 {
 }
 
 fn _astore(frame: &mut Frame, index: usize) {
-    let val = frame.get_operand_stack().pop_ref();
-    frame.get_local_vars().set_ref(index, val);
+    let val = frame.operand_stack_mut().pop_ref();
+    frame.local_vars_mut().set_ref(index, val);
 }
