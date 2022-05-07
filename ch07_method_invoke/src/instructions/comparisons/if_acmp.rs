@@ -41,7 +41,7 @@ impl Instruction for IF_ACMPNE {
 }
 
 fn _acmp(frame: &mut Frame) -> bool {
-    let stack = frame.get_operand_stack();
+    let stack = frame.operand_stack_mut();
     let ref2 = stack.pop_ref();
     let ref1 = stack.pop_ref();
     ref1 == ref2

@@ -17,8 +17,8 @@ impl Instruction for INSTANCE_OF {
     }
     
     fn execute(&mut self, frame: &mut Frame) {
-        let method = frame.get_method();
-        let stack = frame.get_operand_stack();
+        let method = frame.method();
+        let stack = frame.operand_stack_mut();
         let _ref = stack.pop_ref();
         if _ref.is_none() {
             stack.push_int(0);

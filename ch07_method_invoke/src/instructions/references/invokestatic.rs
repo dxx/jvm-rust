@@ -18,7 +18,7 @@ impl Instruction for INVOKE_STATIC {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let current_class = frame.get_method().borrow().get_class();
+        let current_class = frame.method().borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let resolved_method = r_cp.borrow_mut().get_constant_mut(self.index as usize)
             .as_any_mut().downcast_mut::<MethodRef>().unwrap().resolved_method(current_class);
@@ -29,7 +29,7 @@ impl Instruction for INVOKE_STATIC {
         let class = resolved_method.borrow().get_class();
         if !class.borrow().init_started() {
             frame.revert_next_pc();
-            init_class(&frame.get_thread(), &class);
+            init_class(&frame.thread(), &class);
             return;
         }
 

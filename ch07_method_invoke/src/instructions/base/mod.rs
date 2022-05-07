@@ -9,21 +9,21 @@ use std::rc::Rc;
 use std::cell::RefCell;
 
 pub fn branch(frame: &mut Frame, offset: i64) {
-	let pc = frame.get_thread().borrow().pc();
+	let pc = frame.thread().borrow().pc();
 	let next_pc = pc + offset;
 	frame.set_next_pc(next_pc);
 }
 
 pub fn invoke_method(frame: &mut Frame, method: &Rc<RefCell<Method>>) {
-	let thread = frame.get_thread();
+	let thread = frame.thread();
 	let mut new_frame = thread.borrow_mut().new_frame(thread.clone(), method.clone());
 
 	let arg_slot_count = method.borrow().arg_slot_count() as i32;
 	if arg_slot_count > 0 {
 		let mut i = arg_slot_count - 1;
 		while i >= 0 {
-			let slot = frame.get_operand_stack().pop_slot();
-			new_frame.get_local_vars().set_slot(i as usize, slot);
+			let slot = frame.operand_stack_mut().pop_slot();
+			new_frame.local_vars_mut().set_slot(i as usize, slot);
 			i -= 1;
 		}
 	}

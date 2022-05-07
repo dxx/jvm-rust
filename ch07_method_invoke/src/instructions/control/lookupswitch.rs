@@ -33,7 +33,7 @@ impl Instruction for LOOKUP_SWITCH {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let key = frame.get_operand_stack().pop_int();
+        let key = frame.operand_stack_mut().pop_int();
         let mut i = 0_i32;
         while i < self.npairs * 2 {
             if self.match_offsets[i as usize] == key {

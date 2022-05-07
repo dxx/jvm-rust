@@ -17,7 +17,7 @@ impl Instruction for PUT_FIELD {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let current_method = frame.get_method();
+        let current_method = frame.method();
         let current_class = current_method.borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let field = r_cp.borrow_mut().get_constant_mut(self.index as usize)
@@ -36,7 +36,7 @@ impl Instruction for PUT_FIELD {
 
         let descriptor = field.borrow().descriptor().as_bytes()[0];
         let slot_id = field.borrow().slot_id() as usize;
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
 
         match descriptor {
             b'Z' | b'B' | b'C' | b'S' | b'I' => {

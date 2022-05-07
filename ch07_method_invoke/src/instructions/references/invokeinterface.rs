@@ -23,7 +23,7 @@ impl Instruction for INVOKE_INTERFACE {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let current_class = frame.get_method().borrow().get_class();
+        let current_class = frame.method().borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let resolved_class = r_cp.borrow_mut().get_constant_mut(self.index as usize)
             .as_any_mut().downcast_mut::<InterfaceMethodRef>().unwrap().resolved_class(current_class.clone());
@@ -34,7 +34,7 @@ impl Instruction for INVOKE_INTERFACE {
             panic!("java.lang.IncompatibleClassChangeError");
         }
 
-        let _ref = frame.get_operand_stack().get_ref_from_top(
+        let _ref = frame.operand_stack_mut().get_ref_from_top(
             (resolved_method.borrow().arg_slot_count() - 1) as usize);
         if _ref.is_none() {
             panic!("java.lang.NullPointerException");

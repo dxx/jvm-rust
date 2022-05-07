@@ -15,7 +15,7 @@ impl Instruction for DUP {
     ///                V
     /// [...][c][b][a][a]
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let slot = stack.pop_slot();
         let slot2 = slot.clone();
         stack.push_slot(slot);
@@ -35,7 +35,7 @@ impl Instruction for DUP_X1 {
     ///          V
     /// [...][c][a][b][a]
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
         stack.push_slot(slot1.clone());
@@ -56,7 +56,7 @@ impl Instruction for DUP_X2 {
     ///       V
     /// [...][a][c][b][a]
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
         let slot3 = stack.pop_slot();
@@ -79,7 +79,7 @@ impl Instruction for DUP2 {
     ///                V  V
     /// [...][c][b][a][b][a]
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
         stack.push_slot(slot2.clone());
@@ -101,7 +101,7 @@ impl Instruction for DUP2_X1 {
     ///       V  V
     /// [...][b][a][c][b][a]
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
         let slot3 = stack.pop_slot();
@@ -125,7 +125,7 @@ impl Instruction for DUP2_X2 {
     ///       V  V
     /// [...][b][a][d][c][b][a]
     fn execute(&mut self, frame: &mut Frame) {
-        let stack = frame.get_operand_stack();
+        let stack = frame.operand_stack_mut();
         let slot1 = stack.pop_slot();
         let slot2 = stack.pop_slot();
         let slot3 = stack.pop_slot();
