@@ -29,7 +29,7 @@ jvm-rust ❯ ./target/debug/ch08_array_string -cp "/Users/dxx/Desktop" jvmrust.c
 ```
 
 ```shell
-jvm-rust ❯ ./target/release/ch08_array_string -cp "/Users/dxx/Desktop" jvmrust.ch08.PrintArgs foo 你好，世界!
+jvm-rust ❯ ./target/debug/ch08_array_string -cp "/Users/dxx/Desktop" jvmrust.ch08.PrintArgs foo 你好，世界!
 foo
 你好，世界!
 ```

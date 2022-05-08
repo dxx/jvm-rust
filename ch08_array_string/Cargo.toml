@@ -7,4 +7,4 @@ edition = "2021"
 [dependencies]
 getopts = "0.2"
 zip = { version = "0.5", default-features = false, features = ["deflate"] }
-lazy_static = "1.4.0"
+once_cell = "1.10.0"
