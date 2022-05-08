@@ -1,22 +1,20 @@
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 
 use std::collections::HashMap;
 
-lazy_static! {
-    pub static ref PRIMITIVE_TYPES: HashMap<&'static str, &'static str> = {
-        let mut h = HashMap::new();
-        h.insert("void", "V");
-        h.insert("boolean", "Z");
-        h.insert("byte", "B");
-        h.insert("short", "S");
-        h.insert("int", "I");
-        h.insert("long", "J");
-        h.insert("char", "C");
-        h.insert("float", "F");
-        h.insert("double", "D");
-        h
-    };
-}
+pub static PRIMITIVE_TYPES: Lazy<HashMap<&'static str, &'static str>> = Lazy::new(|| {
+    let mut h = HashMap::new();
+    h.insert("void", "V");
+    h.insert("boolean", "Z");
+    h.insert("byte", "B");
+    h.insert("short", "S");
+    h.insert("int", "I");
+    h.insert("long", "J");
+    h.insert("char", "C");
+    h.insert("float", "F");
+    h.insert("double", "D");
+    h
+});
 
 /// [XXX -> [[XXX
 /// int -> [I

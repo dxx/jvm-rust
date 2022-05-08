@@ -12,25 +12,23 @@ pub mod string;
 pub mod system;
 
 use crate::rtda::Frame;
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::RwLock;
 
-lazy_static! {
-    static ref REGISTRY: RwLock<HashMap<String, NativeMethod>> = RwLock::new(HashMap::new());
-    static ref REGISTRY_INIT: HashMap<String, fn ()> = {
-        let mut hashmap: HashMap<String, fn ()> = HashMap::new();
+pub static REGISTRY: Lazy<RwLock<HashMap<String, NativeMethod>>> = Lazy::new(|| RwLock::new(HashMap::new()));
+pub static REGISTRY_INIT: Lazy<HashMap<String, fn ()>> = Lazy::new(|| {
+    let mut hashmap: HashMap<String, fn ()> = HashMap::new();
 
-        hashmap.insert("java/lang/Class".into(), class::init);
-        hashmap.insert("java/lang/Object".into(), object::init);
-        hashmap.insert("java/lang/Double".into(), double::init);
-        hashmap.insert("java/lang/Float".into(), float::init);
-        hashmap.insert("java/lang/String".into(), string::init);
-        hashmap.insert("java/lang/System".into(), system::init);
+    hashmap.insert("java/lang/Class".into(), class::init);
+    hashmap.insert("java/lang/Object".into(), object::init);
+    hashmap.insert("java/lang/Double".into(), double::init);
+    hashmap.insert("java/lang/Float".into(), float::init);
+    hashmap.insert("java/lang/String".into(), string::init);
+    hashmap.insert("java/lang/System".into(), system::init);
 
-        hashmap
-    };
-}
+    hashmap
+});
 
 type NativeMethod = fn (frame: &mut Frame);
 
