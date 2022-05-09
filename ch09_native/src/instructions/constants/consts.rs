@@ -2,13 +2,12 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 
 #[derive(Default, Debug)]
 pub struct ACONST_NULL;
 
 impl Instruction for ACONST_NULL {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         // Push None
         frame.operand_stack_mut().push_ref(None);
 
@@ -21,7 +20,7 @@ impl Instruction for ACONST_NULL {
 pub struct DCONST_0;
 
 impl Instruction for DCONST_0 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_double(0.0);
 
         Ok(())
@@ -32,7 +31,7 @@ impl Instruction for DCONST_0 {
 pub struct DCONST_1;
 
 impl Instruction for DCONST_1 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_double(1.0);
 
         Ok(())
@@ -44,7 +43,7 @@ impl Instruction for DCONST_1 {
 pub struct FCONST_0;
 
 impl Instruction for FCONST_0 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_float(0.0);
 
         Ok(())
@@ -55,7 +54,7 @@ impl Instruction for FCONST_0 {
 pub struct FCONST_1;
 
 impl Instruction for FCONST_1 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_float(1.0);
 
         Ok(())
@@ -66,7 +65,7 @@ impl Instruction for FCONST_1 {
 pub struct FCONST_2;
 
 impl Instruction for FCONST_2 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_float(2.0);
 
         Ok(())
@@ -78,7 +77,7 @@ impl Instruction for FCONST_2 {
 pub struct ICONST_M1;
 
 impl Instruction for ICONST_M1 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_int(-1);
 
         Ok(())
@@ -89,7 +88,7 @@ impl Instruction for ICONST_M1 {
 pub struct ICONST_0;
 
 impl Instruction for ICONST_0 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_int(0);
 
         Ok(())
@@ -100,7 +99,7 @@ impl Instruction for ICONST_0 {
 pub struct ICONST_1;
 
 impl Instruction for ICONST_1 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_int(1);
 
         Ok(())
@@ -111,7 +110,7 @@ impl Instruction for ICONST_1 {
 pub struct ICONST_2;
 
 impl Instruction for ICONST_2 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_int(2);
 
         Ok(())
@@ -122,7 +121,7 @@ impl Instruction for ICONST_2 {
 pub struct ICONST_3;
 
 impl Instruction for ICONST_3 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_int(3);
 
         Ok(())
@@ -133,7 +132,7 @@ impl Instruction for ICONST_3 {
 pub struct ICONST_4;
 
 impl Instruction for ICONST_4 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_int(4);
 
         Ok(())
@@ -144,7 +143,7 @@ impl Instruction for ICONST_4 {
 pub struct ICONST_5;
 
 impl Instruction for ICONST_5 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_int(5);
 
         Ok(())
@@ -156,7 +155,7 @@ impl Instruction for ICONST_5 {
 pub struct LCONST_0;
 
 impl Instruction for LCONST_0 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_long(0);
 
         Ok(())
@@ -167,7 +166,7 @@ impl Instruction for LCONST_0 {
 pub struct LCONST_1;
 
 impl Instruction for LCONST_1 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_long(1);
 
         Ok(())

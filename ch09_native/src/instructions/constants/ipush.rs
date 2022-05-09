@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Push byte
@@ -16,7 +15,7 @@ impl Instruction for BIPUSH {
         self.val = reader.read_i8();
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_int(self.val as i32);
 
         Ok(())
@@ -34,7 +33,7 @@ impl Instruction for SIPUSH {
         self.val = reader.read_i16();
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().push_int(self.val as i32);
 
         Ok(())

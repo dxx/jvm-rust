@@ -2,14 +2,13 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 
 /// Remainder double
 #[derive(Default, Debug)]
 pub struct DREM;
 
 impl Instruction for DREM {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let v2 = stack.pop_double();
         let v1 = stack.pop_double();
@@ -25,7 +24,7 @@ impl Instruction for DREM {
 pub struct FREM;
 
 impl Instruction for FREM {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let v2 = stack.pop_float();
         let v1 = stack.pop_float();
@@ -41,7 +40,7 @@ impl Instruction for FREM {
 pub struct IREM;
 
 impl Instruction for IREM {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
@@ -60,7 +59,7 @@ impl Instruction for IREM {
 pub struct LREM;
 
 impl Instruction for LREM {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let v2 = stack.pop_long();
         let v1 = stack.pop_long();

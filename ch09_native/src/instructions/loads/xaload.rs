@@ -2,7 +2,6 @@
 
 use crate::rtda::{Frame, Object};
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -11,7 +10,7 @@ use std::cell::RefCell;
 pub struct AALOAD;
 
 impl Instruction for AALOAD {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -34,7 +33,7 @@ impl Instruction for AALOAD {
 pub struct BALOAD;
 
 impl Instruction for BALOAD {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -57,7 +56,7 @@ impl Instruction for BALOAD {
 pub struct CALOAD;
 
 impl Instruction for CALOAD {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -80,7 +79,7 @@ impl Instruction for CALOAD {
 pub struct DALOAD;
 
 impl Instruction for DALOAD {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -103,7 +102,7 @@ impl Instruction for DALOAD {
 pub struct FALOAD;
 
 impl Instruction for FALOAD {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -126,7 +125,7 @@ impl Instruction for FALOAD {
 pub struct IALOAD;
 
 impl Instruction for IALOAD {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -149,7 +148,7 @@ impl Instruction for IALOAD {
 pub struct LALOAD;
 
 impl Instruction for LALOAD {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -172,7 +171,7 @@ impl Instruction for LALOAD {
 pub struct SALOAD;
 
 impl Instruction for SALOAD {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let index = stack.pop_int();
         let mut arr_ref = stack.pop_ref();
@@ -190,14 +189,14 @@ impl Instruction for SALOAD {
     }
 }
 
-fn check_not_none(_ref: Option<Rc<RefCell<Object>>>) -> Result<String> {
+fn check_not_none(_ref: Option<Rc<RefCell<Object>>>) -> crate::Result<()> {
     if _ref.is_none() {
         return Err("java.lang.NullPointerException".into());
     }
     Ok(())
 }
 
-fn check_index(arr_len: usize, index: i32) -> Result<String> {
+fn check_index(arr_len: usize, index: i32) -> crate::Result<()> {
     if index < 0 || index >= arr_len as i32 {
         return Err("java.lang.ArrayIndexOutOfBoundsException".into());
     }

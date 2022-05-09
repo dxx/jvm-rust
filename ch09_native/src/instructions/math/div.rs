@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 
 /// Divide double
 
@@ -10,7 +9,7 @@ use super::super::instruction::Result;
 pub struct DDIV;
 
 impl Instruction for DDIV {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let v2 = stack.pop_double();
         let v1 = stack.pop_double();
@@ -26,7 +25,7 @@ impl Instruction for DDIV {
 pub struct FDIV;
 
 impl Instruction for FDIV {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let v2 = stack.pop_float();
         let v1 = stack.pop_float();
@@ -42,7 +41,7 @@ impl Instruction for FDIV {
 pub struct IDIV;
 
 impl Instruction for IDIV {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let v2 = stack.pop_int();
         let v1 = stack.pop_int();
@@ -61,7 +60,7 @@ impl Instruction for IDIV {
 pub struct LDIV;
 
 impl Instruction for LDIV {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let v2 = stack.pop_long();
         let v1 = stack.pop_long();

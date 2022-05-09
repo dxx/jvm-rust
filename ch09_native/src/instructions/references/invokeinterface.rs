@@ -4,7 +4,6 @@ use crate::rtda::Frame;
 use crate::rtda::cp_interface_methodref::InterfaceMethodRef;
 use crate::rtda::method_lookup::lookup_method_in_class;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::invoke_method;
 
@@ -23,7 +22,7 @@ impl Instruction for INVOKE_INTERFACE {
         reader.read_u8(); // must be 0
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let current_class = frame.method().borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let resolved_class = r_cp.borrow_mut().get_constant_mut(self.index as usize)

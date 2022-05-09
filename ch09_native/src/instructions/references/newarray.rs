@@ -4,7 +4,6 @@ use crate::rtda::Frame;
 use crate::rtda::class::Class;
 use crate::rtda::class_loader::ClassLoader;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -29,7 +28,7 @@ impl Instruction for NEW_ARRAY {
         self.atype = reader.read_u8();
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let method = frame.method();
         let stack = frame.operand_stack_mut();
         let count = stack.pop_int();

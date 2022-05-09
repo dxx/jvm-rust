@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
 
@@ -17,7 +16,7 @@ impl Instruction for GOTO {
         self.offset = reader.read_i16() as i64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         branch(frame, self.offset);
 
         Ok(())

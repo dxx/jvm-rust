@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Load long from local variable
@@ -16,7 +15,7 @@ impl Instruction for LLOAD {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _lload(frame, self.index);
 
         Ok(())
@@ -27,7 +26,7 @@ impl Instruction for LLOAD {
 pub struct LLOAD_0;
 
 impl Instruction for LLOAD_0 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _lload(frame, 0);
 
         Ok(())
@@ -38,7 +37,7 @@ impl Instruction for LLOAD_0 {
 pub struct LLOAD_1;
 
 impl Instruction for LLOAD_1 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _lload(frame, 1);
 
         Ok(())
@@ -49,7 +48,7 @@ impl Instruction for LLOAD_1 {
 pub struct LLOAD_2;
 
 impl Instruction for LLOAD_2 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _lload(frame, 2);
 
         Ok(())
@@ -60,7 +59,7 @@ impl Instruction for LLOAD_2 {
 pub struct LLOAD_3;
 
 impl Instruction for LLOAD_3 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _lload(frame, 3);
 
         Ok(())
