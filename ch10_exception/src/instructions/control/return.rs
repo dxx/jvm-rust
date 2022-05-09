@@ -1,7 +1,6 @@
 #![allow(non_camel_case_types)]
 
 use crate::rtda::Frame;
-use super::super::instruction::Result;
 use super::super::instruction::Instruction;
 
 /// Return void from method
@@ -9,7 +8,7 @@ use super::super::instruction::Instruction;
 pub struct RETURN;
 
 impl Instruction for RETURN {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.thread().borrow_mut().pop_frame();
 
         Ok(())
@@ -21,7 +20,7 @@ impl Instruction for RETURN {
 pub struct ARETURN;
 
 impl Instruction for ARETURN {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let thread = frame.thread();
         let _current_frame = thread.borrow_mut().pop_frame();
         let val = frame.operand_stack_mut().pop_ref();
@@ -36,7 +35,7 @@ impl Instruction for ARETURN {
 pub struct DRETURN;
 
 impl Instruction for DRETURN {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let thread = frame.thread();
         let _current_frame = thread.borrow_mut().pop_frame();
         let val = frame.operand_stack_mut().pop_double();
@@ -51,7 +50,7 @@ impl Instruction for DRETURN {
 pub struct FRETURN;
 
 impl Instruction for FRETURN {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let thread = frame.thread();
         let _current_frame = thread.borrow_mut().pop_frame();
         let val = frame.operand_stack_mut().pop_float();
@@ -66,7 +65,7 @@ impl Instruction for FRETURN {
 pub struct IRETURN;
 
 impl Instruction for IRETURN {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let thread = frame.thread();
         let _current_frame = thread.borrow_mut().pop_frame();
         let val = frame.operand_stack_mut().pop_int();
@@ -81,7 +80,7 @@ impl Instruction for IRETURN {
 pub struct LRETURN;
 
 impl Instruction for LRETURN {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let thread = frame.thread();
         let _current_frame = thread.borrow_mut().pop_frame();
         let val = frame.operand_stack_mut().pop_long();

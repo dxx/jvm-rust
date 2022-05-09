@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Load int from local variable
@@ -16,7 +15,7 @@ impl Instruction for ILOAD {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _iload(frame, self.index);
 
         Ok(())
@@ -27,7 +26,7 @@ impl Instruction for ILOAD {
 pub struct ILOAD_0;
 
 impl Instruction for ILOAD_0 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _iload(frame, 0);
 
         Ok(())
@@ -38,7 +37,7 @@ impl Instruction for ILOAD_0 {
 pub struct ILOAD_1;
 
 impl Instruction for ILOAD_1 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _iload(frame, 1);
 
         Ok(())
@@ -49,7 +48,7 @@ impl Instruction for ILOAD_1 {
 pub struct ILOAD_2;
 
 impl Instruction for ILOAD_2 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _iload(frame, 2);
 
         Ok(())
@@ -60,7 +59,7 @@ impl Instruction for ILOAD_2 {
 pub struct ILOAD_3;
 
 impl Instruction for ILOAD_3 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _iload(frame, 3);
 
         Ok(())

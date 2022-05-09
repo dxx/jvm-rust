@@ -3,14 +3,13 @@
 use crate::rtda::Frame;
 use crate::native;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 
 /// Invoke native method
 #[derive(Default, Debug)]
 pub struct INVOKE_NATIVE;
 
 impl Instruction for INVOKE_NATIVE {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let method = frame.method();
         let class_name = method.borrow().get_class().borrow().name();
         let method_name = method.borrow().name();

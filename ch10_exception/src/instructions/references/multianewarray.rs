@@ -6,7 +6,6 @@ use crate::rtda::class::Class;
 use crate::rtda::Object;
 use crate::rtda::cp_classref::ClassRef;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -24,7 +23,7 @@ impl Instruction for MULTI_ANEW_ARRAY {
         self.dimensions = reader.read_u8();
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let method = frame.method();
         let current_class = method.borrow().get_class();
         let r_cp = current_class.borrow_mut().constant_pool();

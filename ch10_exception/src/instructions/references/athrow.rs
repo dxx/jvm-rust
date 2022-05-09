@@ -4,7 +4,6 @@ use crate::rtda::Object;
 use crate::rtda::string_pool::rust_string;
 use crate::native;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -13,7 +12,7 @@ use std::cell::RefCell;
 pub struct ATHROW;
 
 impl Instruction for ATHROW {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let ex = frame.operand_stack_mut().pop_ref();
         if ex.is_none() {
             return Err("java.lang.NullPointerException".into());

@@ -3,7 +3,6 @@
 use crate::rtda::Frame;
 use crate::rtda::cp_classref::ClassRef;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Check whether object is of given type
@@ -17,7 +16,7 @@ impl Instruction for CHECK_CAST {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let method = frame.method();
         let stack = frame.operand_stack_mut();
         let _ref = stack.pop_ref();
