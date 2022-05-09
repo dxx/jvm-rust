@@ -3,7 +3,6 @@
 use crate::rtda::Frame;
 use crate::classfile::constant_pool;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Push item from run-time constant pool
@@ -17,7 +16,7 @@ impl Instruction for LDC {
         self.index = reader.read_u8() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _ldc(frame, self.index);
 
         Ok(())
@@ -35,7 +34,7 @@ impl Instruction for LDC_W {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _ldc(frame, self.index);
 
         Ok(())
@@ -53,7 +52,7 @@ impl Instruction for LDC2_W {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let index = self.index;
         let method = frame.method();
         let stack = frame.operand_stack_mut();

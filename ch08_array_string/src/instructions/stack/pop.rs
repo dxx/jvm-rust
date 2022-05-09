@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 
 /// Pop the top operand stack value
 #[derive(Default, Debug)]
@@ -14,7 +13,7 @@ impl Instruction for POP {
     ///             |
     ///             V
     /// [...][c][b]
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         frame.operand_stack_mut().pop_slot();
 
         Ok(())
@@ -31,7 +30,7 @@ impl Instruction for POP2 {
     ///          |  |
     ///          V  V
     /// [...][c]
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         stack.pop_slot();
         stack.pop_slot();

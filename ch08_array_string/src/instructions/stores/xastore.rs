@@ -2,7 +2,6 @@
 
 use crate::rtda::{Frame, Object};
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -11,7 +10,7 @@ use std::cell::RefCell;
 pub struct AASTORE;
 
 impl Instruction for AASTORE {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let _ref = stack.pop_ref();
         let index = stack.pop_int();
@@ -35,7 +34,7 @@ impl Instruction for AASTORE {
 pub struct BASTORE;
 
 impl Instruction for BASTORE {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let val = stack.pop_int();
         let index = stack.pop_int();
@@ -59,7 +58,7 @@ impl Instruction for BASTORE {
 pub struct CASTORE;
 
 impl Instruction for CASTORE {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let val = stack.pop_int();
         let index = stack.pop_int();
@@ -83,7 +82,7 @@ impl Instruction for CASTORE {
 pub struct DASTORE;
 
 impl Instruction for DASTORE {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let val = stack.pop_double();
         let index = stack.pop_int();
@@ -107,7 +106,7 @@ impl Instruction for DASTORE {
 pub struct FASTORE;
 
 impl Instruction for FASTORE {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let val = stack.pop_float();
         let index = stack.pop_int();
@@ -131,7 +130,7 @@ impl Instruction for FASTORE {
 pub struct IASTORE;
 
 impl Instruction for IASTORE {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let val = stack.pop_int();
         let index = stack.pop_int();
@@ -155,7 +154,7 @@ impl Instruction for IASTORE {
 pub struct LASTORE;
 
 impl Instruction for LASTORE {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let val = stack.pop_long();
         let index = stack.pop_int();
@@ -179,7 +178,7 @@ impl Instruction for LASTORE {
 pub struct SASTORE;
 
 impl Instruction for SASTORE {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let val = stack.pop_int();
         let index = stack.pop_int();
@@ -198,14 +197,14 @@ impl Instruction for SASTORE {
     }
 }
 
-fn check_not_none(_ref: Option<Rc<RefCell<Object>>>) -> Result<String> {
+fn check_not_none(_ref: Option<Rc<RefCell<Object>>>) -> crate::Result<()> {
     if _ref.is_none() {
         return Err("java.lang.NullPointerException".into());
     }
     Ok(())
 }
 
-fn check_index(arr_len: usize, index: i32) -> Result<String> {
+fn check_index(arr_len: usize, index: i32) -> crate::Result<()> {
     if index < 0 || index >= arr_len as i32 {
         return Err("java.lang.ArrayIndexOutOfBoundsException".into());
     }

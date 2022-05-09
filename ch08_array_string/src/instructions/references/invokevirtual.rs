@@ -5,7 +5,6 @@ use crate::rtda::cp_methodref::MethodRef;
 use crate::rtda::method_lookup::lookup_method_in_class;
 use crate::rtda::string_pool;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::invoke_method;
 
@@ -20,7 +19,7 @@ impl Instruction for INVOKE_VIRTUAL {
         self.index = reader.read_u16() as u64;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let current_class = frame.method().borrow().get_class();
         let r_cp = current_class.borrow().constant_pool();
         let resolved_method = r_cp.borrow_mut().get_constant_mut(self.index as usize)

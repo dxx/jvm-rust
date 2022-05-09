@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 
 /// Swap the top two operand stack values
 #[derive(Default, Debug)]
@@ -15,7 +14,7 @@ impl Instruction for SWAP {
     ///           /\
     ///          V  V
     /// [...][c][a][b]
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let slot1 = stack.pop_slot();
         let slot2 = stack .pop_slot();

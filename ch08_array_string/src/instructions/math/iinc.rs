@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Increment local variable by constant
@@ -18,7 +17,7 @@ impl Instruction for IINC {
         self._const = reader.read_i8() as i32;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let local_vars = frame.local_vars_mut();
         let val = local_vars.get_int(self.index);
         let val = val + self._const;

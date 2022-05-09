@@ -2,14 +2,13 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 
 /// Convert long to double
 #[derive(Default, Debug)]
 pub struct L2D;
 
 impl Instruction for L2D {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let l = stack.pop_long();
         let d = l as f64;
@@ -24,7 +23,7 @@ impl Instruction for L2D {
 pub struct L2F;
 
 impl Instruction for L2F {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let l = stack.pop_long();
         let f = l as f32;
@@ -39,7 +38,7 @@ impl Instruction for L2F {
 pub struct L2I;
 
 impl Instruction for L2I {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         let stack = frame.operand_stack_mut();
         let l = stack.pop_long();
         let i = l as i32;

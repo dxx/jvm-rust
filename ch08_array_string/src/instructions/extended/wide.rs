@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 use super::super::loads::*;
 use super::super::math::*;
@@ -83,7 +82,7 @@ impl Instruction for WIDE {
         }
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         self.modified_instruction.as_mut().unwrap().execute(frame)?;
 
         Ok(())

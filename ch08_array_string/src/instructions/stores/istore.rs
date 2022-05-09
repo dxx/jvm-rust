@@ -2,7 +2,6 @@
 
 use crate::rtda::Frame;
 use super::super::instruction::Instruction;
-use super::super::instruction::Result;
 use super::super::bytecode_reader::BytecodeReader;
 
 /// Store int into local variable
@@ -16,7 +15,7 @@ impl Instruction for ISTORE {
         self.index = reader.read_u8() as usize;
     }
 
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _istore(frame, self.index);
 
         Ok(())
@@ -27,7 +26,7 @@ impl Instruction for ISTORE {
 pub struct ISTORE_0;
 
 impl Instruction for ISTORE_0 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _istore(frame, 0);
 
         Ok(())
@@ -38,7 +37,7 @@ impl Instruction for ISTORE_0 {
 pub struct ISTORE_1;
 
 impl Instruction for ISTORE_1 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _istore(frame, 1);
 
         Ok(())
@@ -49,7 +48,7 @@ impl Instruction for ISTORE_1 {
 pub struct ISTORE_2;
 
 impl Instruction for ISTORE_2 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _istore(frame, 2);
 
         Ok(())
@@ -60,7 +59,7 @@ impl Instruction for ISTORE_2 {
 pub struct ISTORE_3;
 
 impl Instruction for ISTORE_3 {
-    fn execute(&mut self, frame: &mut Frame) -> Result<String> {
+    fn execute(&mut self, frame: &mut Frame) -> crate::Result<()> {
         _istore(frame, 3);
 
         Ok(())
