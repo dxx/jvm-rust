@@ -1,17 +1,19 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::classfile::constant_pool::cp_member_ref::ConstantMethodRefInfo;
 use crate::classfile::constant_pool::CONSTANT_METHOD_REF;
 use super::class::Class;
 use super::method::Method;
 use super::constant_pool::Constant;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct MethodRef {
     class_name: String,
-    class: Option<Rc<RefCell<Class>>>,
+    class: OptionalRcRefCell<Class>,
     name: String,
     descriptor: String,
-    method: Option<Rc<RefCell<Method>>>,
+    method: OptionalRcRefCell<Method>,
 }
 
 impl MethodRef {
@@ -34,7 +36,7 @@ impl MethodRef {
         self.descriptor.clone()
     }
 
-    pub fn resolved_method(&mut self) -> Rc<RefCell<Method>> {
+    pub fn resolved_method(&mut self) -> RcRefCell<Method> {
         if self.method.is_none() {
             self.resolve_method_ref();
         }

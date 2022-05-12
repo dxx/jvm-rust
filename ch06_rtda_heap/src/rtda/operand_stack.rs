@@ -1,7 +1,6 @@
+use crate::types::OptionalRcRefCell;
 use super::local_vars::Slot;
 use super::object::Object;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct OperandStack {
     size: usize,
@@ -63,12 +62,12 @@ impl OperandStack {
         f64::from_be_bytes(bytes)
     }
 
-    pub fn push_ref(&mut self, val: Option<Rc<RefCell<Object>>>) {
+    pub fn push_ref(&mut self, val: OptionalRcRefCell<Object>) {
         self.slots[self.size]._ref = val;
         self.size += 1;
     }
 
-    pub fn pop_ref(&mut self) -> Option<Rc<RefCell<Object>>> {
+    pub fn pop_ref(&mut self) -> OptionalRcRefCell<Object> {
         self.size -= 1;
         self.slots[self.size]._ref.clone()
     }

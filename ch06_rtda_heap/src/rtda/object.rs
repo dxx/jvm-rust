@@ -1,10 +1,9 @@
+use crate::types::RcRefCell;
 use super::slots::Slots;
 use super::heap::class::Class;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct Object {
-    class: Rc<RefCell<Class>>,
+    class: RcRefCell<Class>,
     fields: Slots,
 }
 
@@ -23,14 +22,14 @@ impl PartialEq for Object {
 }
 
 impl Object {
-    pub fn new(class: Rc<RefCell<Class>>) -> Self {
+    pub fn new(class: RcRefCell<Class>) -> Self {
         Object {
             class: class.clone(),
             fields: Slots::new(class.borrow().instance_slot_count() as usize),
         }
     }
 
-    pub fn class(&self) -> &Rc<RefCell<Class>> {
+    pub fn class(&self) -> &RcRefCell<Class> {
         &self.class
     }
 
@@ -42,7 +41,7 @@ impl Object {
         &mut self.fields
     }
 
-    pub fn is_instance_of(&self, class: &Rc<RefCell<Class>>) -> bool {
+    pub fn is_instance_of(&self, class: &RcRefCell<Class>) -> bool {
         class.borrow().is_assignable_from(class, &self.class)
     }
 }

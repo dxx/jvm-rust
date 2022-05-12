@@ -1,20 +1,19 @@
+use crate::types::RcRefCell;
 use super::{local_vars::LocalVars, operand_stack::OperandStack};
 use super::thread::Thread;
 use super::heap::method::Method;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 /// Stack Frame
 pub struct Frame {
     local_vars: LocalVars,
     operand_stack: OperandStack,
     next_pc: i64, // The next instruction after the call
-    thread: Rc<RefCell<Thread>>,
-    method: Rc<RefCell<Method>>,
+    thread: RcRefCell<Thread>,
+    method: RcRefCell<Method>,
 }
 
 impl Frame {
-    pub fn new(thread: Rc<RefCell<Thread>>, method: Rc<RefCell<Method>>) -> Self {
+    pub fn new(thread: RcRefCell<Thread>, method: RcRefCell<Method>) -> Self {
         let max_locals = method.borrow().max_locals() as usize;
         let max_stack = method.borrow().max_stack() as usize;
         Frame {
@@ -42,11 +41,11 @@ impl Frame {
         self.next_pc
     }
 
-    pub fn thread(&self) -> Rc<RefCell<Thread>> {
+    pub fn thread(&self) -> RcRefCell<Thread> {
         self.thread.clone()
     }
 
-    pub fn method(&self) -> Rc<RefCell<Method>> {
+    pub fn method(&self) -> RcRefCell<Method> {
         self.method.clone()
     }
 }

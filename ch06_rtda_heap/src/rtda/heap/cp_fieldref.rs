@@ -1,17 +1,19 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::classfile::constant_pool::cp_member_ref::ConstantFieldRefInfo;
 use crate::classfile::constant_pool::CONSTANT_FIELD_REF;
 use super::class::Class;
 use super::field::Field;
 use super::constant_pool::Constant;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct FieldRef {
     class_name: String,
-    class: Option<Rc<RefCell<Class>>>,
+    class: OptionalRcRefCell<Class>,
     name: String,
     descriptor: String,
-    field: Option<Rc<RefCell<Field>>>,
+    field: OptionalRcRefCell<Field>,
 }
 
 impl FieldRef {
@@ -26,7 +28,7 @@ impl FieldRef {
         }
     }
 
-    pub fn resolved_field(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Field>> {
+    pub fn resolved_field(&mut self, class: RcRefCell<Class>) -> RcRefCell<Field> {
         if self.field.is_none() {
             self.resolve_field_ref(class);
         }
@@ -34,7 +36,7 @@ impl FieldRef {
     }
 
     /// jvms 5.4.3.2
-    fn resolve_field_ref(&mut self, class: Rc<RefCell<Class>>) {
+    fn resolve_field_ref(&mut self, class: RcRefCell<Class>) {
         let c = self.resolved_class(class.clone());
         let field = self.lookup_field(
             &c, self.name.clone(), self.descriptor.clone());
@@ -50,7 +52,7 @@ impl FieldRef {
         self.field = field;
     }
 
-    fn lookup_field(&mut self, class: &Rc<RefCell<Class>>, name: String, descriptor: String) -> Option<Rc<RefCell<Field>>> {
+    fn lookup_field(&mut self, class: &RcRefCell<Class>, name: String, descriptor: String) -> OptionalRcRefCell<Field> {
         for field in class.borrow_mut().fields() {
             if field.borrow().name() == name.clone() && field.borrow().descriptor() == descriptor.clone() {
                 return Some(field.clone());
@@ -73,7 +75,7 @@ impl FieldRef {
         None
     }
 
-    fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
+    fn resolved_class(&mut self, class: RcRefCell<Class>) -> RcRefCell<Class> {
         if self.class.is_none() {
             self.resolve_class_ref(class);
         }
@@ -81,7 +83,7 @@ impl FieldRef {
     }
 
     /// jvms8 5.4.3.1
-    fn resolve_class_ref(&mut self, class: Rc<RefCell<Class>>) {
+    fn resolve_class_ref(&mut self, class: RcRefCell<Class>) {
         let loader = class.borrow_mut().loader().unwrap();
         let c = loader.borrow_mut().load_class(loader.clone(), self.class_name.clone());
 
