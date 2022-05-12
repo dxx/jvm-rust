@@ -14,9 +14,8 @@
 ///     u2 name_and_type_index;
 /// }
 
+use crate::types::RcRefCell;
 use super::{ConstantInfo, ClassReader, ConstantPool};
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct ConstantFieldRefInfo {
     member_info: ConstantMemberRefInfo,
@@ -33,7 +32,7 @@ impl ConstantInfo for ConstantFieldRefInfo {
 }
 
 impl ConstantFieldRefInfo {
-    pub fn new(cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new(cp: RcRefCell<ConstantPool>) -> Self {
         ConstantFieldRefInfo {
             member_info: ConstantMemberRefInfo::new(cp),
         }
@@ -55,7 +54,7 @@ impl ConstantInfo for ConstantMethodRefInfo {
 }
 
 impl ConstantMethodRefInfo {
-    pub fn new(cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new(cp: RcRefCell<ConstantPool>) -> Self {
         ConstantMethodRefInfo {
             member_info: ConstantMemberRefInfo::new(cp),
         }
@@ -77,7 +76,7 @@ impl ConstantInfo for ConstantInterfaceMethodRefInfo {
 }
 
 impl ConstantInterfaceMethodRefInfo {
-    pub fn new(cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new(cp: RcRefCell<ConstantPool>) -> Self {
         ConstantInterfaceMethodRefInfo {
             member_info: ConstantMemberRefInfo::new(cp),
         }
@@ -85,13 +84,13 @@ impl ConstantInterfaceMethodRefInfo {
 }
 
 pub struct ConstantMemberRefInfo {
-    constant_pool: Rc<RefCell<ConstantPool>>,
+    constant_pool: RcRefCell<ConstantPool>,
     class_index: u16,
     name_and_type_index: u16,
 }
 
 impl ConstantMemberRefInfo {
-    fn new(cp: Rc<RefCell<ConstantPool>>) -> Self {
+    fn new(cp: RcRefCell<ConstantPool>) -> Self {
         ConstantMemberRefInfo {
             constant_pool: cp,
             class_index: 0,

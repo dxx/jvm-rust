@@ -5,14 +5,13 @@
 ///     u2 method_index;
 /// }
 
-use std::rc::Rc;
-use std::cell::RefCell;
+use crate::types::RcRefCell;
 use super::ConstantPool;
 use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]
 pub struct EnclosingMethodAttribute {
-    constant_pool: Rc<RefCell<ConstantPool>>,
+    constant_pool: RcRefCell<ConstantPool>,
     class_index: u16,
     method_index: u16,
 }
@@ -25,7 +24,7 @@ impl AttributeInfo for EnclosingMethodAttribute {
 }
 
 impl EnclosingMethodAttribute {
-    pub fn new (cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new (cp: RcRefCell<ConstantPool>) -> Self {
         let mut ema = EnclosingMethodAttribute::default();
         ema.constant_pool = cp;
         ema

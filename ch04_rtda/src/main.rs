@@ -6,6 +6,8 @@ mod classpath;
 mod classfile;
 mod rtda;
 
+mod types;
+
 use crate::cmd::{parse_cmd, Cmd};
 use crate::rtda::{Frame, LocalVars, OperandStack};
 
