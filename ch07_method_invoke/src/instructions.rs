@@ -14,6 +14,7 @@ mod factory;
 
 pub use self::base::*;
 
+use crate::types::RcRefCell;
 use crate::rtda::Thread;
 use crate::rtda::method::Method;
 use crate::rtda::Frame;
@@ -23,7 +24,7 @@ use self::factory::new_instruction;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub fn interpret(method: Rc<RefCell<Method>>, log_inst: bool) {
+pub fn interpret(method: RcRefCell<Method>, log_inst: bool) {
     let thread = Rc::new(RefCell::new(Thread::new()));
     let frame = thread.borrow_mut().new_frame(
         thread.clone(),
@@ -34,7 +35,7 @@ pub fn interpret(method: Rc<RefCell<Method>>, log_inst: bool) {
     _loop(thread, log_inst);
 }
 
-fn _loop(thread: Rc<RefCell<Thread>>, log_inst: bool) {
+fn _loop(thread: RcRefCell<Thread>, log_inst: bool) {
     let mut reader = BytecodeReader::default();
 
     loop {
@@ -83,7 +84,7 @@ fn log_instruction(frame: &Frame, inst: &Box<dyn Instruction>) {
     println!("{}.{} #{:2} {:?}", class_name, method_name, pc, inst);
 }
 
-fn log_frames(thread: &Rc<RefCell<Thread>>) {
+fn log_frames(thread: &RcRefCell<Thread>) {
     while !thread.borrow().is_stack_empty() {
         let frame = thread.borrow_mut().pop_frame();
         let method = frame.as_ref().unwrap().borrow().method();
