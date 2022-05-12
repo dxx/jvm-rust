@@ -3,13 +3,12 @@
 ///     u2 name_index;
 /// }
 
+use crate::types::RcRefCell;
 use super::{ConstantInfo, ClassReader, ConstantPool};
-use std::rc::Rc;
-use std::cell::RefCell;
 
 #[derive(Clone)]
 pub struct ConstantClassInfo {
-    constant_pool: Rc<RefCell<ConstantPool>>,
+    constant_pool: RcRefCell<ConstantPool>,
     name_index: u16,
 }
 
@@ -24,7 +23,7 @@ impl ConstantInfo for ConstantClassInfo {
 }
 
 impl ConstantClassInfo {
-    pub fn new(cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new(cp: RcRefCell<ConstantPool>) -> Self {
         ConstantClassInfo {
             constant_pool: cp,
             name_index: 0,

@@ -4,14 +4,13 @@
 ///     u2 signature_index;
 /// }
 
-use std::rc::Rc;
-use std::cell::RefCell;
+use crate::types::RcRefCell;
 use super::ConstantPool;
 use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]
 pub struct SignatureAttribute {
-    constant_pool: Rc<RefCell<ConstantPool>>,
+    constant_pool: RcRefCell<ConstantPool>,
     signature_index: u16,
 }
 
@@ -22,7 +21,7 @@ impl AttributeInfo for SignatureAttribute {
 }
 
 impl SignatureAttribute {
-    pub fn new (cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new (cp: RcRefCell<ConstantPool>) -> Self {
         let mut sa = SignatureAttribute::default();
         sa.constant_pool = cp;
         sa
