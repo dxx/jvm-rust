@@ -1,3 +1,7 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use super::frame::Frame;
 use std::rc::Rc;
 use std::cell::RefCell;
@@ -6,7 +10,7 @@ use std::cell::RefCell;
 pub struct Stack {
     max_size: usize,
     top: usize,
-    frames: Vec<Option<Rc<RefCell<Frame>>>>,
+    frames: Vec<OptionalRcRefCell<Frame>>,
 }
 
 impl Stack {
@@ -27,7 +31,7 @@ impl Stack {
         self.top += 1;
     }
 
-    pub fn pop(&mut self) -> Option<Rc<RefCell<Frame>>> {
+    pub fn pop(&mut self) -> OptionalRcRefCell<Frame> {
         if self.top == 0 {
             panic!("jvm stack is empty!");
         }
@@ -35,7 +39,7 @@ impl Stack {
         self.frames[self.top].clone()
     }
 
-    pub fn top(&self) -> Rc<RefCell<Frame>> {
+    pub fn top(&self) -> RcRefCell<Frame> {
         if self.top == 0 {
             panic!("jvm stack is empty!");
         }

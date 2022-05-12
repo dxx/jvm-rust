@@ -7,6 +7,8 @@ mod classfile;
 mod rtda;
 mod instructions;
 
+mod types;
+
 use crate::cmd::{parse_cmd, Cmd};
 use crate::classpath::{Classpath, entry::Entry};
 use crate::classfile::ClassFile;

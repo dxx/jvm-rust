@@ -1,7 +1,9 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use super::jvm_stack::Stack;
 use super::frame::Frame;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct Thread {
     pc: i64,
@@ -25,15 +27,15 @@ impl Thread {
         self.stack.push(frame);
     }
 
-    pub fn pop_frame(&mut self) -> Option<Rc<RefCell<Frame>>> {
+    pub fn pop_frame(&mut self) -> OptionalRcRefCell<Frame> {
         self.stack.pop()
     }
 
-    pub fn current_frame(&self) -> Rc<RefCell<Frame>> {
+    pub fn current_frame(&self) -> RcRefCell<Frame> {
         self.stack.top()
     }
 
-    pub fn new_frame(&self, _self: Rc<RefCell<Self>>, max_locals: usize, max_stack: usize) -> Frame {
+    pub fn new_frame(&self, _self: RcRefCell<Self>, max_locals: usize, max_stack: usize) -> Frame {
         return Frame::new(_self, max_locals, max_stack);
     }
 }

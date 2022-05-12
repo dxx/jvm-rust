@@ -1,18 +1,17 @@
+use crate::types::RcRefCell;
 use super::{local_vars::LocalVars, operand_stack::OperandStack};
 use super::thread::Thread;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 /// Stack Frame
 pub struct Frame {
     local_vars: LocalVars,
     operand_stack: OperandStack,
     next_pc: i64, // The next instruction after the call
-    thread: Rc<RefCell<Thread>>,
+    thread: RcRefCell<Thread>,
 }
 
 impl Frame {
-    pub fn new(thread: Rc<RefCell<Thread>>, max_locals: usize, max_size: usize) -> Self {
+    pub fn new(thread: RcRefCell<Thread>, max_locals: usize, max_size: usize) -> Self {
         Frame {
             local_vars: LocalVars::new(max_locals),
             operand_stack: OperandStack::new(max_size),
@@ -37,7 +36,7 @@ impl Frame {
         self.next_pc
     }
 
-    pub fn thread(&self) -> &Rc<RefCell<Thread>> {
+    pub fn thread(&self) -> &RcRefCell<Thread> {
         &self.thread
     }
 }

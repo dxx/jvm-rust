@@ -18,6 +18,7 @@ mod attr_unparsed;
 ///     u1 info[attribute_length];
 /// }
 
+use crate::types::RcRefCell;
 use crate::classfile::{ClassReader, ConstantPool};
 use crate::classfile::attribute_info::attr_unparsed::UnparsedAttribute;
 use crate::classfile::attribute_info::attr_code::CodeAttribute;
@@ -27,8 +28,6 @@ use crate::classfile::attribute_info::attr_exceptions::ExceptionsAttribute;
 use crate::classfile::attribute_info::attr_line_number_table::LineNumberTableAttribute;
 use crate::classfile::attribute_info::attr_local_variable_table::LocalVariableTableAttribute;
 use crate::classfile::attribute_info::attr_source_file::SourceFileAttribute;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub trait AttributeInfo {
     fn read_info(&mut self, reader: &mut ClassReader);
@@ -40,7 +39,7 @@ pub trait AttributeInfo {
     fn as_any(&self) -> &dyn std::any::Any;
 }
 
-pub fn read_attributes(reader: &mut ClassReader, cp: Rc<RefCell<ConstantPool>>) -> Vec<Box<dyn AttributeInfo>> {
+pub fn read_attributes(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) -> Vec<Box<dyn AttributeInfo>> {
     let attribute_count = reader.read_u16();
     let mut attributes = vec![];
     for _i in 0..attribute_count {
@@ -49,7 +48,7 @@ pub fn read_attributes(reader: &mut ClassReader, cp: Rc<RefCell<ConstantPool>>) 
     attributes
 }
 
-fn read_attribute(reader: &mut ClassReader, cp: Rc<RefCell<ConstantPool>>) -> Box<dyn AttributeInfo> {
+fn read_attribute(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) -> Box<dyn AttributeInfo> {
     let attr_name_index = reader.read_u16();
     let attr_name = cp.borrow().get_utf8(attr_name_index);
     let attr_length = reader.read_u32();
@@ -58,7 +57,7 @@ fn read_attribute(reader: &mut ClassReader, cp: Rc<RefCell<ConstantPool>>) -> Bo
     attr_info
 }
 
-fn new_attribute(attr_name: &str, attr_length: u32, cp: Rc<RefCell<ConstantPool>>) -> Box<dyn AttributeInfo> {
+fn new_attribute(attr_name: &str, attr_length: u32, cp: RcRefCell<ConstantPool>) -> Box<dyn AttributeInfo> {
     match attr_name {
         "Code" => Box::new(CodeAttribute::new(cp)),
         "ConstantValue" => Box::new(ConstantValueAttribute::default()),

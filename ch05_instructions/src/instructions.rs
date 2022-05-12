@@ -13,6 +13,7 @@ mod factory;
 
 pub use self::base::*;
 
+use crate::types::RcRefCell;
 use crate::classfile::member_info::MemberInfo;
 use crate::rtda::Thread;
 use std::rc::Rc;
@@ -37,7 +38,7 @@ pub fn interpret(method_info: &MemberInfo) {
     }
 }
 
-fn _loop(thread: Rc<RefCell<Thread>>, bytecode: Vec<u8>) {
+fn _loop(thread: RcRefCell<Thread>, bytecode: Vec<u8>) {
     let frame = thread.borrow_mut().pop_frame().unwrap();
     let mut reader = BytecodeReader::default();
 

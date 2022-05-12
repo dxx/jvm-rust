@@ -15,14 +15,13 @@
 ///     attribute_info attributes[attributes_count];
 /// }
 
-use std::rc::Rc;
-use std::cell::RefCell;
+use crate::types::RcRefCell;
 use super::ConstantPool;
 use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]
 pub struct CodeAttribute {
-    constant_pool: Rc<RefCell<ConstantPool>>,
+    constant_pool: RcRefCell<ConstantPool>,
     max_stack: u16,
     max_locals: u16,
     code: Vec<u8>,
@@ -50,7 +49,7 @@ impl AttributeInfo for CodeAttribute {
 }
 
 impl CodeAttribute {
-    pub fn new(cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new(cp: RcRefCell<ConstantPool>) -> Self {
         let mut ca = CodeAttribute::default();
         ca.constant_pool = cp;
         ca
