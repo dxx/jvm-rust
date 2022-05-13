@@ -1,14 +1,16 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::classfile::constant_pool::cp_class::ConstantClassInfo;
 use crate::classfile::constant_pool::CONSTANT_CLASS;
 use super::class::Class;
 use super::constant_pool::Constant;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 #[derive(Clone)]
 pub struct ClassRef {
     class_name: String,
-    class: Option<Rc<RefCell<Class>>>,
+    class: OptionalRcRefCell<Class>,
 }
 
 impl ClassRef {
@@ -19,7 +21,7 @@ impl ClassRef {
         }
     }
 
-    pub fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
+    pub fn resolved_class(&mut self, class: RcRefCell<Class>) -> RcRefCell<Class> {
         if self.class.is_none() {
             self.resolve_class_ref(class);
         }
@@ -27,7 +29,7 @@ impl ClassRef {
     }
 
     /// jvms8 5.4.3.1
-    fn resolve_class_ref(&mut self, class: Rc<RefCell<Class>>) {
+    fn resolve_class_ref(&mut self, class: RcRefCell<Class>) {
         let loader = class.borrow_mut().loader().unwrap();
         let c = loader.borrow_mut().load_class(loader.clone(), self.class_name.clone());
 

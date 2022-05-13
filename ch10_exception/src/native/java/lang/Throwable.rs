@@ -1,11 +1,10 @@
+use crate::types::RcRefCell;
 use crate::rtda::Frame;
 use crate::rtda::ObjectExtra;
 use crate::rtda::class::Class;
 use crate::rtda::Object;
 use crate::rtda::Thread;
 use super::registry;
-use std::rc::Rc;
-use std::cell::RefCell;
 use std::fmt;
 
 const J_THROWABLE: &str = "java/lang/Throwable";
@@ -49,8 +48,8 @@ fn fill_in_stack_trace(frame: &mut Frame) {
 }
 
 fn create_stack_trace_elements(
-    t_obj: &Rc<RefCell<Object>>,
-    thread: &Rc<RefCell<Thread>>,
+    t_obj: &RcRefCell<Object>,
+    thread: &RcRefCell<Thread>,
 ) -> Vec<StackTraceElement> {
     let skip = distance_to_object(t_obj.borrow().class()) + 2;
     let frames = &thread.borrow().get_frames()[(skip as usize)..];
@@ -61,7 +60,7 @@ fn create_stack_trace_elements(
     stes
 }
 
-fn distance_to_object(class: &Rc<RefCell<Class>>) -> i64 {
+fn distance_to_object(class: &RcRefCell<Class>) -> i64 {
     let mut distance = 0;
     let mut c = class.borrow().super_class();
     while let Some(class) = c {

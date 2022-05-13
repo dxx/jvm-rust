@@ -22,6 +22,7 @@ pub mod attribute_info;
 ///     attribute_info attributes[attributes_count];
 /// }
 
+use crate::types::RcRefCell;
 use crate::classfile::constant_pool::read_constant_pool;
 use crate::classfile::attribute_info::read_attributes;
 use crate::classfile::attribute_info::attr_source_file::SourceFileAttribute;
@@ -36,7 +37,7 @@ pub struct ClassFile {
     // magic: u32,
     minor_version: u16, // 次版本号
     major_version: u16, // 主版本号
-    constant_pool: Rc<RefCell<ConstantPool>>, // 常量池
+    constant_pool: RcRefCell<ConstantPool>, // 常量池
     access_flags: u16, // 访问标志
     this_class: u16, // 类索引
     super_class: u16, // 超类索引
@@ -115,7 +116,7 @@ impl ClassFile {
         self.major_version
     }
 
-    pub fn constant_pool(&self) -> &Rc<RefCell<ConstantPool>> {
+    pub fn constant_pool(&self) -> &RcRefCell<ConstantPool> {
         &self.constant_pool
     }
 

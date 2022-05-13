@@ -1,9 +1,8 @@
+use crate::types::RcRefCell;
 use crate::classfile::attribute_info::attr_code::ExceptionTableEntry;
 use super::class::Class;
 use super::cp_classref::ClassRef;
 use super::constant_pool::ConstantPool;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct ExceptionTable {
     handlers: Vec<ExceptionHandler>,
@@ -18,7 +17,7 @@ pub struct ExceptionHandler {
 }
 
 impl ExceptionTable {
-    pub fn new(entries: &Vec<ExceptionTableEntry>, cp: &Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new(entries: &Vec<ExceptionTableEntry>, cp: &RcRefCell<ConstantPool>) -> Self {
         let mut handlers = Vec::new();
         for entry in entries {
             let handler = ExceptionHandler {
@@ -35,7 +34,7 @@ impl ExceptionTable {
         }
     }
 
-    pub fn find_exception_handler(&mut self, ex_class: &Rc<RefCell<Class>>, pc: i64) -> Option<ExceptionHandler> {
+    pub fn find_exception_handler(&mut self, ex_class: &RcRefCell<Class>, pc: i64) -> Option<ExceptionHandler> {
         for handler in self.handlers.iter_mut() {
             if pc >= handler.start_pc && pc < handler.end_pc {
                 if handler.catch_type.is_none() {
@@ -58,7 +57,7 @@ impl ExceptionHandler {
     }
 }
 
-fn get_catch_type(index: usize, cp: &Rc<RefCell<ConstantPool>>) -> Option<Box<ClassRef>> {
+fn get_catch_type(index: usize, cp: &RcRefCell<ConstantPool>) -> Option<Box<ClassRef>> {
     if index == 0 {
         return None;
     }

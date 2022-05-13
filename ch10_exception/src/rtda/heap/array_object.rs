@@ -1,6 +1,8 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::rtda::{ObjectData, Object};
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub const BYTES: u8    = 1;
 pub const SHORTS: u8   = 2;
@@ -117,7 +119,7 @@ impl ObjectData for Vec<f64> {
 }
 
 /// Ref array
-impl ObjectData for Vec<Option<Rc<RefCell<Object>>>> {
+impl ObjectData for Vec<OptionalRcRefCell<Object>> {
     fn tag(&self) -> u8 {
         REFS
     }
@@ -160,8 +162,8 @@ impl Object {
         self.data_mut().as_any_mut().downcast_mut::<Vec<f64>>().unwrap()
     }
 
-    pub fn refs_mut(&mut self) -> &mut Vec<Option<Rc<RefCell<Object>>>> {
-        self.data_mut().as_any_mut().downcast_mut::<Vec<Option<Rc<RefCell<Object>>>>>().unwrap()
+    pub fn refs_mut(&mut self) -> &mut Vec<OptionalRcRefCell<Object>> {
+        self.data_mut().as_any_mut().downcast_mut::<Vec<OptionalRcRefCell<Object>>>().unwrap()
     }
 
     pub fn array_length(&self) -> usize {
@@ -188,7 +190,7 @@ impl Object {
                 self.data().as_any().downcast_ref::<Vec<f64>>().unwrap().len()
             },
             REFS => {
-                self.data().as_any().downcast_ref::<Vec<Option<Rc<RefCell<Object>>>>>().unwrap().len()
+                self.data().as_any().downcast_ref::<Vec<OptionalRcRefCell<Object>>>().unwrap().len()
             },
             _ => {
                 panic!("Not array!");
@@ -198,8 +200,8 @@ impl Object {
 }
 
 pub fn array_copy(
-    src: Rc<RefCell<Object>>,
-    dest: Rc<RefCell<Object>>,
+    src: RcRefCell<Object>,
+    dest: RcRefCell<Object>,
     src_pos: usize,
     dest_pos: usize,
     length: usize,
@@ -257,8 +259,8 @@ pub fn array_copy(
             _dest.copy_from_slice(_src);
         },
         REFS => {
-            let _src = src.data_mut().as_any_mut().downcast_mut::<Vec<Option<Rc<RefCell<Object>>>>>().unwrap();
-            let _dest = dest.data_mut().as_any_mut().downcast_mut::<Vec<Option<Rc<RefCell<Object>>>>>().unwrap();
+            let _src = src.data_mut().as_any_mut().downcast_mut::<Vec<OptionalRcRefCell<Object>>>().unwrap();
+            let _dest = dest.data_mut().as_any_mut().downcast_mut::<Vec<OptionalRcRefCell<Object>>>().unwrap();
             let _src = &_src[src_pos..src_pos + length];
             let _dest = &mut _dest[dest_pos..dest_pos + length];
             //_dest.copy_from_slice(&_src);

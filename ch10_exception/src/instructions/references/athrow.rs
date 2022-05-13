@@ -1,11 +1,10 @@
+use crate::types::RcRefCell;
 use crate::rtda::Frame;
 use crate::rtda::Thread;
 use crate::rtda::Object;
 use crate::rtda::string_pool::rust_string;
 use crate::native;
 use super::super::instruction::Instruction;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 /// Throw exception or error
 #[derive(Default, Debug)]
@@ -30,8 +29,8 @@ impl Instruction for ATHROW {
 }
 
 fn find_and_goto_exception_handler(
-    thread: &Rc<RefCell<Thread>>,
-    ex: Rc<RefCell<Object>>,
+    thread: &RcRefCell<Thread>,
+    ex: RcRefCell<Object>,
 ) -> bool {
     loop {
         let frame = thread.borrow().current_frame();
@@ -57,7 +56,7 @@ fn find_and_goto_exception_handler(
     false
 }
 
-fn handle_uncaught_exception(ex: Rc<RefCell<Object>>) {
+fn handle_uncaught_exception(ex: RcRefCell<Object>) {
     let mut ex_mut = ex.borrow_mut();
     let class_name = ex_mut.class().borrow().java_name();
 

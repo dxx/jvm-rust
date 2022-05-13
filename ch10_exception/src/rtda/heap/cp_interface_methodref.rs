@@ -1,18 +1,20 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::classfile::constant_pool::cp_member_ref::ConstantInterfaceMethodRefInfo;
 use crate::classfile::constant_pool::CONSTANT_INTERFACE_METHOD_REF;
 use super::class::Class;
 use super::method::Method;
 use super::constant_pool::Constant;
 use super::method_lookup::lookup_method_in_interfaces;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct InterfaceMethodRef {
     class_name: String,
-    class: Option<Rc<RefCell<Class>>>,
+    class: OptionalRcRefCell<Class>,
     name: String,
     descriptor: String,
-    method: Option<Rc<RefCell<Method>>>,
+    method: OptionalRcRefCell<Method>,
 }
 
 impl InterfaceMethodRef {
@@ -27,7 +29,7 @@ impl InterfaceMethodRef {
         }
     }
 
-    pub fn resolved_interface_method(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Method>> {
+    pub fn resolved_interface_method(&mut self, class: RcRefCell<Class>) -> RcRefCell<Method> {
         if self.method.is_none() {
             self.resolve_interface_method_ref(class);
         }
@@ -35,7 +37,7 @@ impl InterfaceMethodRef {
     }
 
     /// jvms8 5.4.3.4
-    fn resolve_interface_method_ref(&mut self, class: Rc<RefCell<Class>>) {
+    fn resolve_interface_method_ref(&mut self, class: RcRefCell<Class>) {
         let c = self.resolved_class(class.clone());
         if !c.borrow().is_interface() {
             panic!("java.lang.IncompatibleClassChangeError");
@@ -56,10 +58,10 @@ impl InterfaceMethodRef {
 
     fn lookup_interface_method(
         &mut self,
-        iface: &Rc<RefCell<Class>>,
+        iface: &RcRefCell<Class>,
         name: String,
         descriptor: String
-    ) -> Option<Rc<RefCell<Method>>> {
+    ) -> OptionalRcRefCell<Method> {
         for method in iface.borrow().methods() {
             if method.borrow().name() == name && method.borrow().descriptor() == descriptor {
                 return Some(method);
@@ -68,7 +70,7 @@ impl InterfaceMethodRef {
         return lookup_method_in_interfaces(iface.borrow().interfaces().as_ref().unwrap(), name, descriptor);
     }
 
-    pub fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
+    pub fn resolved_class(&mut self, class: RcRefCell<Class>) -> RcRefCell<Class> {
         if self.class.is_none() {
             self.resolve_class_ref(class);
         }
@@ -76,7 +78,7 @@ impl InterfaceMethodRef {
     }
 
     /// jvms8 5.4.3.1
-    fn resolve_class_ref(&mut self, class: Rc<RefCell<Class>>) {
+    fn resolve_class_ref(&mut self, class: RcRefCell<Class>) {
         let loader = class.borrow_mut().loader().unwrap();
         let c = loader.borrow_mut().load_class(loader.clone(), self.class_name.clone());
 

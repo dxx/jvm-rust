@@ -1,10 +1,14 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::classfile::member_info::MemberInfo;
 use super::access_flags::*;
 use super::class::Class;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub fn new_fields(class: Rc<RefCell<Class>>, cf_fields: &Vec<MemberInfo>) -> Vec<Rc<RefCell<Field>>> {
+pub fn new_fields(class: RcRefCell<Class>, cf_fields: &Vec<MemberInfo>) -> Vec<RcRefCell<Field>> {
     let mut fields = Vec::new();
     for f in cf_fields {
         let mut field = Field::default();
@@ -20,7 +24,7 @@ pub struct Field {
     access_flags: u16,
     name: String,
     descriptor: String,
-    class: Option<Rc<RefCell<Class>>>,
+    class: OptionalRcRefCell<Class>,
 
     const_value_index: u64, // 常量池中的索引
 	slot_id:           u64, // 字段在 Slots 中的索引
@@ -87,7 +91,7 @@ impl Field {
         self.descriptor.clone()
     }
 
-    pub fn get_class(&self) -> Rc<RefCell<Class>> {
+    pub fn get_class(&self) -> RcRefCell<Class> {
         self.class.clone().unwrap()
     }
 
@@ -104,7 +108,7 @@ impl Field {
     }
 
     /// jvms 5.4.4
-    pub fn is_accessible_to(&self, class: &Rc<RefCell<Class>>) -> bool {
+    pub fn is_accessible_to(&self, class: &RcRefCell<Class>) -> bool {
         if self.is_public() {
             return true;
         }

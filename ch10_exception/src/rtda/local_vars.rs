@@ -1,11 +1,10 @@
+use crate::types::OptionalRcRefCell;
 use super::object::Object;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 #[derive(Default, Clone)]
 pub struct Slot {
     pub num: i32,
-    pub _ref: Option<Rc<RefCell<Object>>>,
+    pub _ref: OptionalRcRefCell<Object>,
 }
 
 pub struct LocalVars {
@@ -61,11 +60,11 @@ impl LocalVars {
         f64::from_be_bytes(bytes)
     }
 
-    pub fn set_ref(&mut self, index: usize, _ref: Option<Rc<RefCell<Object>>>) {
+    pub fn set_ref(&mut self, index: usize, _ref: OptionalRcRefCell<Object>) {
         self.slots[index]._ref = _ref;
     }
 
-    pub fn get_ref(&self, index: usize) -> Option<Rc<RefCell<Object>>> {
+    pub fn get_ref(&self, index: usize) -> OptionalRcRefCell<Object> {
         self.slots[index]._ref.clone()
     }
 
@@ -73,7 +72,7 @@ impl LocalVars {
         self.slots[index] = slot;
     }
 
-    pub fn get_this(&self) -> Option<Rc<RefCell<Object>>> {
+    pub fn get_this(&self) -> OptionalRcRefCell<Object> {
         self.get_ref(0)
     }
 

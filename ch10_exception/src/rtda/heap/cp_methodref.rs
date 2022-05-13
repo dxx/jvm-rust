@@ -1,18 +1,20 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::classfile::constant_pool::cp_member_ref::ConstantMethodRefInfo;
 use crate::classfile::constant_pool::CONSTANT_METHOD_REF;
 use super::class::Class;
 use super::method::Method;
 use super::constant_pool::Constant;
 use super::method_lookup::{lookup_method_in_class, lookup_method_in_interfaces};
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct MethodRef {
     class_name: String,
-    class: Option<Rc<RefCell<Class>>>,
+    class: OptionalRcRefCell<Class>,
     name: String,
     descriptor: String,
-    method: Option<Rc<RefCell<Method>>>,
+    method: OptionalRcRefCell<Method>,
 }
 
 impl MethodRef {
@@ -35,7 +37,7 @@ impl MethodRef {
         self.descriptor.clone()
     }
 
-    pub fn resolved_method(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Method>> {
+    pub fn resolved_method(&mut self, class: RcRefCell<Class>) -> RcRefCell<Method> {
         if self.method.is_none() {
             self.resolve_method_ref(class);
         }
@@ -43,7 +45,7 @@ impl MethodRef {
     }
 
     /// jvms8 5.4.3.3
-    fn resolve_method_ref(&mut self, class: Rc<RefCell<Class>>) {
+    fn resolve_method_ref(&mut self, class: RcRefCell<Class>) {
         let c = self.resolved_class(class.clone());
         if c.borrow().is_interface() {
             panic!("java.lang.IncompatibleClassChangeError");
@@ -64,10 +66,10 @@ impl MethodRef {
 
     fn lookup_method(
         &mut self,
-        class: &Rc<RefCell<Class>>,
+        class: &RcRefCell<Class>,
         name: String,
         descriptor: String
-    ) -> Option<Rc<RefCell<Method>>> {
+    ) -> OptionalRcRefCell<Method> {
         let method = lookup_method_in_class(class, name.clone(), descriptor.clone());
         if method.is_none() {
             return lookup_method_in_interfaces(class.borrow().interfaces().as_ref().unwrap(), name, descriptor);
@@ -75,7 +77,7 @@ impl MethodRef {
         method
     }
 
-    pub fn resolved_class(&mut self, class: Rc<RefCell<Class>>) -> Rc<RefCell<Class>> {
+    pub fn resolved_class(&mut self, class: RcRefCell<Class>) -> RcRefCell<Class> {
         if self.class.is_none() {
             self.resolve_class_ref(class);
         }
@@ -83,7 +85,7 @@ impl MethodRef {
     }
 
     /// jvms8 5.4.3.1
-    fn resolve_class_ref(&mut self, class: Rc<RefCell<Class>>) {
+    fn resolve_class_ref(&mut self, class: RcRefCell<Class>) {
         let loader = class.borrow_mut().loader().unwrap();
         let c = loader.borrow_mut().load_class(loader.clone(), self.class_name.clone());
 
