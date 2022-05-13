@@ -6,6 +6,7 @@ pub mod cp_member_ref;
 pub mod cp_numeric;
 pub mod cp_string;
 
+use crate::types::RcRefCell;
 use crate::classfile::ClassReader;
 use self::cp_class::ConstantClassInfo;
 use self::cp_utf8::ConstantUtf8Info;
@@ -71,7 +72,7 @@ impl ConstantPool {
     }
 }
 
-pub fn read_constant_pool(reader: &mut ClassReader) -> Rc<RefCell<ConstantPool>> {
+pub fn read_constant_pool(reader: &mut ClassReader) -> RcRefCell<ConstantPool> {
     let cp_count = reader.read_u16();
     let cp = Rc::new(RefCell::new(ConstantPool::default()));
     // 第一个元素无效
@@ -131,7 +132,7 @@ pub trait ConstantInfo {
     fn as_any(&self) -> &dyn std::any::Any;
 }
 
-fn read_constant_info(reader: &mut ClassReader, i: u16, cp: Rc<RefCell<ConstantPool>>) -> Box<dyn ConstantInfo> {
+fn read_constant_info(reader: &mut ClassReader, i: u16, cp: RcRefCell<ConstantPool>) -> Box<dyn ConstantInfo> {
     let tag = reader.read_u8();
     let mut c = new_constant_info(reader, tag, i, cp);
     match (&c).tag() {
@@ -144,7 +145,7 @@ fn read_constant_info(reader: &mut ClassReader, i: u16, cp: Rc<RefCell<ConstantP
     c
 }
 
-fn new_constant_info(reader: &mut ClassReader, tag: u8, i: u16, cp: Rc<RefCell<ConstantPool>>) -> Box<dyn ConstantInfo> {
+fn new_constant_info(reader: &mut ClassReader, tag: u8, i: u16, cp: RcRefCell<ConstantPool>) -> Box<dyn ConstantInfo> {
     match tag {
         CONSTANT_CLASS => {
             let mut b = Box::new(ConstantClassInfo::new(cp.clone()));

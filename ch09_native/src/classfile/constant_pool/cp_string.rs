@@ -3,12 +3,11 @@
 ///     u2 string_index;
 /// }
 
+use crate::types::RcRefCell;
 use super::{ConstantInfo, ClassReader, ConstantPool};
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub struct ConstantStringInfo {
-    constant_pool: Rc<RefCell<ConstantPool>>,
+    constant_pool: RcRefCell<ConstantPool>,
     string_index: u16
 }
 
@@ -28,7 +27,7 @@ impl ConstantInfo for ConstantStringInfo {
 }
 
 impl ConstantStringInfo {
-    pub fn new(cp: Rc<RefCell<ConstantPool>>) -> Self {
+    pub fn new(cp: RcRefCell<ConstantPool>) -> Self {
         ConstantStringInfo {
             constant_pool: cp,
             string_index: 0,

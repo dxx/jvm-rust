@@ -1,7 +1,6 @@
+use crate::types::RcRefCell;
 use super::slots::Slots;
 use super::heap::class::Class;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub const SLOTS: u8 = 10;
 
@@ -20,7 +19,7 @@ pub trait ObjectExtra {
 }
 
 pub struct Object {
-    class: Rc<RefCell<Class>>,
+    class: RcRefCell<Class>,
     data: Box<dyn ObjectData>, // Slots for Object, []int32 for int[] ...
     extra: Option<Box<dyn ObjectExtra>>,
 }
@@ -41,13 +40,13 @@ impl PartialEq for Object {
 
 impl Object {
     /// Create normal (non-array) object
-    pub fn new(class: Rc<RefCell<Class>>) -> Self {
+    pub fn new(class: RcRefCell<Class>) -> Self {
         Object::new_data(
             class.clone(),
             Box::new(Slots::new(class.borrow().instance_slot_count() as usize)))
     }
 
-    pub fn new_data(class: Rc<RefCell<Class>>, data: Box<dyn ObjectData>) -> Self {
+    pub fn new_data(class: RcRefCell<Class>, data: Box<dyn ObjectData>) -> Self {
         Object {
             class,
             data,
@@ -55,7 +54,7 @@ impl Object {
         }
     }
 
-    pub fn class(&self) -> &Rc<RefCell<Class>> {
+    pub fn class(&self) -> &RcRefCell<Class> {
         &self.class
     }
 
@@ -67,7 +66,7 @@ impl Object {
         self.data.as_any_mut().downcast_mut::<Slots>().unwrap()
     }
 
-    pub fn is_instance_of(&self, class: &Rc<RefCell<Class>>) -> bool {
+    pub fn is_instance_of(&self, class: &RcRefCell<Class>) -> bool {
         class.borrow().is_assignable_from(class, &self.class)
     }
 
@@ -88,13 +87,13 @@ impl Object {
     }
 
     /// Reflection
-    pub fn get_ref_var(&mut self, name: String, descriptor: String) -> Rc<RefCell<Object>> {
+    pub fn get_ref_var(&mut self, name: String, descriptor: String) -> RcRefCell<Object> {
         let field = self.class.borrow().get_field(name, descriptor, false);
         let slots = self.data.as_any_mut().downcast_mut::<Slots>().unwrap();
         slots.get_ref(field.unwrap().borrow().slot_id() as usize).unwrap()
     }
 
-    pub fn set_ref_var(&mut self, name: String, descriptor: String, _ref: Rc<RefCell<Object>>) {
+    pub fn set_ref_var(&mut self, name: String, descriptor: String, _ref: RcRefCell<Object>) {
         let field = self.class.borrow().get_field(name, descriptor, false);
         let slots = self.data.as_any_mut().downcast_mut::<Slots>().unwrap();
         slots.set_ref(field.unwrap().borrow().slot_id() as usize, Some(_ref));
@@ -103,11 +102,11 @@ impl Object {
 
 
 pub struct ClassData {
-    class: Rc<RefCell<Class>>,
+    class: RcRefCell<Class>,
 }
 
 impl ClassData {
-    pub fn new(class: Rc<RefCell<Class>>) -> Self {
+    pub fn new(class: RcRefCell<Class>) -> Self {
         ClassData {
             class
         }

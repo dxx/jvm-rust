@@ -1,13 +1,15 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use super::class::Class;
 use super::method::Method;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub fn lookup_method_in_class(
-    class: &Rc<RefCell<Class>>,
+    class: &RcRefCell<Class>,
     name: String,
     descriptor: String,
-) -> Option<Rc<RefCell<Method>>> {
+) -> OptionalRcRefCell<Method> {
     let mut c = Some(class.clone());
     while let Some(class) = c {
         for method in class.borrow().methods() {
@@ -21,10 +23,10 @@ pub fn lookup_method_in_class(
 }
 
 pub fn lookup_method_in_interfaces(
-    ifaces: &Vec<Rc<RefCell<Class>>>,
+    ifaces: &Vec<RcRefCell<Class>>,
     name: String,
     descriptor: String,
-) -> Option<Rc<RefCell<Method>>> {
+) -> OptionalRcRefCell<Method> {
     for iface in ifaces {
         for method in iface.borrow().methods() {
             if method.borrow().name() == name && method.borrow().descriptor() == descriptor {

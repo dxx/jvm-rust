@@ -1,5 +1,6 @@
 #![allow(non_camel_case_types)]
 
+use crate::types::RcRefCell;
 use crate::rtda::Frame;
 use crate::rtda::class::Class;
 use crate::rtda::class_loader::ClassLoader;
@@ -45,7 +46,7 @@ impl Instruction for NEW_ARRAY {
     }
 }
 
-fn get_primitive_array_class(loader: Rc<RefCell<ClassLoader>>, atype: u8) -> std::result::Result<Rc<RefCell<Class>>, String> {
+fn get_primitive_array_class(loader: RcRefCell<ClassLoader>, atype: u8) -> std::result::Result<RcRefCell<Class>, String> {
     let class = match atype {
         AT_BOOLEAN => {
             loader.borrow_mut().load_class(loader.clone(), "[Z".into())

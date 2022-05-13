@@ -1,9 +1,8 @@
+use crate::types::RcRefCell;
 use crate::rtda::Frame;
 use crate::rtda::Object;
 use crate::rtda::array_object::array_copy;
 use super::registry;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 const J_SYSTEM: &str = "java/lang/System";
 
@@ -40,7 +39,7 @@ fn arraycopy(frame: &mut Frame) {
     src_pos as usize, dest_pos as usize, length as usize);
 }
 
-fn check_arraycopy(src: &Rc<RefCell<Object>>, dest: &Rc<RefCell<Object>>) -> bool {
+fn check_arraycopy(src: &RcRefCell<Object>, dest: &RcRefCell<Object>) -> bool {
     let src_class = unsafe { src.borrow().class().as_ptr().as_mut().unwrap() };
     let dest_class = unsafe { dest.borrow().class().as_ptr().as_mut().unwrap() };
 
