@@ -1,3 +1,4 @@
+use crate::types::RcRefCell;
 use crate::classpath::Classpath;
 use crate::classfile::ClassFile;
 use crate::classpath::entry::Entry;
@@ -17,13 +18,13 @@ use std::collections::HashMap;
 pub struct ClassLoader {
     classpath: Classpath,
     // 保存加载的类，key 为类的完全限定名
-    class_map: HashMap<String, Rc<RefCell<Class>>>,
+    class_map: HashMap<String, RcRefCell<Class>>,
     verbose_flag: bool,
-    string_pool: Rc<RefCell<StringPool>>,
+    string_pool: RcRefCell<StringPool>,
 }
 
 impl ClassLoader {
-    pub fn new(classpath: Classpath, string_pool: Rc<RefCell<StringPool>>, verbose_flag: bool) -> Self {
+    pub fn new(classpath: Classpath, string_pool: RcRefCell<StringPool>, verbose_flag: bool) -> Self {
         ClassLoader {
             classpath,
             class_map: HashMap::new(),
@@ -32,7 +33,7 @@ impl ClassLoader {
         }
     }
 
-    pub fn load_class(&mut self, _self: Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {
+    pub fn load_class(&mut self, _self: RcRefCell<Self>, name: String) -> RcRefCell<Class> {
         match self.class_map.get(&name) {
             Some(class) => { // Already loaded
                 class.clone()
@@ -46,7 +47,7 @@ impl ClassLoader {
         }
     }
 
-    fn load_array_class(&mut self, _self: &Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {
+    fn load_array_class(&mut self, _self: &RcRefCell<Self>, name: String) -> RcRefCell<Class> {
         let array_class = Class::new_array_class(name, self.string_pool.clone());
 
         array_class.borrow_mut().set_loader(Some(_self.clone()));
@@ -58,7 +59,7 @@ impl ClassLoader {
         array_class
     }
 
-    fn load_non_array_class(&mut self, _self: &Rc<RefCell<Self>>, name: String) -> Rc<RefCell<Class>> {
+    fn load_non_array_class(&mut self, _self: &RcRefCell<Self>, name: String) -> RcRefCell<Class> {
         let data = self.read_class(name.clone());
         let class = self.define_class(_self, data);
         link(&class);
@@ -80,7 +81,7 @@ impl ClassLoader {
     }
 
     /// jvms 5.3.5
-    fn define_class(&mut self, _self: &Rc<RefCell<Self>>, data: Vec<u8>) -> Rc<RefCell<Class>> {
+    fn define_class(&mut self, _self: &RcRefCell<Self>, data: Vec<u8>) -> RcRefCell<Class> {
         let class = ClassLoader::parse_class(data, self.string_pool.clone());
 
         class.borrow_mut().set_loader(Some(_self.clone()));
@@ -92,7 +93,7 @@ impl ClassLoader {
         class
     }
 
-    fn parse_class(data: Vec<u8>, string_pool: Rc<RefCell<StringPool>>) -> Rc<RefCell<Class>> {
+    fn parse_class(data: Vec<u8>, string_pool: RcRefCell<StringPool>) -> RcRefCell<Class> {
         let cf_result = ClassFile::parse(data);
         match cf_result {
             Ok(cf) => {
@@ -105,7 +106,7 @@ impl ClassLoader {
     }
 
     /// jvms 5.4.3.1
-    fn resolve_super_class(&mut self, _self: &Rc<RefCell<Self>>, class: &Rc<RefCell<Class>>) {
+    fn resolve_super_class(&mut self, _self: &RcRefCell<Self>, class: &RcRefCell<Class>) {
         if class.borrow_mut().name() != "java/lang/Object" {
             let super_class = Some(
                 self.load_class(_self.clone(), class.borrow_mut().super_classname()));
@@ -113,9 +114,9 @@ impl ClassLoader {
         }
     }
 
-    fn resolve_interfaces(&mut self, _self: &Rc<RefCell<Self>>, class: &Rc<RefCell<Class>>) {
+    fn resolve_interfaces(&mut self, _self: &RcRefCell<Self>, class: &RcRefCell<Class>) {
         let interface_names = class.borrow_mut().interface_names();
-        let mut interfaces: Vec<Rc<RefCell<Class>>> = Vec::new();
+        let mut interfaces: Vec<RcRefCell<Class>> = Vec::new();
         for name in interface_names {
             interfaces.push(self.load_class(_self.clone(), name));
         }
@@ -123,23 +124,23 @@ impl ClassLoader {
     }
 }
 
-fn link(class: &Rc<RefCell<Class>>) {
+fn link(class: &RcRefCell<Class>) {
     verify(class);
     prepare(class);
 }
 
-fn verify(class: &Rc<RefCell<Class>>) {
+fn verify(class: &RcRefCell<Class>) {
     // TODO
 }
 
 /// jvms 5.4.2
-fn prepare(class: &Rc<RefCell<Class>>) {
+fn prepare(class: &RcRefCell<Class>) {
     calc_instance_field_slot_ids(class);
     calc_static_field_slot_ids(class);
     alloc_and_init_static_vars(class);
 }
 
-fn calc_instance_field_slot_ids(class: &Rc<RefCell<Class>>) {
+fn calc_instance_field_slot_ids(class: &RcRefCell<Class>) {
     let mut slot_id = 0;
     if class.borrow_mut().super_class().is_some() {
         slot_id = class.borrow_mut().super_class().unwrap().borrow().instance_slot_count();
@@ -156,7 +157,7 @@ fn calc_instance_field_slot_ids(class: &Rc<RefCell<Class>>) {
     class.borrow_mut().set_instance_slot_count(slot_id);
 }
 
-fn calc_static_field_slot_ids(class: &Rc<RefCell<Class>>) {
+fn calc_static_field_slot_ids(class: &RcRefCell<Class>) {
     let mut slot_id = 0;
     for field in class.borrow_mut().fields() {
         if field.borrow_mut().is_static() {
@@ -170,7 +171,7 @@ fn calc_static_field_slot_ids(class: &Rc<RefCell<Class>>) {
     class.borrow_mut().set_static_slot_count(slot_id);
 }
 
-fn alloc_and_init_static_vars(class: &Rc<RefCell<Class>>) {
+fn alloc_and_init_static_vars(class: &RcRefCell<Class>) {
     let static_slot_count = class.borrow_mut().static_slot_count() as usize;
     let vars = Some(Rc::new(RefCell::new(Slots::new(static_slot_count))));
     let cp = class.borrow_mut().constant_pool();
@@ -183,7 +184,7 @@ fn alloc_and_init_static_vars(class: &Rc<RefCell<Class>>) {
     class.borrow_mut().set_static_vars(vars);
 }
 
-fn init_static_final_var(class: &Rc<RefCell<Class>>, vars: &Rc<RefCell<Slots>>, field: &Rc<RefCell<Field>>) {
+fn init_static_final_var(class: &RcRefCell<Class>, vars: &RcRefCell<Slots>, field: &RcRefCell<Field>) {
     let string_pool = class.borrow_mut().string_pool();
     let cp = class.borrow_mut().constant_pool();
     let cp_index = field.borrow().const_value_index();

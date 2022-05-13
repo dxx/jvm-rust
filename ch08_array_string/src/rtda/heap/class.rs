@@ -1,3 +1,7 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::classfile::ClassFile;
 use crate::rtda::object::Object;
 use crate::rtda::heap::slots::Slots;
@@ -25,22 +29,22 @@ pub struct Class {
     name: String,
     super_classname: String,
     interface_names: Vec<String>,
-    constant_pool: Option<Rc<RefCell<ConstantPool>>>,
-    fields: Option<Vec<Rc<RefCell<Field>>>>,
-    methods: Option<Vec<Rc<RefCell<Method>>>>,
-    loader: Option<Rc<RefCell<ClassLoader>>>,
-    super_class: Option<Rc<RefCell<Class>>>,
-    interfaces: Option<Vec<Rc<RefCell<Class>>>>,
+    constant_pool: OptionalRcRefCell<ConstantPool>,
+    fields: Option<Vec<RcRefCell<Field>>>,
+    methods: Option<Vec<RcRefCell<Method>>>,
+    loader: OptionalRcRefCell<ClassLoader>,
+    super_class: OptionalRcRefCell<Class>,
+    interfaces: Option<Vec<RcRefCell<Class>>>,
     instance_slot_count: u64,
     static_slot_count: u64,
-    static_vars: Option<Rc<RefCell<Slots>>>,
+    static_vars: OptionalRcRefCell<Slots>,
 
     init_started: bool,
-    string_pool: Rc<RefCell<StringPool>>,
+    string_pool: RcRefCell<StringPool>,
 }
 
 impl Class {
-    pub fn new(cf: &ClassFile, string_pool: Rc<RefCell<StringPool>>) -> Rc<RefCell<Self>> {
+    pub fn new(cf: &ClassFile, string_pool: RcRefCell<StringPool>) -> RcRefCell<Self> {
         let class = Class {
             access_flags: cf.access_flags(),
             name: cf.class_name(),
@@ -65,7 +69,7 @@ impl Class {
         rc_class
     }
 
-    pub fn new_array_class(name: String, string_pool: Rc<RefCell<StringPool>>) -> Rc<RefCell<Self>> {
+    pub fn new_array_class(name: String, string_pool: RcRefCell<StringPool>) -> RcRefCell<Self> {
         let class = Class {
             access_flags: ACC_PUBLIC,
             name,
@@ -90,11 +94,11 @@ impl Class {
         self.name.clone()
     }
 
-    pub fn fields(&self) -> Vec<Rc<RefCell<Field>>> {
+    pub fn fields(&self) -> Vec<RcRefCell<Field>> {
         self.fields.clone().unwrap()
     }
 
-    pub fn methods(&self) -> Vec<Rc<RefCell<Method>>> {
+    pub fn methods(&self) -> Vec<RcRefCell<Method>> {
         self.methods.clone().unwrap()
     }
 
@@ -106,31 +110,31 @@ impl Class {
         self.interface_names.clone()
     }
 
-    pub fn set_loader(&mut self, loader: Option<Rc<RefCell<ClassLoader>>>) {
+    pub fn set_loader(&mut self, loader: OptionalRcRefCell<ClassLoader>) {
         self.loader = loader;
     }
 
-    pub fn loader(&self) -> Option<Rc<RefCell<ClassLoader>>> {
+    pub fn loader(&self) -> OptionalRcRefCell<ClassLoader> {
         self.loader.clone()
     }
 
-    pub fn constant_pool(&self) -> Rc<RefCell<ConstantPool>> {
+    pub fn constant_pool(&self) -> RcRefCell<ConstantPool> {
         self.constant_pool.clone().unwrap()
     }
 
-    pub fn set_super_class(&mut self, super_class: Option<Rc<RefCell<Class>>>) {
+    pub fn set_super_class(&mut self, super_class: OptionalRcRefCell<Class>) {
         self.super_class = super_class;
     }
 
-    pub fn super_class(&self) -> Option<Rc<RefCell<Class>>> {
+    pub fn super_class(&self) -> OptionalRcRefCell<Class> {
         self.super_class.clone()
     }
 
-    pub fn set_interfaces(&mut self, interfaces: Option<Vec<Rc<RefCell<Class>>>>) {
+    pub fn set_interfaces(&mut self, interfaces: Option<Vec<RcRefCell<Class>>>) {
         self.interfaces = interfaces;
     }
 
-    pub fn interfaces(&self) -> Option<Vec<Rc<RefCell<Class>>>> {
+    pub fn interfaces(&self) -> Option<Vec<RcRefCell<Class>>> {
         self.interfaces.clone()
     }
 
@@ -150,11 +154,11 @@ impl Class {
         self.static_slot_count
     }
 
-    pub fn set_static_vars(&mut self, static_vars: Option<Rc<RefCell<Slots>>>) {
+    pub fn set_static_vars(&mut self, static_vars: OptionalRcRefCell<Slots>) {
         self.static_vars = static_vars;
     }
 
-    pub fn static_vars(&self) -> Rc<RefCell<Slots>> {
+    pub fn static_vars(&self) -> RcRefCell<Slots> {
         self.static_vars.clone().unwrap()
     }
 
@@ -190,11 +194,11 @@ impl Class {
         self.access_flags & ACC_ENUM != 0
     }
 
-    pub fn get_main_method(&self) -> Option<Rc<RefCell<Method>>> {
+    pub fn get_main_method(&self) -> OptionalRcRefCell<Method> {
         self.get_static_method("main".into(), "([Ljava/lang/String;)V".into())
     }
 
-    pub fn get_clinit_method(&self) -> Option<Rc<RefCell<Method>>> {
+    pub fn get_clinit_method(&self) -> OptionalRcRefCell<Method> {
         self.get_static_method("<clinit>".into(), "()V".into())
     }
 
@@ -207,7 +211,7 @@ impl Class {
         }
     }
 
-    fn get_static_method(&self, name: String, descriptor: String) -> Option<Rc<RefCell<Method>>> {
+    fn get_static_method(&self, name: String, descriptor: String) -> OptionalRcRefCell<Method> {
         for method in self.methods.as_ref().unwrap() {
             let b_method = method.borrow();
             if b_method.is_static() && b_method.name() == name && b_method.descriptor() == descriptor {
@@ -218,7 +222,7 @@ impl Class {
     }
 
     /// jvms 5.4.4
-    pub fn is_accessible_to(&self, other: &Rc<RefCell<Class>>) -> bool {
+    pub fn is_accessible_to(&self, other: &RcRefCell<Class>) -> bool {
         self.is_public() || self.get_package_name() == other.borrow().get_package_name()
     }
 
@@ -226,8 +230,8 @@ impl Class {
     /// jvms8 6.5.checkcast
     pub fn is_assignable_from(
         &self,
-        _self: &Rc<RefCell<Class>>,
-        other: &Rc<RefCell<Class>>) -> bool {
+        _self: &RcRefCell<Class>,
+        other: &RcRefCell<Class>) -> bool {
         if _self.eq(other) {
             return true;
         }
@@ -262,7 +266,7 @@ impl Class {
     }
 
     /// self extends other
-    pub fn is_sub_class_of(&self, other: &Rc<RefCell<Class>>) -> bool {
+    pub fn is_sub_class_of(&self, other: &RcRefCell<Class>) -> bool {
         let mut c = self.super_class();
         while let Some(class) = c {
             if class.eq(other) {
@@ -274,7 +278,7 @@ impl Class {
     }
 
     /// self implements other
-    pub fn is_implements(&self, other: &Rc<RefCell<Class>>) -> bool {
+    pub fn is_implements(&self, other: &RcRefCell<Class>) -> bool {
         for i in self.interfaces().unwrap() {
             if i.eq(other) || i.borrow().is_sub_interface_of(other) {
                 return true;
@@ -295,7 +299,7 @@ impl Class {
     }
 
     /// self extends other
-    pub fn is_sub_interface_of(&self, other: &Rc<RefCell<Class>>) -> bool {
+    pub fn is_sub_interface_of(&self, other: &RcRefCell<Class>) -> bool {
         for super_interface in self.interfaces().unwrap() {
             if super_interface.eq(other) || super_interface.borrow().is_sub_interface_of(other) {
                 return true;
@@ -312,17 +316,17 @@ impl Class {
         self.init_started
     }
 
-    pub fn new_object(&self, class: Rc<RefCell<Class>>) -> Object {
+    pub fn new_object(&self, class: RcRefCell<Class>) -> Object {
         Object::new(class)
     }
 
-    pub fn array_class(&mut self) -> Rc<RefCell<Class>> {
+    pub fn array_class(&mut self) -> RcRefCell<Class> {
         let array_class_name = get_array_class_name(self.name.clone());
         let loader = self.loader.as_mut().unwrap();
         return loader.borrow_mut().load_class(loader.clone(), array_class_name);
     }
 
-    pub fn get_field(&self, name: String, descriptor: String, is_static: bool) -> Option<Rc<RefCell<Field>>> {
+    pub fn get_field(&self, name: String, descriptor: String, is_static: bool) -> OptionalRcRefCell<Field> {
         for field in self.fields.as_ref().unwrap() {
             if field.borrow().is_static() == is_static &&
                 field.borrow().name() == name &&
@@ -346,7 +350,7 @@ impl Class {
         return None;
     }
 
-    pub fn string_pool(&self) -> Rc<RefCell<StringPool>> {
+    pub fn string_pool(&self) -> RcRefCell<StringPool> {
         self.string_pool.clone()
     }
 

@@ -1,3 +1,4 @@
+use crate::types::RcRefCell;
 use crate::rtda::Object;
 use super::class_loader::ClassLoader;
 use std::collections::HashMap;
@@ -5,17 +6,17 @@ use std::rc::Rc;
 use std::cell::RefCell;
 
 pub struct StringPool {
-    pool: HashMap<String, Rc<RefCell<Object>>>,
+    pool: HashMap<String, RcRefCell<Object>>,
 }
 
 impl StringPool {
-    pub fn new() -> Rc<RefCell<Self>> {
+    pub fn new() -> RcRefCell<Self> {
         Rc::new(RefCell::new(StringPool {
             pool: HashMap::new(),
         }))
     }
 
-    pub fn jstring(&mut self, loader: Rc<RefCell<ClassLoader>>, rstr: String) -> Rc<RefCell<Object>> {
+    pub fn jstring(&mut self, loader: RcRefCell<ClassLoader>, rstr: String) -> RcRefCell<Object> {
         let interned_str = self.pool.get(rstr.as_str());
         if interned_str.is_some() {
             return interned_str.unwrap().clone();
@@ -39,7 +40,7 @@ impl StringPool {
 }
 
 /// java.lang.String -> rust String
-pub fn rust_string(obj: &Rc<RefCell<Object>>) -> String {
+pub fn rust_string(obj: &RcRefCell<Object>) -> String {
     let char_arr = obj.borrow_mut().get_ref_var("value".into(), "[C".into());
     let chars = char_arr.borrow_mut().chars_mut().clone();
     utf16_to_string(chars)

@@ -1,5 +1,6 @@
 #![allow(non_camel_case_types)]
 
+use crate::types::RcRefCell;
 use crate::rtda::Frame;
 use crate::rtda::OperandStack;
 use crate::rtda::class::Class;
@@ -53,7 +54,7 @@ fn pop_and_check_counts(stack: &mut OperandStack, dimensions: usize) -> std::res
     Ok(counts)
 }
 
-fn new_multi_dimensional_array(counts: Vec<i32>, arr_class: &Rc<RefCell<Class>>) -> Object {
+fn new_multi_dimensional_array(counts: Vec<i32>, arr_class: &RcRefCell<Class>) -> Object {
     let count = counts.get(0).unwrap();
     let mut arr = arr_class.borrow_mut().new_array(arr_class.clone(), *count as usize);
 

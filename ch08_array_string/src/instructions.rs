@@ -14,6 +14,7 @@ mod factory;
 
 pub use self::base::*;
 
+use crate::types::RcRefCell;
 use crate::rtda::Thread;
 use crate::rtda::Frame;
 use crate::rtda::Object;
@@ -24,7 +25,7 @@ use self::factory::new_instruction;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub fn interpret(method: Rc<RefCell<Method>>, log_inst: bool, args: Vec<String>) {
+pub fn interpret(method: RcRefCell<Method>, log_inst: bool, args: Vec<String>) {
     let thread = Rc::new(RefCell::new(Thread::new()));
     let mut frame = thread.borrow_mut().new_frame(
         thread.clone(),
@@ -40,9 +41,9 @@ pub fn interpret(method: Rc<RefCell<Method>>, log_inst: bool, args: Vec<String>)
 }
 
 fn create_args_array(
-    method: Rc<RefCell<Method>>,
+    method: RcRefCell<Method>,
     args: Vec<String>,
-) -> Rc<RefCell<Object>> {
+) -> RcRefCell<Object> {
     let class = method.borrow().get_class();
     let loader = class.borrow_mut().loader().unwrap();
     let string_pool = class.borrow_mut().string_pool();
@@ -62,7 +63,7 @@ fn create_args_array(
     Rc::new(RefCell::new(args_arr))
 }
 
-fn _loop(thread: Rc<RefCell<Thread>>, log_inst: bool) {
+fn _loop(thread: RcRefCell<Thread>, log_inst: bool) {
     let mut reader = BytecodeReader::default();
 
     loop {
@@ -116,7 +117,7 @@ fn log_instruction(frame: &Frame, inst: &Box<dyn Instruction>) {
     println!("{}.{} #{:2} {:?}", class_name, method_name, pc, inst);
 }
 
-fn log_frames(thread: &Rc<RefCell<Thread>>) {
+fn log_frames(thread: &RcRefCell<Thread>) {
     while !thread.borrow().is_stack_empty() {
         let frame = thread.borrow_mut().pop_frame();
         let method = frame.as_ref().unwrap().borrow().method();

@@ -1,15 +1,17 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::rtda::Object;
 use super::class::Class;
 use super::class_name_helper::get_component_class_name;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 impl Class {
     pub fn is_array(&self) -> bool {
         self.name().as_bytes()[0] == b'['
     }
 
-    pub fn new_array(&self, _self: Rc<RefCell<Class>>, count: usize) -> Object {
+    pub fn new_array(&self, _self: RcRefCell<Class>, count: usize) -> Object {
         if !self.is_array() {
             panic!("Not array class: {}", self.name());
         }
@@ -31,11 +33,11 @@ impl Class {
         } else if self.name() == "[D" {
             Object::new_data(_self, Box::new(vec![0_f64; count]))
         } else {
-            Object::new_data(_self, Box::new(vec![None as Option<Rc<RefCell<Object>>>; count]))
+            Object::new_data(_self, Box::new(vec![None as OptionalRcRefCell<Object>; count]))
         }
     }
 
-    pub fn component_class(&mut self) -> Rc<RefCell<Class>> {
+    pub fn component_class(&mut self) -> RcRefCell<Class> {
         let component_class_name = get_component_class_name(self.name().clone());
         let mut loader = self.loader();
         let loader = loader.as_mut().unwrap();

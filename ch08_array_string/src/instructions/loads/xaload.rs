@@ -1,9 +1,8 @@
 #![allow(non_camel_case_types)]
 
+use crate::types::OptionalRcRefCell;
 use crate::rtda::{Frame, Object};
 use super::super::instruction::Instruction;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 /// Load reference from array
 #[derive(Default, Debug)]
@@ -189,7 +188,7 @@ impl Instruction for SALOAD {
     }
 }
 
-fn check_not_none(_ref: Option<Rc<RefCell<Object>>>) -> crate::Result<()> {
+fn check_not_none(_ref: OptionalRcRefCell<Object>) -> crate::Result<()> {
     if _ref.is_none() {
         return Err("java.lang.NullPointerException".into());
     }

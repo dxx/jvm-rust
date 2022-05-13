@@ -1,12 +1,11 @@
 pub mod bytecode_reader;
 pub mod instruction;
 
+use crate::types::RcRefCell;
 use crate::rtda::Frame;
 use crate::rtda::Thread;
 use crate::rtda::method::Method;
 use crate::rtda::class::Class;
-use std::rc::Rc;
-use std::cell::RefCell;
 
 pub fn branch(frame: &mut Frame, offset: i64) {
 	let pc = frame.thread().borrow().pc();
@@ -14,7 +13,7 @@ pub fn branch(frame: &mut Frame, offset: i64) {
 	frame.set_next_pc(next_pc);
 }
 
-pub fn invoke_method(frame: &mut Frame, method: &Rc<RefCell<Method>>) {
+pub fn invoke_method(frame: &mut Frame, method: &RcRefCell<Method>) {
 	let thread = frame.thread();
 	let mut new_frame = thread.borrow_mut().new_frame(thread.clone(), method.clone());
 
@@ -44,13 +43,13 @@ pub fn invoke_method(frame: &mut Frame, method: &Rc<RefCell<Method>>) {
 	}
 }
 
-pub fn init_class(thread: &Rc<RefCell<Thread>>, class: &Rc<RefCell<Class>>) {
+pub fn init_class(thread: &RcRefCell<Thread>, class: &RcRefCell<Class>) {
 	class.borrow_mut().start_init();
 	schedule_clinit(thread, class);
 	init_super_class(thread, class);
 }
 
-pub fn schedule_clinit(thread: &Rc<RefCell<Thread>>, class: &Rc<RefCell<Class>>) {
+pub fn schedule_clinit(thread: &RcRefCell<Thread>, class: &RcRefCell<Class>) {
 	let clinit = class.borrow().get_clinit_method();
 	if clinit.is_some() {
 		// exec <clinit>
@@ -59,7 +58,7 @@ pub fn schedule_clinit(thread: &Rc<RefCell<Thread>>, class: &Rc<RefCell<Class>>)
 	}
 }
 
-pub fn init_super_class(thread: &Rc<RefCell<Thread>>, class: &Rc<RefCell<Class>>) {
+pub fn init_super_class(thread: &RcRefCell<Thread>, class: &RcRefCell<Class>) {
 	if !class.borrow().is_interface() {
 		let super_class = class.borrow().super_class();
 		if super_class.is_some() && !super_class.as_ref().unwrap().borrow().init_started() {

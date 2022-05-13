@@ -1,3 +1,4 @@
+use crate::types::RcRefCell;
 use crate::classfile::constant_pool;
 use crate::classfile::constant_pool::cp_class;
 use crate::classfile::constant_pool::cp_numeric;
@@ -91,13 +92,13 @@ impl Constant for String {
 
 /// 运行时常量池
 pub struct ConstantPool {
-    class: Rc<RefCell<Class>>,
+    class: RcRefCell<Class>,
     consts: Vec<Option<Box<dyn Constant>>>,
 }
 
 impl ConstantPool {
     /// 将常量池转化成运行时常量池
-    pub fn new(class: Rc<RefCell<Class>>, cf_cp: &Rc<RefCell<constant_pool::ConstantPool>>) -> Rc<RefCell<Self>> {
+    pub fn new(class: RcRefCell<Class>, cf_cp: &Rc<RefCell<constant_pool::ConstantPool>>) -> RcRefCell<Self> {
         let b_cf_cp = cf_cp.borrow();
         let len = b_cf_cp.constant_len();
         let consts: Vec<Option<Box<dyn Constant>>> = Vec::new();
@@ -174,7 +175,7 @@ impl ConstantPool {
         rt_cp
     }
 
-    pub fn class(&self) -> Rc<RefCell<Class>> {
+    pub fn class(&self) -> RcRefCell<Class> {
         self.class.clone()
     }
 

@@ -1,3 +1,7 @@
+use crate::types::{
+    RcRefCell,
+    OptionalRcRefCell,
+};
 use crate::classfile::member_info::MemberInfo;
 use super::access_flags::*;
 use super::class::Class;
@@ -5,7 +9,7 @@ use super::method_descriptor::MethodDescriptorParser;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub fn new_methods(class: Rc<RefCell<Class>>, cf_methods: &Vec<MemberInfo>) -> Vec<Rc<RefCell<Method>>> {
+pub fn new_methods(class: RcRefCell<Class>, cf_methods: &Vec<MemberInfo>) -> Vec<RcRefCell<Method>> {
     let mut methods = Vec::new();
     for m in cf_methods {
         let mut method = Method::default();
@@ -22,7 +26,7 @@ pub struct Method {
     access_flags: u16,
     name: String,
     descriptor: String,
-    class: Option<Rc<RefCell<Class>>>,
+    class: OptionalRcRefCell<Class>,
 
     max_stack: u16,
     max_locals: u16,
@@ -115,7 +119,7 @@ impl Method {
         self.descriptor.clone()
     }
 
-    pub fn get_class(&self) -> Rc<RefCell<Class>> {
+    pub fn get_class(&self) -> RcRefCell<Class> {
         self.class.clone().unwrap()
     }
 
@@ -136,7 +140,7 @@ impl Method {
     }
 
     /// jvms 5.4.4
-    pub fn is_accessible_to(&self, class: &Rc<RefCell<Class>>) -> bool {
+    pub fn is_accessible_to(&self, class: &RcRefCell<Class>) -> bool {
         if self.is_public() {
             return true;
         }
