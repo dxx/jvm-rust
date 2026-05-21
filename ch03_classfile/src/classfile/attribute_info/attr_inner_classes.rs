@@ -1,3 +1,5 @@
+/// InnerClasses 属性：记录类中定义的内部类信息
+///
 /// InnerClasses_attribute {
 ///     u2 attribute_name_index;
 ///     u4 attribute_length;
@@ -8,7 +10,6 @@
 ///         u2 inner_class_access_flags;
 ///     } classes[number_of_classes];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 pub struct InnerClassesAttribute {
@@ -16,9 +17,13 @@ pub struct InnerClassesAttribute {
 }
 
 pub struct InnerClassInfo {
+    /// 内部类在常量池中的索引
     inner_class_info_index: u16,
+    /// 外围类在常量池中的索引（0 表示非成员内部类）
     outer_class_info_index: u16,
+    /// 内部类简单名在常量池中的索引（0 表示匿名类）
     inner_name_index: u16,
+    /// 内部类的访问标志
     inner_class_access_flags: u16,
 }
 

@@ -1,9 +1,10 @@
+/// CONSTANT_Integer_info：int 字面量（4 字节）
+///
 /// CONSTANT_Integer_info {
 ///     u1 tag;
 ///     u4 bytes;
 /// }
-
-use super::{ConstantInfo, ClassReader};
+use super::{ClassReader, ConstantInfo};
 
 #[derive(Default)]
 pub struct ConstantIntegerInfo {
@@ -26,6 +27,8 @@ impl ConstantIntegerInfo {
     }
 }
 
+/// CONSTANT_Float_info：float 字面量（IEEE 754 单精度）
+///
 /// CONSTANT_Float_info {
 ///     u1 tag;
 ///     u4 bytes;
@@ -52,6 +55,8 @@ impl ConstantFloatInfo {
     }
 }
 
+/// CONSTANT_Long_info：long 字面量（8 字节，占常量池两个位置）
+///
 /// CONSTANT_Long_info {
 ///     u1 tag;
 ///     u4 high_bytes;
@@ -79,6 +84,8 @@ impl ConstantLongInfo {
     }
 }
 
+/// CONSTANT_Double_info：double 字面量（IEEE 754 双精度，占常量池两个位置）
+///
 /// CONSTANT_Double_info {
 ///     u1 tag;
 ///     u4 high_bytes;

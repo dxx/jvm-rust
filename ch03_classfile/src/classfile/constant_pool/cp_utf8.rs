@@ -1,14 +1,16 @@
+/// CONSTANT_Utf8_info：以 modified UTF-8 编码存储的字符串
+///
 /// CONSTANT_Utf8_info {
 ///     u1 tag;
 ///     u2 length;
 ///     u1 bytes[length];
 /// }
-
-use super::{ConstantInfo, ClassReader};
+use super::{ClassReader, ConstantInfo};
 use std::char::decode_utf16;
 
 #[derive(Default, Clone)]
 pub struct ConstantUtf8Info {
+    /// 解码后的 Rust 字符串
     str: String,
 }
 
@@ -21,7 +23,6 @@ impl ConstantInfo for ConstantUtf8Info {
     fn tag(&self) -> u8 {
         super::CONSTANT_UTF8
     }
-
 }
 
 impl ConstantUtf8Info {
@@ -29,8 +30,9 @@ impl ConstantUtf8Info {
         self.str.to_string()
     }
 
-    /// mutf8 -> utf16 -> utf32 -> string
-    /// see java.io.DataInputStream.readUTF(DataInput)
+    /// 将 Java 的 modified UTF-8 字节序列解码为 Rust String
+    /// 解码流程：mutf8 -> utf16 -> utf32 -> string
+    /// 参考 java.io.DataInputStream.readUTF(DataInput)
     fn decode_m_utf8(&self, bytes: Vec<u8>) -> String {
         let utf_len = bytes.len();
         let mut char_arr = vec![0_u16; utf_len];
@@ -65,7 +67,7 @@ impl ConstantUtf8Info {
                     count += 1;
                     char_arr[char_arr_count] = c;
                     char_arr_count += 1;
-                },
+                }
                 12 | 13 => {
                     // 110x xxxx   10xx xxxx
                     count += 2;
@@ -78,7 +80,7 @@ impl ConstantUtf8Info {
                     }
                     char_arr[char_arr_count] = c & 0x1F << 6 | char2 & 0x3F;
                     char_arr_count += 1;
-                },
+                }
                 14 => {
                     // 1110 xxxx  10xx xxxx  10xx xxxx
                     count += 3;
@@ -90,15 +92,18 @@ impl ConstantUtf8Info {
                     if char2 & 0xC0 != 0x80 || char3 & 0xC0 != 0x80 {
                         panic!("malformed input around byte {}", count - 1)
                     }
-                    char_arr[char_arr_count] = c & 0x0F << 12 | char2 & 0x3F << 6 | char3 & 0x3F << 0;
+                    char_arr[char_arr_count] =
+                        c & 0x0F << 12 | char2 & 0x3F << 6 | char3 & 0x3F << 0;
                     char_arr_count += 1;
-                },
+                }
                 // 10xx xxxx,  1111 xxxx
-                _ => panic!("malformed input around byte {}", count)
+                _ => panic!("malformed input around byte {}", count),
             }
         }
         // The number of chars produced may be less than utflen
         let char_arr = &char_arr[..char_arr_count];
-        decode_utf16(char_arr.iter().cloned()).map(|r| r.unwrap()).collect::<String>()
+        decode_utf16(char_arr.iter().cloned())
+            .map(|r| r.unwrap())
+            .collect::<String>()
     }
 }

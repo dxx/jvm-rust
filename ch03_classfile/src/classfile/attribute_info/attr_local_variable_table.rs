@@ -1,3 +1,5 @@
+/// LocalVariableTable 属性：描述局部变量的名字、类型及作用域，用于调试
+///
 /// LocalVariableTable_attribute {
 ///     u2 attribute_name_index;
 ///     u4 attribute_length;
@@ -9,7 +11,6 @@
 ///         u2 index;
 ///     } local_variable_table[local_variable_table_length];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]
@@ -18,10 +19,15 @@ pub struct LocalVariableTableAttribute {
 }
 
 pub struct LocalVariableTableEntry {
+    /// 变量作用域起始字节码偏移
     start_pc: u16,
+    /// 变量作用域长度
     length: u16,
+    /// 变量名在常量池中的索引
     name_index: u16,
+    /// 变量类型描述符在常量池中的索引
     descriptor_index: u16,
+    /// 变量在局部变量表中的槽位
     index: u16,
 }
 
