@@ -1,22 +1,14 @@
-/// CONSTANT_Fieldref_info {
+use super::{ClassReader, ConstantInfo, ConstantPool};
+/// 字段引用、方法引用、接口方法引用三者结构一致，统一通过 ConstantMemberRefInfo 实现：
+///
+/// CONSTANT_Fieldref_info / CONSTANT_Methodref_info / CONSTANT_InterfaceMethodref_info {
 ///     u1 tag;
-///     u2 class_index;
-///     u2 name_and_type_index;
+///     u2 class_index;          // 指向 CONSTANT_Class_info
+///     u2 name_and_type_index;  // 指向 CONSTANT_NameAndType_info
 /// }
-/// CONSTANT_Methodref_info {
-///     u1 tag;
-///     u2 class_index;
-///     u2 name_and_type_index;
-/// }
-/// CONSTANT_InterfaceMethodref_info {
-///     u1 tag;
-///     u2 class_index;
-///     u2 name_and_type_index;
-/// }
-
 use crate::types::RcRefCell;
-use super::{ConstantInfo, ClassReader, ConstantPool};
 
+/// 字段引用
 pub struct ConstantFieldRefInfo {
     member_info: ConstantMemberRefInfo,
 }
@@ -39,6 +31,7 @@ impl ConstantFieldRefInfo {
     }
 }
 
+/// 方法引用
 pub struct ConstantMethodRefInfo {
     member_info: ConstantMemberRefInfo,
 }
@@ -61,6 +54,7 @@ impl ConstantMethodRefInfo {
     }
 }
 
+/// 接口方法引用
 pub struct ConstantInterfaceMethodRefInfo {
     member_info: ConstantMemberRefInfo,
 }
@@ -83,9 +77,12 @@ impl ConstantInterfaceMethodRefInfo {
     }
 }
 
+/// 成员引用的共用数据：class_index + name_and_type_index
 pub struct ConstantMemberRefInfo {
     constant_pool: RcRefCell<ConstantPool>,
+    /// 指向 CONSTANT_Class_info：所在类
     class_index: u16,
+    /// 指向 CONSTANT_NameAndType_info：成员名和描述符
     name_and_type_index: u16,
 }
 

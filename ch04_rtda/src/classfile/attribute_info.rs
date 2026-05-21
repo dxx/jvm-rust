@@ -12,28 +12,39 @@ mod attr_signature;
 mod attr_source_file;
 mod attr_unparsed;
 
+use crate::classfile::attribute_info::attr_code::CodeAttribute;
+use crate::classfile::attribute_info::attr_constant_value::ConstantValueAttribute;
+use crate::classfile::attribute_info::attr_exceptions::ExceptionsAttribute;
+use crate::classfile::attribute_info::attr_line_number_table::LineNumberTableAttribute;
+use crate::classfile::attribute_info::attr_local_variable_table::LocalVariableTableAttribute;
+use crate::classfile::attribute_info::attr_markers::{DeprecatedAttribute, SyntheticAttribute};
+use crate::classfile::attribute_info::attr_source_file::SourceFileAttribute;
+use crate::classfile::attribute_info::attr_unparsed::UnparsedAttribute;
+use crate::classfile::{ClassReader, ConstantPool};
 /// attribute_info {
 ///     u2 attribute_name_index;
 ///     u4 attribute_length;
 ///     u1 info[attribute_length];
 /// }
-
 use crate::types::RcRefCell;
-use crate::classfile::{ClassReader, ConstantPool};
-use crate::classfile::attribute_info::attr_unparsed::UnparsedAttribute;
-use crate::classfile::attribute_info::attr_code::CodeAttribute;
-use crate::classfile::attribute_info::attr_constant_value::ConstantValueAttribute;
-use crate::classfile::attribute_info::attr_markers::{DeprecatedAttribute, SyntheticAttribute};
-use crate::classfile::attribute_info::attr_exceptions::ExceptionsAttribute;
-use crate::classfile::attribute_info::attr_line_number_table::LineNumberTableAttribute;
-use crate::classfile::attribute_info::attr_local_variable_table::LocalVariableTableAttribute;
-use crate::classfile::attribute_info::attr_source_file::SourceFileAttribute;
 
+/// 所有 attribute_info 通用接口
+///
+/// attribute_info {
+///     u2 attribute_name_index;
+///     u4 attribute_length;
+///     u1 info[attribute_length];
+/// }
 pub trait AttributeInfo {
+    /// 从字节流读取属性内容（不含 name_index 和 length 字段）
     fn read_info(&mut self, reader: &mut ClassReader);
 }
 
-pub fn read_attributes(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) -> Vec<Box<dyn AttributeInfo>> {
+/// 读取属性表：先读 u2 数量，再依次读取每个属性
+pub fn read_attributes(
+    reader: &mut ClassReader,
+    cp: RcRefCell<ConstantPool>,
+) -> Vec<Box<dyn AttributeInfo>> {
     let attribute_count = reader.read_u16();
     let mut attributes = vec![];
     for _i in 0..attribute_count {
@@ -42,6 +53,7 @@ pub fn read_attributes(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) ->
     attributes
 }
 
+/// 读取单个属性
 fn read_attribute(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) -> Box<dyn AttributeInfo> {
     let attr_name_index = reader.read_u16();
     let attr_name = cp.borrow().get_utf8(attr_name_index);
@@ -51,7 +63,12 @@ fn read_attribute(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) -> Box<
     attr_info
 }
 
-fn new_attribute(attr_name: &str, attr_length: u32, cp: RcRefCell<ConstantPool>) -> Box<dyn AttributeInfo> {
+/// 按属性名创建对应类型的 attribute_info；未识别的属性使用 UnparsedAttribute 原样保留字节
+fn new_attribute(
+    attr_name: &str,
+    attr_length: u32,
+    cp: RcRefCell<ConstantPool>,
+) -> Box<dyn AttributeInfo> {
     match attr_name {
         "Code" => Box::new(CodeAttribute::new(cp)),
         "ConstantValue" => Box::new(ConstantValueAttribute::default()),
@@ -61,6 +78,10 @@ fn new_attribute(attr_name: &str, attr_length: u32, cp: RcRefCell<ConstantPool>)
         "LocalVariableTable" => Box::new(LocalVariableTableAttribute::default()),
         "SourceFile" => Box::new(SourceFileAttribute::new(cp)),
         "Synthetic" => Box::new(SyntheticAttribute::default()),
-        _ => Box::new(UnparsedAttribute::new(attr_name.to_string(), attr_length, None)),
+        _ => Box::new(UnparsedAttribute::new(
+            attr_name.to_string(),
+            attr_length,
+            None,
+        )),
     }
 }

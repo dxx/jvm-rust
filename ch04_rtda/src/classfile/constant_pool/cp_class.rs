@@ -1,14 +1,17 @@
+use super::{ClassReader, ConstantInfo, ConstantPool};
+/// CONSTANT_Class_info：代表对类或接口的符号引用
+///
 /// CONSTANT_Class_info {
 ///     u1 tag;
 ///     u2 name_index;
 /// }
-
 use crate::types::RcRefCell;
-use super::{ConstantInfo, ClassReader, ConstantPool};
 
 #[derive(Clone)]
 pub struct ConstantClassInfo {
+    /// 保存常量池引用，用于将 name_index 解析为字符串
     constant_pool: RcRefCell<ConstantPool>,
+    /// 指向 CONSTANT_Utf8_info 的索引，存放类的全限定名
     name_index: u16,
 }
 
@@ -30,6 +33,7 @@ impl ConstantClassInfo {
         }
     }
 
+    /// 通过常量池解析出类名（形如 java/lang/Object）
     pub fn name(&self) -> String {
         self.constant_pool.borrow().get_utf8(self.name_index)
     }

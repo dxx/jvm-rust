@@ -1,3 +1,5 @@
+/// LocalVariableTypeTable 属性：泛型局部变量的签名信息（用于泛型调试）
+///
 /// LocalVariableTypeTable_attribute {
 ///     u2 attribute_name_index;
 ///     u4 attribute_length;
@@ -9,7 +11,6 @@
 ///         u2 index;
 ///     } local_variable_type_table[local_variable_type_table_length];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 pub struct LocalVariableTypeTableAttribute {
@@ -20,6 +21,7 @@ pub struct LocalVariableTypeTableEntry {
     start_pc: u16,
     length: u16,
     name_index: u16,
+    /// 泛型签名的常量池索引
     signature_index: u16,
     index: u16,
 }

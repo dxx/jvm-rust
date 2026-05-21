@@ -1,3 +1,5 @@
+/// LineNumberTable 属性：建立字节码偏移与源码行号的映射，用于调试和异常栈帧打印
+///
 /// LineNumberTable_attribute {
 ///     u2 attribute_name_index;
 ///     u4 attribute_length;
@@ -6,7 +8,6 @@
 ///         u2 line_number;
 ///     } line_number_table[line_number_table_length];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]
@@ -15,7 +16,9 @@ pub struct LineNumberTableAttribute {
 }
 
 pub struct LineNumberTableEntry {
+    /// 字节码偏移
     start_pc: u16,
+    /// 对应源码行号
     line_number: u16,
 }
 
