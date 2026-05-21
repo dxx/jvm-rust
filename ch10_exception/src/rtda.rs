@@ -9,6 +9,6 @@ mod heap;
 pub use self::object::*;
 pub use self::thread::*;
 pub use self::frame::*;
-pub use self::local_vars::*;
+// pub use self::local_vars::*;
 pub use self::operand_stack::*;
 pub use self::heap::*;
