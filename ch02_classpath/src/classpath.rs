@@ -4,12 +4,16 @@ pub mod entry_dir;
 pub mod entry_wildcard;
 pub mod entry_zip;
 
-use crate::classpath::entry::{Entry, new_entry};
+use crate::classpath::entry::{new_entry, Entry};
 use crate::classpath::entry_wildcard::WildcardEntry;
+use std::env;
 use std::fmt;
 use std::path::Path;
-use std::env;
 
+/// Classpath 由三部分组成，对应 JVM 的类加载器层次：
+/// - boot_classpath: 启动类路径（jre/lib/*）
+/// - ext_classpath:  扩展类路径（jre/lib/ext/*）
+/// - user_classpath: 用户类路径（-classpath / -cp）
 pub struct Classpath {
     boot_classpath: Box<dyn Entry>,
     ext_classpath: Box<dyn Entry>,
@@ -17,6 +21,7 @@ pub struct Classpath {
 }
 
 impl Classpath {
+    /// 根据 -Xjre 和 -cp 选项构造 Classpath
     pub fn parse(jre_option: &str, cp_option: &str) -> Self {
         let boot_classpath = Classpath::parse_boot_classpath(jre_option);
         let ext_classpath = Classpath::parse_ext_classpath(jre_option);
@@ -24,10 +29,11 @@ impl Classpath {
         let cp = Classpath {
             boot_classpath,
             ext_classpath,
-            user_classpath
+            user_classpath,
         };
         cp
     }
+    /// 启动类路径：jre/lib/* 下的所有 jar
     fn parse_boot_classpath(jre_option: &str) -> Box<dyn Entry> {
         let jre_dir = Classpath::get_jre_dir(jre_option);
         // jre/lib/*
@@ -35,6 +41,7 @@ impl Classpath {
         let jre_lib_path = path.to_str().unwrap();
         Box::new(WildcardEntry::new(jre_lib_path))
     }
+    /// 扩展类路径：jre/lib/ext/* 下的所有 jar
     fn parse_ext_classpath(jre_option: &str) -> Box<dyn Entry> {
         let jre_dir = Classpath::get_jre_dir(jre_option);
         // jre/lib/ext/*
@@ -42,6 +49,7 @@ impl Classpath {
         let jre_ext_path = path.to_str().unwrap();
         Box::new(WildcardEntry::new(jre_ext_path))
     }
+    /// 用户类路径：未指定时使用当前目录 "."
     fn parse_user_classpath(cp_option: &str) -> Box<dyn Entry> {
         let mut cp = cp_option;
         if cp == "" {
@@ -49,6 +57,7 @@ impl Classpath {
         }
         new_entry(cp)
     }
+    /// 查找 JRE 目录：依次尝试 -Xjre 选项、当前目录下的 ./jre、JAVA_HOME 环境变量
     fn get_jre_dir(jre_option: &str) -> String {
         if jre_option != "" {
             let jre_dir = Path::new(jre_option);
@@ -66,39 +75,34 @@ impl Classpath {
         match env::var("JAVA_HOME") {
             Ok(jh) => {
                 if jh != "" {
-                    return Path::new(&jh).join("jre")
-                        .to_str().unwrap().to_string();
+                    return Path::new(&jh).join("jre").to_str().unwrap().to_string();
                 }
-            },
-            Err(_err) => {},
+            }
+            Err(_err) => {}
         }
         panic!("{}", "Can not find jre folder!")
     }
 }
 
 impl Entry for Classpath {
+    /// 按 boot -> ext -> user 顺序依次查找指定类
     fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String> {
         let class = class_name.to_string() + ".class";
         return match self.boot_classpath.read_class(&class) {
             Ok(data) => Ok(data),
-            Err(_err) => {
-                 match self.ext_classpath.read_class(&class) {
+            Err(_err) => match self.ext_classpath.read_class(&class) {
+                Ok(data) => Ok(data),
+                Err(_err) => match self.user_classpath.read_class(&class) {
                     Ok(data) => Ok(data),
-                    Err(_err) => {
-                        match self.user_classpath.read_class(&class) {
-                            Ok(data) => Ok(data),
-                            Err(err) => {
-                                return Err(err)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+                    Err(err) => return Err(err),
+                },
+            },
+        };
     }
 }
 
 impl fmt::Display for Classpath {
+    /// 显示 Classpath 时只输出用户类路径
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.user_classpath)
     }
