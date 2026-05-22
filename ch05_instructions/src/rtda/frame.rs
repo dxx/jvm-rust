@@ -1,12 +1,15 @@
-use crate::types::RcRefCell;
-use super::{local_vars::LocalVars, operand_stack::OperandStack};
 use super::thread::Thread;
+use super::{local_vars::LocalVars, operand_stack::OperandStack};
+use crate::types::RcRefCell;
 
-/// Stack Frame
+/// 栈帧（Stack Frame）：每个方法调用对应一个栈帧
+/// 包含该方法的局部变量表、操作数栈，以及用于指令跳转的 next_pc
 pub struct Frame {
     local_vars: LocalVars,
     operand_stack: OperandStack,
-    next_pc: i64, // The next instruction after the call
+    /// 下一条指令的 pc（用于分支/跳转指令修改执行流）
+    next_pc: i64,
+    /// 所属线程的引用（用于 branch 等指令读取当前 pc）
     thread: RcRefCell<Thread>,
 }
 

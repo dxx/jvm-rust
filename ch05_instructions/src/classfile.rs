@@ -1,8 +1,28 @@
+//! 类文件解析
+//!
+//! 负责读取并解析 Java .class 文件格式，包括：
+//! - class_reader: 底层字节流读取器
+//! - constant_pool: 常量池解析
+//! - member_info: 字段/方法信息解析
+//! - attribute_info: 属性表解析
+
+pub mod attribute_info;
 pub mod class_reader;
 pub mod constant_pool;
 pub mod member_info;
-pub mod attribute_info;
 
+use self::attribute_info::AttributeInfo;
+use self::class_reader::ClassReader;
+use self::constant_pool::ConstantPool;
+use self::member_info::MemberInfo;
+use crate::classfile::attribute_info::read_attributes;
+use crate::classfile::constant_pool::read_constant_pool;
+use crate::types::RcRefCell;
+use std::cell::RefCell;
+use std::rc::Rc;
+
+/// ClassFile 二进制格式（对应 JVM 规范）：
+/// ```text
 /// ClassFile {
 ///     u4             magic;
 ///     u2             minor_version;
@@ -21,33 +41,31 @@ pub mod attribute_info;
 ///     u2             attributes_count;
 ///     attribute_info attributes[attributes_count];
 /// }
-
-use crate::types::RcRefCell;
-use crate::classfile::constant_pool::read_constant_pool;
-use crate::classfile::attribute_info::read_attributes;
-use self::class_reader::ClassReader;
-use self::constant_pool::ConstantPool;
-use self::member_info::MemberInfo;
-use self::attribute_info::AttributeInfo;
-use std::rc::Rc;
-use std::cell::RefCell;
+/// ```
 
 pub struct ClassFile {
     /// magic: u32,
-    minor_version: u16, /// 次版本号
-    major_version: u16, /// 主版本号
-    constant_pool: RcRefCell<ConstantPool>, /// 常量池
-    access_flags: u16, /// 访问标志
-    this_class: u16, /// 类索引
-    super_class: u16, /// 超类索引
-    interfaces: Vec<u16>, /// 接口索引表
+    minor_version: u16,
+    /// 次版本号
+    major_version: u16,
+    /// 主版本号
+    constant_pool: RcRefCell<ConstantPool>,
+    /// 常量池
+    access_flags: u16,
+    /// 访问标志
+    this_class: u16,
+    /// 类索引
+    super_class: u16,
+    /// 超类索引
+    interfaces: Vec<u16>,
+    /// 接口索引表
     fields: Vec<MemberInfo>,
     methods: Vec<MemberInfo>,
     attributes: Vec<Box<dyn AttributeInfo>>,
 }
 
 impl ClassFile {
-    pub fn parse(class_data: Vec<u8>) -> Result<ClassFile, String>{
+    pub fn parse(class_data: Vec<u8>) -> Result<ClassFile, String> {
         let mut class_reader = ClassReader::new(class_data);
         let mut class_file = ClassFile {
             minor_version: 0_u16,
@@ -101,9 +119,7 @@ impl ClassFile {
                     Err("java.lang.UnsupportedClassVersionError!".to_string())
                 }
             }
-            _ => {
-                Err("java.lang.UnsupportedClassVersionError!".to_string())
-            }
+            _ => Err("java.lang.UnsupportedClassVersionError!".to_string()),
         };
     }
 
@@ -137,7 +153,7 @@ impl ClassFile {
 
     pub fn super_class_name(&self) -> String {
         if self.super_class > 0 {
-            return self.constant_pool.borrow().get_class_name(self.super_class)
+            return self.constant_pool.borrow().get_class_name(self.super_class);
         }
         "".to_string()
     }
@@ -149,4 +165,4 @@ impl ClassFile {
         }
         interface_names.to_vec()
     }
- }
+}

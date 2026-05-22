@@ -1,7 +1,7 @@
 #![allow(non_camel_case_types)]
 
-use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use crate::rtda::Frame;
 
 /// Shift left int
 #[derive(Default, Debug)]

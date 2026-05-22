@@ -6,7 +6,6 @@
 ///         u2 line_number;
 ///     } line_number_table[line_number_table_length];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]
@@ -31,7 +30,7 @@ impl AttributeInfo for LineNumberTableAttribute {
         }
         self.line_number_table = line_number_table;
     }
-    
+
     fn as_any(&self) -> &dyn std::any::Any {
         self
     }

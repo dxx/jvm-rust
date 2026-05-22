@@ -9,7 +9,6 @@
 ///         u2 index;
 ///     } local_variable_type_table[local_variable_type_table_length];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 pub struct LocalVariableTypeTableAttribute {
@@ -39,7 +38,7 @@ impl AttributeInfo for LocalVariableTypeTableAttribute {
         }
         self.local_variable_type_table = local_variable_type_table;
     }
-    
+
     fn as_any(&self) -> &dyn std::any::Any {
         self
     }

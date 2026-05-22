@@ -1,5 +1,5 @@
-use super::super::instruction::Instruction;
 use super::super::super::rtda::Frame;
+use super::super::instruction::Instruction;
 
 #[derive(Default, Debug)]
 pub struct NOP;

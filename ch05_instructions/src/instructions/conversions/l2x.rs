@@ -1,7 +1,7 @@
 #![allow(non_camel_case_types)]
 
-use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use crate::rtda::Frame;
 
 /// Convert long to double
 #[derive(Default, Debug)]

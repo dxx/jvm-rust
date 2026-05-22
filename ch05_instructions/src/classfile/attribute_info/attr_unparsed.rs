@@ -3,7 +3,6 @@
 ///     u4 attribute_length;
 ///     u1 info[attribute_length];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 pub struct UnparsedAttribute {
@@ -24,9 +23,7 @@ impl AttributeInfo for UnparsedAttribute {
 
 impl UnparsedAttribute {
     pub fn new(name: String, length: u32, info: Option<Vec<u8>>) -> Self {
-        UnparsedAttribute {
-            name, length, info
-        }
+        UnparsedAttribute { name, length, info }
     }
 
     pub fn info(&self) -> &Option<Vec<u8>> {

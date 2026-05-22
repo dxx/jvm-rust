@@ -1,15 +1,16 @@
-use crate::types::{
-    RcRefCell,
-    OptionalRcRefCell,
-};
 use super::frame::Frame;
-use std::rc::Rc;
+use crate::types::{OptionalRcRefCell, RcRefCell};
 use std::cell::RefCell;
+use std::rc::Rc;
 
-/// JVM Stack
+/// JVM 栈：每个 Java 线程私有，由若干栈帧组成
+/// 这里采用定长数组 + top 指针的简单实现（容量在创建线程时确定）
 pub struct Stack {
+    /// 栈最大容量（栈帧数）
     max_size: usize,
+    /// 栈顶位置（指向下一个空位）
     top: usize,
+    /// 栈帧数组；使用 Option<Rc<RefCell<_>>> 以便弹出后仍可被外部持有
     frames: Vec<OptionalRcRefCell<Frame>>,
 }
 

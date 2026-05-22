@@ -1,12 +1,18 @@
-use crate::types::OptionalRcRefCell;
 use super::object::Object;
+use crate::types::OptionalRcRefCell;
 
+/// 变量槽（slot）：JVM 局部变量表 / 操作数栈的基本存储单元（32-bit）
+/// 同一个 slot 内的 num 与 _ref 互斥使用：基本类型用 num，引用类型用 _ref
 #[derive(Default, Debug, Clone)]
 pub struct Slot {
+    /// 32-bit 基本类型存储（int/float；long/double 由两个 slot 拼接）
     pub num: i32,
+    /// 引用类型存储
     pub _ref: OptionalRcRefCell<Object>,
 }
 
+/// 局部变量表：方法运行时存放局部变量的固定大小数组
+/// 大小由 Code 属性中的 max_locals 决定
 #[derive(Debug)]
 pub struct LocalVars {
     slots: Vec<Slot>,
@@ -68,5 +74,4 @@ impl LocalVars {
     pub fn get_ref(&self, index: usize) -> OptionalRcRefCell<Object> {
         self.slots[index]._ref.clone()
     }
-
 }

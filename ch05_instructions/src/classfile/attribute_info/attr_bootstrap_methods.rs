@@ -7,7 +7,6 @@
 ///         u2 bootstrap_arguments[num_bootstrap_arguments];
 ///     } bootstrap_methods[num_bootstrap_methods];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 pub struct BootstrapMethodsAttribute {
@@ -26,7 +25,7 @@ impl AttributeInfo for BootstrapMethodsAttribute {
         }
         self.bootstrap_methods = bootstrap_methods;
     }
-    
+
     fn as_any(&self) -> &dyn std::any::Any {
         self
     }

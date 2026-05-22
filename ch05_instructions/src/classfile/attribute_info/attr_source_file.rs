@@ -1,12 +1,11 @@
+use super::ConstantPool;
+use super::{AttributeInfo, ClassReader};
 /// Signature_attribute {
 ///     u2 attribute_name_index;
 ///     u4 attribute_length;
 ///     u2 signature_index;
 /// }
-
 use crate::types::RcRefCell;
-use super::ConstantPool;
-use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]
 pub struct SourceFileAttribute {
@@ -25,7 +24,7 @@ impl AttributeInfo for SourceFileAttribute {
 }
 
 impl SourceFileAttribute {
-    pub fn new (cp: RcRefCell<ConstantPool>) -> Self {
+    pub fn new(cp: RcRefCell<ConstantPool>) -> Self {
         let mut sfa = SourceFileAttribute::default();
         sfa.constant_pool = cp;
         sfa

@@ -8,7 +8,6 @@
 ///         u2 inner_class_access_flags;
 ///     } classes[number_of_classes];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 pub struct InnerClassesAttribute {
@@ -36,7 +35,7 @@ impl AttributeInfo for InnerClassesAttribute {
         }
         self.classes = classes;
     }
-    
+
     fn as_any(&self) -> &dyn std::any::Any {
         self
     }

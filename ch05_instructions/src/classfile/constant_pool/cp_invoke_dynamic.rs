@@ -3,8 +3,7 @@
 ///     u1 reference_kind;
 ///     u2 reference_index;
 /// }
-
-use super::{ConstantInfo, ClassReader};
+use super::{ClassReader, ConstantInfo};
 
 #[derive(Default)]
 pub struct ConstantMethodHandleInfo {

@@ -9,7 +9,6 @@
 ///         u2 index;
 ///     } local_variable_table[local_variable_table_length];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]

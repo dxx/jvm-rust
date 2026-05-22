@@ -1,3 +1,4 @@
+use super::{ClassReader, ConstantInfo, ConstantPool};
 /// CONSTANT_Fieldref_info {
 ///     u1 tag;
 ///     u2 class_index;
@@ -13,9 +14,7 @@
 ///     u2 class_index;
 ///     u2 name_and_type_index;
 /// }
-
 use crate::types::RcRefCell;
-use super::{ConstantInfo, ClassReader, ConstantPool};
 
 pub struct ConstantFieldRefInfo {
     member_info: ConstantMemberRefInfo,

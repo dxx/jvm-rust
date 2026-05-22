@@ -1,14 +1,18 @@
-use std::result::Result;
-use super::instruction::Instruction;
+/// 指令工厂：根据 opcode 创建对应的指令实例
+
 use super::comparisons::*;
 use super::constants::*;
 use super::control::*;
 use super::conversions::*;
 use super::extended::*;
+use super::instruction::Instruction;
 use super::loads::*;
 use super::math::*;
 use super::stack::*;
 use super::stores::*;
+use std::result::Result;
+
+/// 根据 opcode 创建对应的指令对象
 
 pub fn new_instruction(opcode: u8) -> Result<Box<dyn Instruction>, String> {
     let inst: Box<dyn Instruction> = match opcode {

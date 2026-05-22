@@ -1,23 +1,29 @@
 mod cp_class;
-mod cp_utf8;
-mod cp_string;
-mod cp_numeric;
-mod cp_name_and_type;
 mod cp_invoke_dynamic;
 mod cp_member_ref;
+mod cp_name_and_type;
+mod cp_numeric;
+mod cp_string;
+mod cp_utf8;
 
-use crate::types::RcRefCell;
-use crate::classfile::ClassReader;
-use self::cp_utf8::ConstantUtf8Info;
-use self::cp_string::ConstantStringInfo;
 use self::cp_class::ConstantClassInfo;
-use self::cp_member_ref::{ConstantFieldRefInfo, ConstantMethodRefInfo, ConstantInterfaceMethodRefInfo};
-use self::cp_numeric::{ConstantIntegerInfo, ConstantFloatInfo, ConstantLongInfo, ConstantDoubleInfo};
+use self::cp_invoke_dynamic::{
+    ConstantInvokeDynamicInfo, ConstantMethodHandleInfo, ConstantMethodTypeInfo,
+};
+use self::cp_member_ref::{
+    ConstantFieldRefInfo, ConstantInterfaceMethodRefInfo, ConstantMethodRefInfo,
+};
 use self::cp_name_and_type::ConstantNameAndTypeInfo;
-use self::cp_invoke_dynamic::{ConstantMethodHandleInfo, ConstantMethodTypeInfo, ConstantInvokeDynamicInfo};
+use self::cp_numeric::{
+    ConstantDoubleInfo, ConstantFloatInfo, ConstantIntegerInfo, ConstantLongInfo,
+};
+use self::cp_string::ConstantStringInfo;
+use self::cp_utf8::ConstantUtf8Info;
+use crate::classfile::ClassReader;
+use crate::types::RcRefCell;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
-use std::cell::RefCell;
 
 // pub type ConstantPool = Vec<Option<Box<dyn ConstantInfo>>>;
 
@@ -35,14 +41,14 @@ impl ConstantPool {
     pub fn get_class_name(&self, index: u16) -> String {
         match self.class_info_map.get(&index) {
             Some(info) => info.name(),
-            None => "".to_string()
+            None => "".to_string(),
         }
     }
 
     pub fn get_utf8(&self, index: u16) -> String {
         match self.utf8_info_map.get(&index) {
             Some(info) => info.str(),
-            None => "".to_string()
+            None => "".to_string(),
         }
     }
 }
@@ -83,20 +89,20 @@ pub fn read_constant_pool(reader: &mut ClassReader) -> RcRefCell<ConstantPool> {
 }
 
 /// Constant pool tags
-const CONSTANT_UTF8: u8                    = 1;
-const CONSTANT_INTEGER: u8                 = 3;
-const CONSTANT_FLOAT: u8                   = 4;
-const CONSTANT_LONG: u8                    = 5;
-const CONSTANT_DOUBLE: u8                  = 6;
-const CONSTANT_CLASS: u8                   = 7;
-const CONSTANT_STRING: u8                  = 8;
-const CONSTANT_FIELD_REF: u8               = 9;
-const CONSTANT_METHOD_REF: u8              = 10;
-const CONSTANT_INTERFACE_METHOD_REF: u8    = 11;
-const CONSTANT_NAME_AND_TYPE: u8           = 12;
-const CONSTANT_METHOD_HANDLE: u8           = 15;
-const CONSTANT_METHOD_TYPE: u8             = 16;
-const CONSTANT_INVOKE_DYNAMIC: u8          = 18;
+const CONSTANT_UTF8: u8 = 1;
+const CONSTANT_INTEGER: u8 = 3;
+const CONSTANT_FLOAT: u8 = 4;
+const CONSTANT_LONG: u8 = 5;
+const CONSTANT_DOUBLE: u8 = 6;
+const CONSTANT_CLASS: u8 = 7;
+const CONSTANT_STRING: u8 = 8;
+const CONSTANT_FIELD_REF: u8 = 9;
+const CONSTANT_METHOD_REF: u8 = 10;
+const CONSTANT_INTERFACE_METHOD_REF: u8 = 11;
+const CONSTANT_NAME_AND_TYPE: u8 = 12;
+const CONSTANT_METHOD_HANDLE: u8 = 15;
+const CONSTANT_METHOD_TYPE: u8 = 16;
+const CONSTANT_INVOKE_DYNAMIC: u8 = 18;
 
 pub trait ConstantInfo {
     fn read_info(&mut self, reader: &mut ClassReader);
@@ -104,20 +110,27 @@ pub trait ConstantInfo {
     fn tag(&self) -> u8;
 }
 
-fn read_constant_info(reader: &mut ClassReader, i: u16, cp: RcRefCell<ConstantPool>) -> Box<dyn ConstantInfo> {
+fn read_constant_info(
+    reader: &mut ClassReader,
+    i: u16,
+    cp: RcRefCell<ConstantPool>,
+) -> Box<dyn ConstantInfo> {
     let tag = reader.read_u8();
     let mut c = new_constant_info(reader, tag, i, cp);
     match (&c).tag() {
         // CONSTANT_Utf8_info、CONSTANT_Class_info 在创建之后立即调用 read_info
-        CONSTANT_UTF8 | CONSTANT_CLASS => {},
-        _ => {
-            c.read_info(reader)
-        }
+        CONSTANT_UTF8 | CONSTANT_CLASS => {}
+        _ => c.read_info(reader),
     }
     c
 }
 
-fn new_constant_info(reader: &mut ClassReader, tag: u8, i: u16, cp: RcRefCell<ConstantPool>) -> Box<dyn ConstantInfo> {
+fn new_constant_info(
+    reader: &mut ClassReader,
+    tag: u8,
+    i: u16,
+    cp: RcRefCell<ConstantPool>,
+) -> Box<dyn ConstantInfo> {
     match tag {
         CONSTANT_CLASS => {
             let mut b = Box::new(ConstantClassInfo::new(cp.clone()));
@@ -125,7 +138,7 @@ fn new_constant_info(reader: &mut ClassReader, tag: u8, i: u16, cp: RcRefCell<Co
             b.read_info(reader);
             cp.borrow_mut().class_info_map.insert(i, *b.clone());
             b
-        },
+        }
         CONSTANT_FIELD_REF => Box::new(ConstantFieldRefInfo::new(cp)),
         CONSTANT_METHOD_REF => Box::new(ConstantMethodRefInfo::new(cp)),
         CONSTANT_INTERFACE_METHOD_REF => Box::new(ConstantInterfaceMethodRefInfo::new(cp)),
@@ -141,10 +154,10 @@ fn new_constant_info(reader: &mut ClassReader, tag: u8, i: u16, cp: RcRefCell<Co
             b.read_info(reader);
             cp.borrow_mut().utf8_info_map.insert(i, *b.clone());
             b
-        },
+        }
         CONSTANT_METHOD_HANDLE => Box::new(ConstantMethodHandleInfo::default()),
         CONSTANT_METHOD_TYPE => Box::new(ConstantMethodTypeInfo::default()),
         CONSTANT_INVOKE_DYNAMIC => Box::new(ConstantInvokeDynamicInfo::default()),
-        _ => panic!("{}", "java.lang.ClassFormatError: constant pool tag!")
+        _ => panic!("{}", "java.lang.ClassFormatError: constant pool tag!"),
     }
 }

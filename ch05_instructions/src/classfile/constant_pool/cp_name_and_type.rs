@@ -3,8 +3,7 @@
 ///     u2 name_index;
 ///     u2 descriptor_index;
 /// }
-
-use super::{ConstantInfo, ClassReader};
+use super::{ClassReader, ConstantInfo};
 
 #[derive(Default)]
 pub struct ConstantNameAndTypeInfo {

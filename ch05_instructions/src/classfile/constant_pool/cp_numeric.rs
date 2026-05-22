@@ -2,8 +2,7 @@
 ///     u1 tag;
 ///     u4 bytes;
 /// }
-
-use super::{ConstantInfo, ClassReader};
+use super::{ClassReader, ConstantInfo};
 
 #[derive(Default)]
 pub struct ConstantIntegerInfo {

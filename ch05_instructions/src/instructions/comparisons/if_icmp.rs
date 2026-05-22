@@ -1,9 +1,9 @@
 #![allow(non_camel_case_types)]
 
-use crate::rtda::Frame;
-use super::super::instruction::Instruction;
-use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
+use super::super::bytecode_reader::BytecodeReader;
+use super::super::instruction::Instruction;
+use crate::rtda::Frame;
 
 /// Branch if int comparison succeeds
 #[derive(Default, Debug)]
@@ -17,7 +17,7 @@ impl Instruction for IF_ICMPEQ {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let (val1, val2)= _icmp_pop(frame);
+        let (val1, val2) = _icmp_pop(frame);
         if val1 == val2 {
             branch(frame, self.offset);
         }
@@ -35,7 +35,7 @@ impl Instruction for IF_ICMPNE {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let (val1, val2)= _icmp_pop(frame);
+        let (val1, val2) = _icmp_pop(frame);
         if val1 != val2 {
             branch(frame, self.offset);
         }
@@ -53,7 +53,7 @@ impl Instruction for IF_ICMPLT {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let (val1, val2)= _icmp_pop(frame);
+        let (val1, val2) = _icmp_pop(frame);
         if val1 < val2 {
             branch(frame, self.offset);
         }
@@ -71,7 +71,7 @@ impl Instruction for IF_ICMPLE {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let (val1, val2)= _icmp_pop(frame);
+        let (val1, val2) = _icmp_pop(frame);
         if val1 <= val2 {
             branch(frame, self.offset);
         }
@@ -89,7 +89,7 @@ impl Instruction for IF_ICMPGT {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let (val1, val2)= _icmp_pop(frame);
+        let (val1, val2) = _icmp_pop(frame);
         if val1 > val2 {
             branch(frame, self.offset);
         }
@@ -107,7 +107,7 @@ impl Instruction for IF_ICMPGE {
     }
 
     fn execute(&mut self, frame: &mut Frame) {
-        let (val1, val2)= _icmp_pop(frame);
+        let (val1, val2) = _icmp_pop(frame);
         if val1 >= val2 {
             branch(frame, self.offset);
         }

@@ -1,15 +1,23 @@
+//! 类路径管理
+//!
+//! 按照 JVM 规范实现三类类路径的搜索顺序：
+//! 1. Boot Classpath（启动类路径，如 rt.jar）
+//! 2. Ext Classpath（扩展类路径，如 jre/lib/ext/*）
+//! 3. User Classpath（用户类路径，由 -cp/-classpath 指定）
+
 pub mod entry;
 pub mod entry_composite;
 pub mod entry_dir;
 pub mod entry_wildcard;
 pub mod entry_zip;
 
-use crate::classpath::entry::{Entry, new_entry};
+use crate::classpath::entry::{new_entry, Entry};
 use crate::classpath::entry_wildcard::WildcardEntry;
+use std::env;
 use std::fmt;
 use std::path::Path;
-use std::env;
 
+/// 组合类路径：按 boot -> ext -> user 的顺序搜索 .class 文件
 pub struct Classpath {
     boot_classpath: Box<dyn Entry>,
     ext_classpath: Box<dyn Entry>,
@@ -24,7 +32,7 @@ impl Classpath {
         let cp = Classpath {
             boot_classpath,
             ext_classpath,
-            user_classpath
+            user_classpath,
         };
         cp
     }
@@ -66,11 +74,10 @@ impl Classpath {
         match env::var("JAVA_HOME") {
             Ok(jh) => {
                 if jh != "" {
-                    return Path::new(&jh).join("jre")
-                        .to_str().unwrap().to_string();
+                    return Path::new(&jh).join("jre").to_str().unwrap().to_string();
                 }
-            },
-            Err(_err) => {},
+            }
+            Err(_err) => {}
         }
         panic!("{}", "Can not find jre folder!")
     }
@@ -81,20 +88,14 @@ impl Entry for Classpath {
         let class = class_name.to_string() + ".class";
         return match self.boot_classpath.read_class(&class) {
             Ok(data) => Ok(data),
-            Err(_err) => {
-                 match self.ext_classpath.read_class(&class) {
+            Err(_err) => match self.ext_classpath.read_class(&class) {
+                Ok(data) => Ok(data),
+                Err(_err) => match self.user_classpath.read_class(&class) {
                     Ok(data) => Ok(data),
-                    Err(_err) => {
-                        match self.user_classpath.read_class(&class) {
-                            Ok(data) => Ok(data),
-                            Err(err) => {
-                                return Err(err)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+                    Err(err) => return Err(err),
+                },
+            },
+        };
     }
 }
 

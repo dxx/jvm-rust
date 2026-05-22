@@ -1,3 +1,5 @@
+use super::attribute_info::attr_code::CodeAttribute;
+use crate::classfile::{read_attributes, AttributeInfo, ClassReader, ConstantPool};
 /// field_info {
 ///     u2             access_flags;
 ///     u2             name_index;
@@ -12,19 +14,15 @@
 ///     u2             attributes_count;
 ///     attribute_info attributes[attributes_count];
 /// }
-
 use crate::types::RcRefCell;
-use crate::classfile::{
-    ConstantPool,
-    ClassReader,
-    AttributeInfo, read_attributes
-};
-use super::attribute_info::attr_code::CodeAttribute;
 
 pub struct MemberInfo {
-    constant_pool: RcRefCell<ConstantPool>, /// 保存常量池
-    access_flags: u16, /// 成员访问标志
-    name_index: u16, /// 成员名称索引
+    constant_pool: RcRefCell<ConstantPool>,
+    /// 保存常量池
+    access_flags: u16,
+    /// 成员访问标志
+    name_index: u16,
+    /// 成员名称索引
     descriptor_index: u16,
     attributes: Vec<Box<dyn AttributeInfo>>,
 }

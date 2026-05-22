@@ -1,9 +1,9 @@
 #![allow(non_camel_case_types)]
 
-use crate::rtda::Frame;
-use super::super::instruction::Instruction;
-use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
+use super::super::bytecode_reader::BytecodeReader;
+use super::super::instruction::Instruction;
+use crate::rtda::Frame;
 
 /// Branch if int comparison with zero succeeds
 #[derive(Default, Debug)]

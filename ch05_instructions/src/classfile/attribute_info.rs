@@ -12,22 +12,21 @@ mod attr_signature;
 mod attr_source_file;
 mod attr_unparsed;
 
+use crate::classfile::attribute_info::attr_code::CodeAttribute;
+use crate::classfile::attribute_info::attr_constant_value::ConstantValueAttribute;
+use crate::classfile::attribute_info::attr_exceptions::ExceptionsAttribute;
+use crate::classfile::attribute_info::attr_line_number_table::LineNumberTableAttribute;
+use crate::classfile::attribute_info::attr_local_variable_table::LocalVariableTableAttribute;
+use crate::classfile::attribute_info::attr_markers::{DeprecatedAttribute, SyntheticAttribute};
+use crate::classfile::attribute_info::attr_source_file::SourceFileAttribute;
+use crate::classfile::attribute_info::attr_unparsed::UnparsedAttribute;
+use crate::classfile::{ClassReader, ConstantPool};
 /// attribute_info {
 ///     u2 attribute_name_index;
 ///     u4 attribute_length;
 ///     u1 info[attribute_length];
 /// }
-
 use crate::types::RcRefCell;
-use crate::classfile::{ClassReader, ConstantPool};
-use crate::classfile::attribute_info::attr_unparsed::UnparsedAttribute;
-use crate::classfile::attribute_info::attr_code::CodeAttribute;
-use crate::classfile::attribute_info::attr_constant_value::ConstantValueAttribute;
-use crate::classfile::attribute_info::attr_markers::{DeprecatedAttribute, SyntheticAttribute};
-use crate::classfile::attribute_info::attr_exceptions::ExceptionsAttribute;
-use crate::classfile::attribute_info::attr_line_number_table::LineNumberTableAttribute;
-use crate::classfile::attribute_info::attr_local_variable_table::LocalVariableTableAttribute;
-use crate::classfile::attribute_info::attr_source_file::SourceFileAttribute;
 
 pub trait AttributeInfo {
     fn read_info(&mut self, reader: &mut ClassReader);
@@ -39,7 +38,10 @@ pub trait AttributeInfo {
     fn as_any(&self) -> &dyn std::any::Any;
 }
 
-pub fn read_attributes(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) -> Vec<Box<dyn AttributeInfo>> {
+pub fn read_attributes(
+    reader: &mut ClassReader,
+    cp: RcRefCell<ConstantPool>,
+) -> Vec<Box<dyn AttributeInfo>> {
     let attribute_count = reader.read_u16();
     let mut attributes = vec![];
     for _i in 0..attribute_count {
@@ -57,7 +59,11 @@ fn read_attribute(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) -> Box<
     attr_info
 }
 
-fn new_attribute(attr_name: &str, attr_length: u32, cp: RcRefCell<ConstantPool>) -> Box<dyn AttributeInfo> {
+fn new_attribute(
+    attr_name: &str,
+    attr_length: u32,
+    cp: RcRefCell<ConstantPool>,
+) -> Box<dyn AttributeInfo> {
     match attr_name {
         "Code" => Box::new(CodeAttribute::new(cp)),
         "ConstantValue" => Box::new(ConstantValueAttribute::default()),
@@ -67,6 +73,10 @@ fn new_attribute(attr_name: &str, attr_length: u32, cp: RcRefCell<ConstantPool>)
         "LocalVariableTable" => Box::new(LocalVariableTableAttribute::default()),
         "SourceFile" => Box::new(SourceFileAttribute::new(cp)),
         "Synthetic" => Box::new(SyntheticAttribute::default()),
-        _ => Box::new(UnparsedAttribute::new(attr_name.to_string(), attr_length, None)),
+        _ => Box::new(UnparsedAttribute::new(
+            attr_name.to_string(),
+            attr_length,
+            None,
+        )),
     }
 }

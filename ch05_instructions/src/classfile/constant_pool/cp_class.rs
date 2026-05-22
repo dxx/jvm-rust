@@ -1,10 +1,9 @@
+use super::{ClassReader, ConstantInfo, ConstantPool};
 /// CONSTANT_Class_info {
 ///     u1 tag;
 ///     u2 name_index;
 /// }
-
 use crate::types::RcRefCell;
-use super::{ConstantInfo, ClassReader, ConstantPool};
 
 #[derive(Clone)]
 pub struct ConstantClassInfo {

@@ -1,7 +1,7 @@
 #![allow(non_camel_case_types)]
 
-use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use crate::rtda::Frame;
 
 /// Compare float
 #[derive(Default, Debug)]
@@ -23,18 +23,18 @@ impl Instruction for FCMPL {
 }
 
 fn _fcmp(frame: &mut Frame, g_flag: bool) {
-	let stack = frame.operand_stack_mut();
-	let v2 = stack.pop_float();
-	let v1 = stack.pop_float();
-	if v1 > v2 {
-		stack.push_int(1);
-	} else if v1 == v2 {
-		stack.push_int(0);
-	} else if v1 < v2 {
-		stack.push_int(-1);
-	} else if g_flag {
-		stack.push_int(1);
-	} else {
-		stack.push_int(-1);
-	}
+    let stack = frame.operand_stack_mut();
+    let v2 = stack.pop_float();
+    let v1 = stack.pop_float();
+    if v1 > v2 {
+        stack.push_int(1);
+    } else if v1 == v2 {
+        stack.push_int(0);
+    } else if v1 < v2 {
+        stack.push_int(-1);
+    } else if g_flag {
+        stack.push_int(1);
+    } else {
+        stack.push_int(-1);
+    }
 }

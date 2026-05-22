@@ -1,18 +1,21 @@
-use crate::types::{
-    RcRefCell,
-    OptionalRcRefCell,
-};
-use super::jvm_stack::Stack;
 use super::frame::Frame;
+use super::jvm_stack::Stack;
+use crate::types::{OptionalRcRefCell, RcRefCell};
 
+/// Java 线程：每个线程有自己的 pc 寄存器和 JVM 栈
 pub struct Thread {
+    /// 程序计数器（指向当前执行字节码的位置）
     pc: i64,
+    /// 线程私有的 JVM 栈
     stack: Stack,
 }
 
 impl Thread {
     pub fn new() -> Self {
-        Thread { pc: 0, stack: Stack::new(1024) }
+        Thread {
+            pc: 0,
+            stack: Stack::new(1024),
+        }
     }
 
     pub fn pc(&self) -> i64 {

@@ -1,9 +1,9 @@
 #![allow(non_camel_case_types)]
 
-use crate::rtda::Frame;
-use super::super::instruction::Instruction;
-use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
+use super::super::bytecode_reader::BytecodeReader;
+use super::super::instruction::Instruction;
+use crate::rtda::Frame;
 
 /// Access jump table by key match and jump
 /// lookupswitch
@@ -29,7 +29,7 @@ impl Instruction for LOOKUP_SWITCH {
         reader.skip_padding();
         self.default_offset = reader.read_i32();
         self.npairs = reader.read_i32();
-	    self.match_offsets = reader.read_i32s(self.npairs * 2);
+        self.match_offsets = reader.read_i32s(self.npairs * 2);
     }
 
     fn execute(&mut self, frame: &mut Frame) {

@@ -1,10 +1,14 @@
-use crate::types::OptionalRcRefCell;
 use super::local_vars::Slot;
 use super::object::Object;
+use crate::types::OptionalRcRefCell;
 
+/// 操作数栈：方法运行时计算用的数据栈
+/// 大小由 Code 属性中的 max_stack 决定
 #[derive(Debug)]
 pub struct OperandStack {
+    /// 当前栈中已使用的 slot 数（栈顶指针）
     size: usize,
+    /// 底层 slot 数组
     slots: Vec<Slot>,
 }
 
@@ -82,5 +86,4 @@ impl OperandStack {
         self.size -= 1;
         self.slots.remove(self.size)
     }
-
 }

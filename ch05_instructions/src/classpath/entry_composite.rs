@@ -1,11 +1,9 @@
-use crate::classpath::entry::{
-    Entry, new_entry, PATH_SEPARATOR
-};
+use crate::classpath::entry::{new_entry, Entry, PATH_SEPARATOR};
 use std::fmt;
 
 /// 由多个 Entry 组成
 pub struct CompositeEntry {
-    entries: Vec<Box<dyn Entry>>
+    entries: Vec<Box<dyn Entry>>,
 }
 
 impl CompositeEntry {
@@ -15,9 +13,7 @@ impl CompositeEntry {
         for path in path_list {
             entries.push(new_entry(path))
         }
-        CompositeEntry {
-            entries
-        }
+        CompositeEntry { entries }
     }
 }
 
@@ -27,7 +23,7 @@ impl Entry for CompositeEntry {
             match entry.read_class(class_name) {
                 Ok(data) => {
                     return Ok(data);
-                },
+                }
                 Err(_err) => {}
             }
         }

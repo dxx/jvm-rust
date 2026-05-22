@@ -1,8 +1,8 @@
-use crate::classpath::entry::{Entry, absolute};
-use std::path::Path;
+use crate::classpath::entry::{absolute, Entry};
+use std::fmt;
 use std::fs::File;
 use std::io::Read;
-use std::fmt;
+use std::path::Path;
 use zip::ZipArchive;
 
 /// ZIP 或 JAR 文件形式的类路径
@@ -17,8 +17,7 @@ impl ZipEntry {
         let path = Path::new(&abs_path);
         let zip_file = match File::open(&path) {
             Ok(file) => file,
-            Err(err) => panic!("Couldn't open {}: {}", &path.display(),
-                               err.to_string())
+            Err(err) => panic!("Couldn't open {}: {}", &path.display(), err.to_string()),
         };
 
         ZipEntry {
@@ -33,7 +32,7 @@ impl Entry for ZipEntry {
         let archive = &mut self.zip_archive;
         let mut file = match archive.by_name(&class_name) {
             Ok(file) => file,
-            Err(err) => return Err(format!("{} not found: {}", class_name, err.to_string()))
+            Err(err) => return Err(format!("{} not found: {}", class_name, err.to_string())),
         };
         let mut vec: Vec<u8> = vec![];
         file.read_to_end(&mut vec).map_err(|err| err.to_string())?;

@@ -3,8 +3,7 @@
 ///     u2 length;
 ///     u1 bytes[length];
 /// }
-
-use super::{ConstantInfo, ClassReader};
+use super::{ClassReader, ConstantInfo};
 use std::char::decode_utf16;
 
 #[derive(Default, Clone)]
@@ -21,7 +20,6 @@ impl ConstantInfo for ConstantUtf8Info {
     fn tag(&self) -> u8 {
         super::CONSTANT_UTF8
     }
-
 }
 
 impl ConstantUtf8Info {
@@ -65,7 +63,7 @@ impl ConstantUtf8Info {
                     count += 1;
                     char_arr[char_arr_count] = c;
                     char_arr_count += 1;
-                },
+                }
                 12 | 13 => {
                     // 110x xxxx   10xx xxxx
                     count += 2;
@@ -78,7 +76,7 @@ impl ConstantUtf8Info {
                     }
                     char_arr[char_arr_count] = c & 0x1F << 6 | char2 & 0x3F;
                     char_arr_count += 1;
-                },
+                }
                 14 => {
                     // 1110 xxxx  10xx xxxx  10xx xxxx
                     count += 3;
@@ -90,15 +88,18 @@ impl ConstantUtf8Info {
                     if char2 & 0xC0 != 0x80 || char3 & 0xC0 != 0x80 {
                         panic!("malformed input around byte {}", count - 1)
                     }
-                    char_arr[char_arr_count] = c & 0x0F << 12 | char2 & 0x3F << 6 | char3 & 0x3F << 0;
+                    char_arr[char_arr_count] =
+                        c & 0x0F << 12 | char2 & 0x3F << 6 | char3 & 0x3F << 0;
                     char_arr_count += 1;
-                },
+                }
                 // 10xx xxxx,  1111 xxxx
-                _ => panic!("malformed input around byte {}", count)
+                _ => panic!("malformed input around byte {}", count),
             }
         }
         // The number of chars produced may be less than utflen
         let char_arr = &char_arr[..char_arr_count];
-        decode_utf16(char_arr.iter().cloned()).map(|r| r.unwrap()).collect::<String>()
+        decode_utf16(char_arr.iter().cloned())
+            .map(|r| r.unwrap())
+            .collect::<String>()
     }
 }

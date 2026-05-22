@@ -1,3 +1,5 @@
+use super::ConstantPool;
+use super::{AttributeInfo, ClassReader};
 /// Code_attribute {
 ///     u2 attribute_name_index;
 ///     u4 attribute_length;
@@ -14,10 +16,7 @@
 ///     u2 attributes_count;
 ///     attribute_info attributes[attributes_count];
 /// }
-
 use crate::types::RcRefCell;
-use super::ConstantPool;
-use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]
 pub struct CodeAttribute {

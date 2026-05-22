@@ -6,9 +6,7 @@ pub struct ClassReader {
 
 impl ClassReader {
     pub fn new(data: Vec<u8>) -> Self {
-        ClassReader {
-            data
-        }
+        ClassReader { data }
     }
 
     /// u1

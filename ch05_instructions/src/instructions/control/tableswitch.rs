@@ -1,9 +1,9 @@
 #![allow(non_camel_case_types)]
 
-use crate::rtda::Frame;
-use super::super::instruction::Instruction;
-use super::super::bytecode_reader::BytecodeReader;
 use super::super::branch;
+use super::super::bytecode_reader::BytecodeReader;
+use super::super::instruction::Instruction;
+use crate::rtda::Frame;
 
 /// Access jump table by index and jump
 /// tableswitch
@@ -41,8 +41,7 @@ impl Instruction for TABLE_SWITCH {
 
     fn execute(&mut self, frame: &mut Frame) {
         let index = frame.operand_stack_mut().pop_int();
-        let offset = 
-        if index >= self.low && index <= self.high {
+        let offset = if index >= self.low && index <= self.high {
             self.jump_offsets[(index - self.low) as usize]
         } else {
             self.default_offset

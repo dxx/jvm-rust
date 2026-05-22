@@ -1,7 +1,7 @@
 #![allow(non_camel_case_types)]
 
-use crate::rtda::Frame;
 use super::super::instruction::Instruction;
+use crate::rtda::Frame;
 
 /// Swap the top two operand stack values
 #[derive(Default, Debug)]
@@ -17,7 +17,7 @@ impl Instruction for SWAP {
     fn execute(&mut self, frame: &mut Frame) {
         let stack = frame.operand_stack_mut();
         let slot1 = stack.pop_slot();
-        let slot2 = stack .pop_slot();
+        let slot2 = stack.pop_slot();
         stack.push_slot(slot1);
         stack.push_slot(slot2);
     }

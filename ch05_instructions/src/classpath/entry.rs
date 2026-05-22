@@ -1,11 +1,9 @@
 use crate::classpath::{
-    entry_dir::DirEntry,
-    entry_composite::CompositeEntry,
+    entry_composite::CompositeEntry, entry_dir::DirEntry, entry_wildcard::WildcardEntry,
     entry_zip::ZipEntry,
-    entry_wildcard::WildcardEntry
 };
-use std::path::Path;
 use std::fmt;
+use std::path::Path;
 
 #[cfg(windows)]
 pub const PATH_SEPARATOR: char = ';';
@@ -20,9 +18,7 @@ pub trait Entry: fmt::Display {
 pub fn absolute(path: &str) -> String {
     let path = Path::new(&path);
     match path.canonicalize() {
-        Ok(p) => {
-            p.to_str().unwrap().to_string()
-        },
+        Ok(p) => p.to_str().unwrap().to_string(),
         Err(e) => {
             panic!("{}", e);
         }
@@ -41,8 +37,11 @@ pub fn new_entry(path: &str) -> Box<dyn Entry> {
     if path.ends_with("*") {
         return Box::new(WildcardEntry::new(path));
     }
-    if path.ends_with(".jar") || path.ends_with(".JAR") ||
-        path.ends_with(".zip") || path.ends_with(".ZIP") {
+    if path.ends_with(".jar")
+        || path.ends_with(".JAR")
+        || path.ends_with(".zip")
+        || path.ends_with(".ZIP")
+    {
         return Box::new(ZipEntry::new(path));
     }
     Box::new(DirEntry::new(path))

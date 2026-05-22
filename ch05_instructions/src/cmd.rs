@@ -1,6 +1,7 @@
-use std::env;
 use getopts::{Options, ParsingStyle};
+use std::env;
 
+/// 命令行参数结构体
 #[derive(Debug)]
 pub struct Cmd {
     pub help_flag: bool,
@@ -19,7 +20,7 @@ impl Cmd {
 }
 
 pub fn parse_cmd() -> Cmd {
-    let mut cmd = Cmd{
+    let mut cmd = Cmd {
         help_flag: false,
         version_flag: false,
         cp_option: "".to_string(),
@@ -36,7 +37,9 @@ pub fn parse_cmd() -> Cmd {
     let mut opts = Options::new();
     // ParsingStyle::StopAtFirstFree: 解析时剩余参数不作为标记参数一部分
     // long_only = true: 允许使用 -xxx
-    let opts = opts.parsing_style(ParsingStyle::StopAtFirstFree).long_only(true);
+    let opts = opts
+        .parsing_style(ParsingStyle::StopAtFirstFree)
+        .long_only(true);
     opts.optflag("h", "help", "Print help message");
     opts.optflag("", "version", "Print version and exit");
     opts.optopt("", "classpath", "Specify the classpath", "classpath");
@@ -44,7 +47,7 @@ pub fn parse_cmd() -> Cmd {
     opts.optopt("", "Xjre", "Path to jre", "jre");
 
     let matches = match opts.parse(&args[1..]) {
-        Ok(m) => { m }
+        Ok(m) => m,
         Err(f) => {
             print_usage(&program, opts);
             panic!("{}", f.to_string())
@@ -60,20 +63,18 @@ pub fn parse_cmd() -> Cmd {
     match matches.opt_str("classpath") {
         Some(classpath) => {
             cmd.cp_option = classpath;
-        },
-        None => {
-            match matches.opt_str("cp") {
-                Some(cp) => {
-                    cmd.cp_option = cp;
-                },
-                None => {}
-            }
         }
+        None => match matches.opt_str("cp") {
+            Some(cp) => {
+                cmd.cp_option = cp;
+            }
+            None => {}
+        },
     }
     match matches.opt_str("Xjre") {
         Some(jre) => {
             cmd.x_jre_option = jre;
-        },
+        }
         None => {}
     }
 

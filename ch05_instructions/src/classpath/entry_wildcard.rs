@@ -1,14 +1,10 @@
-use crate::classpath::{
-    entry::Entry,
-    entry_zip::ZipEntry,
-    entry::PATH_SEPARATOR
-};
-use std::fs;
+use crate::classpath::{entry::Entry, entry::PATH_SEPARATOR, entry_zip::ZipEntry};
 use std::fmt;
+use std::fs;
 
 /// 处理以 * 结尾的类路径
 pub struct WildcardEntry {
-    entries: Vec<Box<dyn Entry>>
+    entries: Vec<Box<dyn Entry>>,
 }
 
 impl WildcardEntry {
@@ -18,12 +14,9 @@ impl WildcardEntry {
 
         let dir = match fs::read_dir(base_dir) {
             Ok(dir) => dir,
-            Err(err) => panic!("Couldn't open {}: {}", base_dir,
-                               err.to_string())
+            Err(err) => panic!("Couldn't open {}: {}", base_dir, err.to_string()),
         };
-        let convert = |entry| -> Box<dyn Entry> {
-            Box::new(entry)
-        };
+        let convert = |entry| -> Box<dyn Entry> { Box::new(entry) };
         let mut entries = vec![];
         for dir_entry in dir {
             let path = dir_entry.unwrap().path();
@@ -37,9 +30,7 @@ impl WildcardEntry {
             }
         }
 
-        WildcardEntry {
-            entries
-        }
+        WildcardEntry { entries }
     }
 }
 
@@ -49,7 +40,7 @@ impl Entry for WildcardEntry {
             match entry.read_class(class_name) {
                 Ok(data) => {
                     return Ok(data);
-                },
+                }
                 Err(_err) => {}
             }
         }

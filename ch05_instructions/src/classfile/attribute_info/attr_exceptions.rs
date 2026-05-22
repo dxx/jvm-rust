@@ -4,7 +4,6 @@
 ///     u2 number_of_exceptions;
 ///     u2 exception_index_table[number_of_exceptions];
 /// }
-
 use super::{AttributeInfo, ClassReader};
 
 #[derive(Default)]
@@ -16,7 +15,7 @@ impl AttributeInfo for ExceptionsAttribute {
     fn read_info(&mut self, reader: &mut ClassReader) {
         self.exception_index_table = reader.read_u16s();
     }
-    
+
     fn as_any(&self) -> &dyn std::any::Any {
         self
     }
