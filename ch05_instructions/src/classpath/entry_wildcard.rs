@@ -2,14 +2,15 @@ use crate::classpath::{entry::Entry, entry::PATH_SEPARATOR, entry_zip::ZipEntry}
 use std::fmt;
 use std::fs;
 
-/// 处理以 * 结尾的类路径
+/// 通配符形式的类路径：处理以 * 结尾的路径
+/// 会扫描目录下所有 jar 文件（不递归子目录），将每个 jar 作为 ZipEntry
 pub struct WildcardEntry {
     entries: Vec<Box<dyn Entry>>,
 }
 
 impl WildcardEntry {
     pub fn new(path: &str) -> Self {
-        // 移除 *
+        // 移除末尾的 *，得到基础目录
         let base_dir = &path[..path.len() - 1];
 
         let dir = match fs::read_dir(base_dir) {
@@ -20,10 +21,12 @@ impl WildcardEntry {
         let mut entries = vec![];
         for dir_entry in dir {
             let path = dir_entry.unwrap().path();
+            // 不递归遍历子目录
             if path.is_dir() {
                 continue;
             }
             let p = path.to_str().unwrap();
+            // 只处理 .jar 文件
             if p.ends_with(".jar") || p.ends_with(".JAR") {
                 let zip_entry = ZipEntry::new(&path.to_str().unwrap());
                 entries.push(convert(zip_entry));
@@ -35,6 +38,7 @@ impl WildcardEntry {
 }
 
 impl Entry for WildcardEntry {
+    /// 依次在每个 jar 中查找指定类
     fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String> {
         for entry in &mut self.entries {
             match entry.read_class(class_name) {

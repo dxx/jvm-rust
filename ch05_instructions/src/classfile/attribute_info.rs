@@ -28,8 +28,17 @@ use crate::classfile::{ClassReader, ConstantPool};
 /// }
 use crate::types::RcRefCell;
 
+/// 所有 attribute_info 通用接口
+///
+/// attribute_info {
+///     u2 attribute_name_index;
+///     u4 attribute_length;
+///     u1 info[attribute_length];
+/// }
 pub trait AttributeInfo {
+    /// 从字节流读取属性内容（不含 name_index 和 length 字段）
     fn read_info(&mut self, reader: &mut ClassReader);
+    
     // 获取名称
     fn name(&self) -> &str {
         return "";
@@ -38,6 +47,7 @@ pub trait AttributeInfo {
     fn as_any(&self) -> &dyn std::any::Any;
 }
 
+/// 读取属性表：先读 u2 数量，再依次读取每个属性
 pub fn read_attributes(
     reader: &mut ClassReader,
     cp: RcRefCell<ConstantPool>,
@@ -50,6 +60,7 @@ pub fn read_attributes(
     attributes
 }
 
+/// 读取单个属性
 fn read_attribute(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) -> Box<dyn AttributeInfo> {
     let attr_name_index = reader.read_u16();
     let attr_name = cp.borrow().get_utf8(attr_name_index);
@@ -59,6 +70,7 @@ fn read_attribute(reader: &mut ClassReader, cp: RcRefCell<ConstantPool>) -> Box<
     attr_info
 }
 
+/// 按属性名创建对应类型的 attribute_info；未识别的属性使用 UnparsedAttribute 原样保留字节
 fn new_attribute(
     attr_name: &str,
     attr_length: u32,

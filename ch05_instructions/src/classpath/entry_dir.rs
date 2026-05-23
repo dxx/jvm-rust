@@ -6,6 +6,7 @@ use std::path::Path;
 
 /// 目录形式的类路径
 pub struct DirEntry {
+    /// 目录的绝对路径
     abs_dir: String,
 }
 
@@ -18,6 +19,7 @@ impl DirEntry {
 }
 
 impl Entry for DirEntry {
+    /// 直接在目录下按类名拼接路径读取 class 文件
     fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String> {
         let path = Path::new(&self.abs_dir);
         let new_path = path.join(class_name);

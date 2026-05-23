@@ -7,11 +7,14 @@ use zip::ZipArchive;
 
 /// ZIP 或 JAR 文件形式的类路径
 pub struct ZipEntry {
+    /// jar/zip 文件的绝对路径
     abs_path: String,
+    /// 已打开的 zip 归档对象，用于按需读取条目
     zip_archive: ZipArchive<File>,
 }
 
 impl ZipEntry {
+    /// 打开指定的 jar/zip 文件并构建 ZipArchive
     pub fn new(path: &str) -> Self {
         let abs_path = absolute(path);
         let path = Path::new(&abs_path);
@@ -28,6 +31,7 @@ impl ZipEntry {
 }
 
 impl Entry for ZipEntry {
+    /// 在 zip 归档中按文件名查找并读取 class 字节内容
     fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String> {
         let archive = &mut self.zip_archive;
         let mut file = match archive.by_name(&class_name) {

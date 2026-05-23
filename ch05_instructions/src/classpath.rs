@@ -1,10 +1,3 @@
-//! 类路径管理
-//!
-//! 按照 JVM 规范实现三类类路径的搜索顺序：
-//! 1. Boot Classpath（启动类路径，如 rt.jar）
-//! 2. Ext Classpath（扩展类路径，如 jre/lib/ext/*）
-//! 3. User Classpath（用户类路径，由 -cp/-classpath 指定）
-
 pub mod entry;
 pub mod entry_composite;
 pub mod entry_dir;
@@ -17,7 +10,10 @@ use std::env;
 use std::fmt;
 use std::path::Path;
 
-/// 组合类路径：按 boot -> ext -> user 的顺序搜索 .class 文件
+/// Classpath 由三部分组成，对应 JVM 的类加载器层次：
+/// - boot_classpath: 启动类路径（jre/lib/*）
+/// - ext_classpath:  扩展类路径（jre/lib/ext/*）
+/// - user_classpath: 用户类路径（-classpath / -cp）
 pub struct Classpath {
     boot_classpath: Box<dyn Entry>,
     ext_classpath: Box<dyn Entry>,
@@ -25,6 +21,7 @@ pub struct Classpath {
 }
 
 impl Classpath {
+    /// 根据 -Xjre 和 -cp 选项构造 Classpath
     pub fn parse(jre_option: &str, cp_option: &str) -> Self {
         let boot_classpath = Classpath::parse_boot_classpath(jre_option);
         let ext_classpath = Classpath::parse_ext_classpath(jre_option);
@@ -36,6 +33,7 @@ impl Classpath {
         };
         cp
     }
+    /// 启动类路径：jre/lib/* 下的所有 jar
     fn parse_boot_classpath(jre_option: &str) -> Box<dyn Entry> {
         let jre_dir = Classpath::get_jre_dir(jre_option);
         // jre/lib/*
@@ -43,6 +41,7 @@ impl Classpath {
         let jre_lib_path = path.to_str().unwrap();
         Box::new(WildcardEntry::new(jre_lib_path))
     }
+    /// 扩展类路径：jre/lib/ext/* 下的所有 jar
     fn parse_ext_classpath(jre_option: &str) -> Box<dyn Entry> {
         let jre_dir = Classpath::get_jre_dir(jre_option);
         // jre/lib/ext/*
@@ -50,6 +49,7 @@ impl Classpath {
         let jre_ext_path = path.to_str().unwrap();
         Box::new(WildcardEntry::new(jre_ext_path))
     }
+    /// 用户类路径：未指定时使用当前目录 "."
     fn parse_user_classpath(cp_option: &str) -> Box<dyn Entry> {
         let mut cp = cp_option;
         if cp == "" {
@@ -57,6 +57,7 @@ impl Classpath {
         }
         new_entry(cp)
     }
+    /// 查找 JRE 目录：依次尝试 -Xjre 选项、当前目录下的 ./jre、JAVA_HOME 环境变量
     fn get_jre_dir(jre_option: &str) -> String {
         if jre_option != "" {
             let jre_dir = Path::new(jre_option);
@@ -84,6 +85,7 @@ impl Classpath {
 }
 
 impl Entry for Classpath {
+    /// 按 boot -> ext -> user 顺序依次查找指定类
     fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String> {
         let class = class_name.to_string() + ".class";
         return match self.boot_classpath.read_class(&class) {
@@ -100,6 +102,7 @@ impl Entry for Classpath {
 }
 
 impl fmt::Display for Classpath {
+    /// 显示 Classpath 时只输出用户类路径
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.user_classpath)
     }

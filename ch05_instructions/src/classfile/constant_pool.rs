@@ -27,17 +27,21 @@ use std::rc::Rc;
 
 // pub type ConstantPool = Vec<Option<Box<dyn ConstantInfo>>>;
 
+/// 常量池：class 文件中所有字面量和符号引用的集合
+/// 索引从 1 开始（索引 0 无效）
 #[derive(Default)]
 pub struct ConstantPool {
+    /// 全部常量条目；索引 0 为 None，long/double 占两个位置（第二位为 None）
     pub infos: Vec<Option<Box<dyn ConstantInfo>>>,
 
-    /// 存储 CONSTANT_Class_info 常量映射
+    /// 存储 CONSTANT_Class_info 常量映射，便于按索引快速获取类名
     class_info_map: HashMap<u16, ConstantClassInfo>,
-    /// 存储 CONSTANT_Utf8_info 常量映射
+    /// 存储 CONSTANT_Utf8_info 常量映射，便于按索引快速获取字符串
     utf8_info_map: HashMap<u16, ConstantUtf8Info>,
 }
 
 impl ConstantPool {
+    /// 根据 CONSTANT_Class_info 索引获取类的全限定名
     pub fn get_class_name(&self, index: u16) -> String {
         match self.class_info_map.get(&index) {
             Some(info) => info.name(),
@@ -45,6 +49,7 @@ impl ConstantPool {
         }
     }
 
+    /// 根据 CONSTANT_Utf8_info 索引获取字符串
     pub fn get_utf8(&self, index: u16) -> String {
         match self.utf8_info_map.get(&index) {
             Some(info) => info.str(),
@@ -53,6 +58,7 @@ impl ConstantPool {
     }
 }
 
+/// 读取整个常量池
 pub fn read_constant_pool(reader: &mut ClassReader) -> RcRefCell<ConstantPool> {
     let cp_count = reader.read_u16();
     let cp = Rc::new(RefCell::new(ConstantPool::default()));
@@ -88,7 +94,7 @@ pub fn read_constant_pool(reader: &mut ClassReader) -> RcRefCell<ConstantPool> {
     cp
 }
 
-/// Constant pool tags
+/// 常量池 tag 常量定义（详见 JVMS §4.4 Table 4.4-A）
 const CONSTANT_UTF8: u8 = 1;
 const CONSTANT_INTEGER: u8 = 3;
 const CONSTANT_FLOAT: u8 = 4;
@@ -104,12 +110,15 @@ const CONSTANT_METHOD_HANDLE: u8 = 15;
 const CONSTANT_METHOD_TYPE: u8 = 16;
 const CONSTANT_INVOKE_DYNAMIC: u8 = 18;
 
+/// 所有 cp_info 通用接口
 pub trait ConstantInfo {
+    /// 从字节流读取该常量的具体内容（不含 tag 字节）
     fn read_info(&mut self, reader: &mut ClassReader);
-    /// 获取标志
+    /// 返回常量的 tag 值
     fn tag(&self) -> u8;
 }
 
+/// 读取单个 cp_info：先读 tag，再创建对应类型并读取剩余字节
 fn read_constant_info(
     reader: &mut ClassReader,
     i: u16,
@@ -125,6 +134,8 @@ fn read_constant_info(
     c
 }
 
+/// 根据 tag 创建对应类型的 cp_info；其中 Class_info 和 Utf8_info 在创建时立即读取
+/// 并缓存到映射表，便于后续按索引快速访问
 fn new_constant_info(
     reader: &mut ClassReader,
     tag: u8,

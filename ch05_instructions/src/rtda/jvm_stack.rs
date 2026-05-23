@@ -23,6 +23,7 @@ impl Stack {
         }
     }
 
+    /// 入栈一个栈帧；栈满时抛出 StackOverflowError
     pub fn push(&mut self, frame: Frame) {
         if self.top >= self.max_size {
             panic!("java.lang.StackOverflowError");
@@ -32,6 +33,7 @@ impl Stack {
         self.top += 1;
     }
 
+    /// 弹出栈顶帧
     pub fn pop(&mut self) -> OptionalRcRefCell<Frame> {
         if self.top == 0 {
             panic!("jvm stack is empty!");
@@ -40,6 +42,7 @@ impl Stack {
         self.frames[self.top].clone()
     }
 
+    /// 获取当前栈顶帧（不弹出）
     pub fn top(&self) -> RcRefCell<Frame> {
         if self.top == 0 {
             panic!("jvm stack is empty!");

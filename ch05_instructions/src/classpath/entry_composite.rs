@@ -1,12 +1,14 @@
 use crate::classpath::entry::{new_entry, Entry, PATH_SEPARATOR};
 use std::fmt;
 
-/// 由多个 Entry 组成
+/// 组合形式的类路径：由多个 Entry 组成
+/// 适用于由 PATH_SEPARATOR 分隔的多个路径，如：aaa.jar:bbb/*:ccc
 pub struct CompositeEntry {
     entries: Vec<Box<dyn Entry>>,
 }
 
 impl CompositeEntry {
+    /// 按 PATH_SEPARATOR 分割路径列表，逐个创建对应的 Entry
     pub fn new(path_list: &str) -> Self {
         let path_list = path_list.split(PATH_SEPARATOR);
         let mut entries = vec![];
@@ -18,6 +20,7 @@ impl CompositeEntry {
 }
 
 impl Entry for CompositeEntry {
+    /// 依次尝试每个子 Entry，找到则返回
     fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String> {
         for entry in &mut self.entries {
             match entry.read_class(class_name) {

@@ -5,11 +5,13 @@ use crate::classpath::{
 use std::fmt;
 use std::path::Path;
 
+// 不同操作系统下 classpath 中多个路径的分隔符不同：Windows 用 ';'，类 Unix 用 ':'
 #[cfg(windows)]
 pub const PATH_SEPARATOR: char = ';';
 #[cfg(not(windows))]
 pub const PATH_SEPARATOR: char = ':';
 
+/// 类路径项抽象：能够根据类名读取对应的 class 字节数据
 pub trait Entry: fmt::Display {
     fn read_class(&mut self, class_name: &str) -> Result<Vec<u8>, String>;
 }
